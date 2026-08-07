@@ -1,0 +1,14 @@
+{ "id":"demo-boyz", "name":"Demo Boyz", "type":["Infantry"], "keywords":["INFANTRY","MOB","ORKS"],
+  "isBattleline":true, "points":100, "models":10, "modelBreakdown":"1 Nob + 9 Boyz",
+  "costing":{ "escalationAfter":2, "tiers":[ [{"models":10,"points":100},{"models":20,"points":185}],
+                                             [{"models":10,"points":110},{"models":20,"points":195}] ] },
+  "stats":{"m":"6\"","t":5,"sv":"6+","w":1,"ld":"6+","oc":2},
+  "invulnerableSave":null, "fixedWeapons":false,
+  "weapons":{ "ranged":[
+      {"name":"Shoota – Burst","count":9,"range":"18\"","a":"2","bs":"5+","s":"4","ap":"0","d":"1",
+       "abilities":["rapid-fire"],"weaponGroup":"shoota","weaponGroupLabel":"Choose one profile"},
+      {"name":"Shoota – Focused","count":9,"range":"18\"","a":"1","bs":"5+","s":"5","ap":"-1","d":"2",
+       "abilities":[{"id":"sustained-hits","display":"Sustained Hits 1"}],"weaponGroup":"shoota"},
+      {"name":"Rokkit (option)","count":0,"range":"24\"","a":"1","bs":"5+","s":"9","ap":"-2","d":"3","abilities":[]} ],
+    "melee":[ {"name":"Choppa","count":10,"a":"3","ws":"3+","s":"5","ap":"-1","d":"1","abilities":[]} ] },
+  "abilities":[], "coreAbilities":[], "canBeLeadBy":["demo-warboss"] }

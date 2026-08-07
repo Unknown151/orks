@@ -1,0 +1,4 @@
+{ "shiny-bit": { "name":"Shiny Bit", "type":"Enhancement (20 pts)", "restriction":"CHARACTER model only",
+    "detachment":"big-one", "points":20, "short":"Blurb.", "grantsAbilities":["lethal-hits"], "description":"Text." },
+  "extra-armour": { "name":"Extra Armour", "type":"Upgrade (10 pts)", "upgrade":true,
+    "restriction":"any non-Epic-Hero unit", "detachment":["big-one","other"], "points":10, "short":"Up.", "description":"Text." } }

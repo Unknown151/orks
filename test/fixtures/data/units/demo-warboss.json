@@ -1,0 +1,7 @@
+{ "id":"demo-warboss", "name":"Demo Warboss", "type":["Infantry","Character"],
+  "keywords":["INFANTRY","CHARACTER","ORKS"], "isLeader":true, "points":80, "models":1,
+  "stats":{"m":"6\"","t":6,"sv":"4+","w":6,"ld":"6+","oc":1},
+  "invulnerableSave":"4+", "invulnerableSource":"stealth", "fixedWeapons":true,
+  "weapons":{ "ranged":[], "melee":[{"name":"Big Choppa","count":1,"a":"6","ws":"2+","s":"9","ap":"-2","d":"3","abilities":["lethal-hits"]}] },
+  "coreAbilities":["leader"], "canLead":["demo-boyz"],
+  "leaderBonus":{"text":"Bonus text","grantsAbilities":["sustained-hits"],"appliesTo":"melee"} }

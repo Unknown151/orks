@@ -1,0 +1,11 @@
+{
+  "budget": 3,
+  "categories": {
+    "Disruption": "#36506f",
+    "Take and Hold": "#3a7d44",
+    "Purge the Foe": "#9e2f2f",
+    "Reconnaissance": "#2f8f8f",
+    "Priority Assets": "#c2922b"
+  },
+  "detachments": {}
+}

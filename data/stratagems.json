@@ -1,0 +1,16 @@
+{
+  "_note": "Core + detachment stratagems, keyed by id. See NEW_ARMY_BUILD_GUIDE.md §4.4. detachment:null means a Core stratagem, always available. Keys starting with an underscore are ignored by the loader. Awaiting 11th-ed core stratagems and Ork detachment stratagems.",
+  "_schema": {
+    "name": "Stratagem Name",
+    "type": "Core Stratagem",
+    "turn": "either",
+    "phases": ["command", "movement", "shooting", "charge", "fight"],
+    "cpCost": 1,
+    "summary": "One-line gist for the card.",
+    "when": "…",
+    "target": "…",
+    "effect": "…",
+    "restrictions": "…",
+    "detachment": null
+  }
+}

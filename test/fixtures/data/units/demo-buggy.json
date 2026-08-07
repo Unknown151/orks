@@ -1,0 +1,4 @@
+{ "id":"demo-buggy", "name":"Demo Buggy", "type":["Vehicle"], "keywords":["VEHICLE","ORKS"],
+  "points":70, "models":1, "costing":{"escalationAfter":3,"tiers":[[{"models":1,"points":70}],[{"models":1,"points":80}]]},
+  "stats":{"m":"12\"","t":8,"sv":"4+","w":8,"ld":"7+","oc":2}, "fixedWeapons":true,
+  "weapons":{"ranged":[{"name":"Big Shoota","count":2,"range":"36\"","a":"3","bs":"5+","s":"5","ap":"0","d":"1","abilities":[]}],"melee":[]} }

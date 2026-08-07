@@ -1,0 +1,200 @@
+/* Engine regression suite for index.html.
+ *
+ * Runs the real app in headless Chromium against the fixture datasheets in
+ * test/fixtures/data — deliberately fake units that exercise the mechanics the
+ * guide calls out: escalating costs, multi-size pricing, leaders, the
+ * Enhancement/Upgrade cap, multi-profile weapons, DP budgeting + unique groups,
+ * persistence and share links. It never touches data/, so it keeps passing as
+ * the real Ork data lands.
+ *
+ *   node test/run.mjs
+ */
+import { createServer } from 'node:http';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import { dirname, join, normalize } from 'node:path';
+import { execSync } from 'node:child_process';
+import { pathToFileURL } from 'node:url';
+
+// Use a local playwright if the repo has one, else fall back to a global install.
+async function loadChromium(){
+  const tries = ['playwright'];
+  try { tries.push(pathToFileURL(join(execSync('npm root -g').toString().trim(), 'playwright', 'index.mjs')).href); } catch {}
+  for(const spec of tries){ try { return (await import(spec)).chromium; } catch {} }
+  throw new Error('playwright not found — run `npm i -D playwright` or install it globally.');
+}
+const chromium = await loadChromium();
+
+const HERE = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(HERE, '..');
+const PORT = 8123;
+
+// index.html comes from the repo; every data/* request is served from the
+// fixtures, so the suite tests the real app against known-good data.
+const TYPES = { '.html':'text/html', '.json':'application/json' };
+const server = createServer(async (req, res) => {
+  let p = normalize(decodeURIComponent(req.url.split('?')[0])).replace(/^(\.\.[/\\])+/, '');
+  if (p === '/' || p === '\\') p = '/index.html';
+  const file = p.startsWith('/data/') ? join(HERE, 'fixtures', p) : join(ROOT, p);
+  try {
+    const body = await readFile(file);
+    res.writeHead(200, { 'Content-Type': TYPES[p.slice(p.lastIndexOf('.'))] || 'text/plain' });
+    res.end(body);
+  } catch { res.writeHead(404); res.end('not found'); }
+});
+await new Promise(r => server.listen(PORT, '127.0.0.1', r));
+
+const B = `http://127.0.0.1:${PORT}/`;
+const b=await chromium.launch(); const p=await b.newPage();
+const errs=[]; p.on('console',m=>{if(m.type()==='error')errs.push(m.text())}); p.on('pageerror',e=>errs.push('PAGEERR '+e.message));
+const ok=[],bad=[];
+const t=(n,c)=> (c?ok:bad).push(n+(c?'':'  <-- FAIL'));
+
+await p.goto(B,{waitUntil:'networkidle'});
+await p.waitForTimeout(300);
+
+// --- data load
+t('data loaded: 3 units', await p.evaluate(()=>DATA.unitOrder.length)===3);
+t('detachments loaded', await p.evaluate(()=>Object.keys(DATA.detachments).length)===3);
+t('_note/_schema meta keys stripped', await p.evaluate(()=>!DATA.abilities._note && !DATA.enhancements._schema));
+
+// --- detachment DP
+await p.evaluate(()=>toggleDetachment('big-one'));
+t('DP spent = 2', await p.evaluate(()=>dpSpent())===2);
+t('unique group blocks sibling', await p.evaluate(()=>canAddDetachment('lil-one'))===false);
+t('other det still addable (1 DP left)', await p.evaluate(()=>canAddDetachment('other'))===true);
+await p.evaluate(()=>toggleDetachment('other'));
+t('DP spent = 3, budget full', await p.evaluate(()=>dpSpent())===3);
+t('DP chip shows 3/3', (await p.textContent('#dpChip'))==='3/3');
+t('blocked cards dimmed', await p.evaluate(()=>document.querySelectorAll('.dcard.blocked').length)===1);
+
+// --- add units + costing
+await p.evaluate(()=>{addUnit('demo-boyz');addUnit('demo-boyz');addUnit('demo-boyz');});
+t('3 instances', await p.evaluate(()=>armyList.length)===3);
+t('copy 1 = 100', await p.evaluate(()=>instancePoints(armyList[0]))===100);
+t('copy 3 escalated = 110', await p.evaluate(()=>instancePoints(armyList[2]))===110);
+t('escalation flagged in UI', await p.evaluate(()=>document.querySelectorAll('#view-builder .esc').length)===1);
+// size stepper snaps
+await p.evaluate(()=>{armyList[0].models=20;renderAll();});
+t('20 models = 185 (not 2x100)', await p.evaluate(()=>instancePoints(armyList[0]))===185);
+t('army total', await p.evaluate(()=>armyPoints())===185+100+110);
+
+// --- single-model escalation (escalationAfter 3)
+await p.evaluate(()=>{for(let i=0;i<4;i++)addUnit('demo-buggy');});
+t('buggy 3rd copy = 70', await p.evaluate(()=>instancePoints(armyList.filter(i=>i.unitId==='demo-buggy')[2]))===70);
+t('buggy 4th copy = 80', await p.evaluate(()=>instancePoints(armyList.filter(i=>i.unitId==='demo-buggy')[3]))===80);
+
+// --- leaders
+await p.evaluate(()=>addUnit('demo-warboss'));
+t('warboss offered as leader for boyz', await p.evaluate(()=>availableLeadersFor(armyList[0]).length)===1);
+t('buggy has no leader option', await p.evaluate(()=>availableLeadersFor(armyList.find(i=>i.unitId==='demo-buggy')).length)===0);
+await p.evaluate(()=>{const w=armyList.find(i=>i.unitId==='demo-warboss');armyList[0].leaderId=w.uid;renderAll();});
+t('leader no longer offered to 2nd boyz', await p.evaluate(()=>availableLeadersFor(armyList[1]).length)===0);
+t('merged card: leader band rendered', await p.evaluate(()=>document.querySelectorAll('#view-army .leader-band').length)===2);
+t('attached leader not a separate army card',
+  await p.evaluate(()=>[...document.querySelectorAll('#view-army .unit-hd h3')]
+    .filter(h=>h.firstChild.textContent.includes('Warboss')).length)===0);
+t('merged card shows combined leader+unit points',
+  await p.evaluate(()=>{const c=[...document.querySelectorAll('#view-army .unit')]
+    .find(x=>x.querySelector('.leader-band'));
+    const l=armyList.find(i=>i.unitId==='demo-warboss');
+    return parseInt(c.querySelector('.pts').textContent,10)===instancePoints(armyList[0])+instancePoints(l);}));
+t('inherited ability badge on led unit melee', await p.evaluate(()=>document.querySelectorAll('#view-army .pill.inh').length)>0);
+t('leaderBonus appliesTo respected (no inherit on ranged)',
+   await p.evaluate(()=>inheritedAbilitiesFor(armyList[0],'ranged').length)===0);
+
+// --- detachment-granted ability (MOB keyword)
+t('granted ability shows on MOB unit', await p.evaluate(()=>getDetachmentGrantedAbilities(DATA.units['demo-boyz']).length)===1);
+t('granted ability absent on non-MOB', await p.evaluate(()=>getDetachmentGrantedAbilities(DATA.units['demo-buggy']).length)===0);
+
+// --- enhancements / upgrades
+const wb=await p.evaluate(()=>armyList.find(i=>i.unitId==='demo-warboss').uid);
+t('warboss eligible for both', await p.evaluate(u=>eligibleEnhancements(armyList.find(i=>i.uid===u)).map(e=>e.id).sort().join(),wb)==='extra-armour,shiny-bit');
+t('boyz (non-character) eligible for upgrade only',
+  await p.evaluate(()=>eligibleEnhancements(armyList[0]).map(e=>e.id).join())==='extra-armour');
+await p.evaluate(u=>{armyList.find(i=>i.uid===u).enhancementId='shiny-bit';renderAll();},wb);
+t('enhancement adds points', await p.evaluate(u=>instancePoints(armyList.find(i=>i.uid===u)),wb)===100);
+t('★ on builder header', await p.evaluate(()=>document.querySelectorAll('#view-builder .star').length)===1);
+t('2nd copy of an Enhancement blocked', await p.evaluate(()=>enhancementBlockReason('shiny-bit',armyList[0]))==='taken');
+// upgrades: 3 copies allowed, only 1st counts toward cap
+await p.evaluate(()=>{armyList[0].enhancementId='extra-armour';armyList[1].enhancementId='extra-armour';armyList[2].enhancementId='extra-armour';renderAll();});
+t('3 upgrade copies allowed', await p.evaluate(()=>armyList.filter(i=>i.enhancementId==='extra-armour').length)===3);
+t('upgrades charged per copy', await p.evaluate(()=>instancePoints(armyList[1]))===110);
+t('cap counts distinct upgrade once (1 enh + 1 upg = 2)', await p.evaluate(()=>countArmyEnhancements())===2);
+const bg=await p.evaluate(()=>armyList.filter(i=>i.unitId==='demo-buggy')[0].uid);
+t('4th upgrade copy blocked', await p.evaluate(u=>enhancementBlockReason('extra-armour',armyList.find(i=>i.uid===u)),bg)==='max 3');
+
+// --- multi-profile weapon summary
+t('multi-profile merged in summary',
+  await p.evaluate(()=>weaponSummaryText(DATA.units['demo-boyz'],armyList[0])));
+t('  -> shoota appears once', (await p.evaluate(()=>weaponSummaryText(DATA.units['demo-boyz'],armyList[0]))).match(/Shoota/g).length===1);
+t('  -> no profile suffix', !(await p.evaluate(()=>weaponSummaryText(DATA.units['demo-boyz'],armyList[0]))).includes('Burst'));
+t('count:0 option excluded from summary (?? not ||)',
+  !(await p.evaluate(()=>weaponSummaryText(DATA.units['demo-boyz'],armyList[0]))).includes('Rokkit'));
+t('both profiles still rendered on battle card',
+  await p.evaluate(()=>[...document.querySelectorAll('#view-army .unit')[0].querySelectorAll('.wn')]
+    .filter(x=>x.textContent.includes('Shoota')).length)===2);
+t('weaponGroup header shown once', await p.evaluate(()=>document.querySelectorAll('#view-army .wgrp').length)>0);
+
+// --- stratagems
+await p.click('nav button[data-tab="strats"]');
+t('both strats shown (big-one active)', await p.evaluate(()=>document.querySelectorAll('#view-strats .strat').length)===2);
+await p.click('.chip[data-phase="command"]');
+t('phase filter narrows to 1', await p.evaluate(()=>document.querySelectorAll('#view-strats .strat').length)===1);
+await p.click('.chip[data-phase="all"]'); await p.click('.chip[data-turn="opponent"]');
+t('turn filter drops your-turn strat', await p.evaluate(()=>document.querySelectorAll('#view-strats .strat').length)===1);
+await p.click('.chip[data-turn="all"]');
+
+// --- detachment removal cleanup
+await p.evaluate(()=>toggleDetachment('big-one'));
+t('orphaned enhancement cleared', await p.evaluate(u=>armyList.find(i=>i.uid===u).enhancementId,wb)===null);
+t('upgrade shared with "other" det survives', await p.evaluate(()=>armyList[0].enhancementId)==='extra-armour');
+t('det strat hidden after removal', await p.evaluate(()=>document.querySelectorAll('#view-strats .strat').length)===1);
+await p.evaluate(()=>toggleDetachment('big-one'));
+
+// --- share link round trip
+const before=await p.evaluate(()=>JSON.stringify([armyPoints(),armyList.length,selectedDetachments,armyList[0].leaderId!==null]));
+const code=await p.evaluate(()=>encodeShare());
+t('share uses deflate', code.startsWith('z'));
+{ // fresh context: empty localStorage, so ONLY the link can supply the list
+  const ctx=await b.newContext(); const p2=await ctx.newPage();
+  const e2=[]; p2.on('pageerror',e=>e2.push(e.message));
+  await p2.goto(B+'#l='+code,{waitUntil:'networkidle'}); await p2.waitForTimeout(400);
+  const after=await p2.evaluate(()=>JSON.stringify([armyPoints(),armyList.length,selectedDetachments,armyList[0].leaderId!==null]));
+  t('share round trip identical (clean profile)', before===after);
+  t('hash cleared after load', await p2.evaluate(()=>location.hash)==='');
+  t('share carries leader attachment', await p2.evaluate(()=>armyList[0].leaderId!==null));
+  t('share carries enhancements', await p2.evaluate(()=>armyList.filter(i=>i.enhancementId).length)>0);
+  t('no errors on share boot: '+e2.join('|'), e2.length===0);
+  await ctx.close();
+}
+
+// --- persistence round trip
+await p.reload({waitUntil:'networkidle'}); await p.waitForTimeout(300);
+t('localStorage restores list', await p.evaluate(()=>JSON.stringify([armyPoints(),armyList.length,selectedDetachments]))===JSON.stringify(JSON.parse(before).slice(0,3)));
+t('localStorage points match', await p.evaluate(()=>armyPoints())===JSON.parse(before)[0]);
+t('leader link survives reload', await p.evaluate(()=>armyList[0].leaderId!==null));
+
+// --- legacy single-detachment migration
+await p.evaluate(()=>{localStorage.removeItem('orks.detachments');localStorage.setItem('orks.detachment','lil-one');});
+await p.reload({waitUntil:'networkidle'}); await p.waitForTimeout(300);
+t('legacy single det migrated to array', await p.evaluate(()=>JSON.stringify(selectedDetachments))==='["lil-one"]');
+
+// --- text export
+const txt=await p.evaluate(()=>exportText());
+t('export has points line', /\d+ \/ \d+ pts/.test(txt));
+t('export lists detachments', txt.includes('Lil One'));
+t('export merges multi-profile weapon (no profile suffix, no dupes)',
+  !/Shoota\s+[-–—]/.test(txt) && !txt.includes('Burst') && !txt.includes('Focused'));
+
+// --- removal cleanup
+await p.evaluate(()=>{const w=armyList.find(i=>i.unitId==='demo-warboss');removeInstance(w.uid);});
+t('removing a leader clears dangling leaderId', await p.evaluate(()=>armyList.every(i=>i.leaderId===null)));
+
+t('no console/page errors: '+errs.join(' | '), errs.length===0);
+await b.close();
+server.close();
+console.log(ok.map(x=>'  ok  '+x).join('\n'));
+if(bad.length){console.log('\n'+bad.map(x=>'  XX  '+x).join('\n'));}
+console.log(`\n${ok.length} passed, ${bad.length} failed`);
+process.exit(bad.length?1:0);

@@ -1,0 +1,85 @@
+{
+  "_comment": "Reference copy of the unit schema (NEW_ARMY_BUILD_GUIDE.md §4.1). NOT loaded — it is not listed in index.json. Copy it to <unit-id>.json, fill it in, add the id to index.json. Delete any key you don't need; every key except id/name/points is optional.",
+
+  "id": "unit-id",
+  "name": "Unit Name",
+  "type": ["Infantry", "Character"],
+  "role": "Character",
+  "keywords": ["INFANTRY", "CHARACTER", "ORKS"],
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 100,
+  "models": 10,
+  "baseModels": 5,
+  "maxModels": 10,
+  "modelBreakdown": "1 Boss Nob + 9 Boyz",
+
+  "costing": {
+    "_comment": "escalationAfter = copies up to and including this index use tiers[0]; later copies use the next/last tier. List EVERY size explicitly — 10 models is often not 2x the 5-model price.",
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 10, "points": 100 }, { "models": 20, "points": 200 }],
+      [{ "models": 10, "points": 110 }, { "models": 20, "points": 210 }]
+    ]
+  },
+
+  "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 1, "ld": "6+", "oc": 2 },
+  "modelProfiles": [
+    { "name": "Boss Nob", "count": 1, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 2, "ld": "6+", "oc": 2 } },
+    { "name": "Boy", "count": 9, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 1, "ld": "6+", "oc": 2 } }
+  ],
+
+  "invulnerableSave": null,
+  "invulnerableSource": null,
+  "transportCapacity": null,
+
+  "fixedWeapons": false,
+
+  "weapons": {
+    "ranged": [
+      {
+        "name": "Weapon Name",
+        "count": 8,
+        "range": "18\"",
+        "a": "2",
+        "bs": "5+",
+        "s": "4",
+        "ap": "0",
+        "d": "1",
+        "abilities": ["rapid-fire", { "id": "sustained-hits", "display": "Sustained Hits 1" }],
+        "inheritedAbilities": [],
+        "weaponGroup": null,
+        "weaponGroupLabel": null
+      }
+    ],
+    "melee": [
+      {
+        "name": "Melee Weapon",
+        "count": 10,
+        "a": "3",
+        "ws": "3+",
+        "s": "5",
+        "ap": "-1",
+        "d": "1",
+        "abilities": []
+      }
+    ]
+  },
+
+  "abilities": ["ability-id"],
+  "coreAbilities": ["leader"],
+  "wargear": ["always-equipped-item"],
+  "wargearChoices": ["optional-a", "optional-b"],
+  "wargearExclusiveChoices": ["option-a", "option-b"],
+  "canBeLeadBy": ["leader-unit-id"],
+
+  "canLead": ["bodyguard-unit-id"],
+  "leaderBonus": {
+    "text": "Plain-language summary shown on the merged card.",
+    "grantsAbilities": ["lethal-hits"],
+    "grantsFnp": null,
+    "appliesTo": "melee"
+  }
+}

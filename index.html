@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12160f">
+<title>Ork Army Builder</title>
+<style>
+:root{
+  --bg:#12160f; --bg2:#1a2015; --card:#1f2618; --card2:#263021; --line:#3a4630;
+  --txt:#e8eede; --dim:#9aa88a; --accent:#7fb43f; --accent2:#4a7c2f;
+  --warn:#c2922b; --bad:#9e2f2f; --good:#3a7d44;
+  --radius:10px;
+}
+html[data-theme="light"]{
+  --bg:#eceee6; --bg2:#e2e6d8; --card:#fbfcf8; --card2:#f0f2ea; --line:#c5cdb4;
+  --txt:#1c2116; --dim:#5d6a4c; --accent:#4a7c2f; --accent2:#3a6023;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--txt); font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-text-size-adjust:100%; padding-bottom:env(safe-area-inset-bottom);
+}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+
+/* ---------- header ---------- */
+header{position:sticky;top:0;z-index:40;background:var(--bg2);border-bottom:1px solid var(--line)}
+.hd-top{display:flex;align-items:center;gap:8px;padding:8px 10px 4px}
+.hd-title{font-weight:700;letter-spacing:.5px;font-size:17px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hd-title span{color:var(--accent)}
+.hd-btn{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:5px 9px;font-size:13px;white-space:nowrap}
+.hd-btn:disabled{opacity:.4}
+.hd-btn.on{background:var(--accent2);border-color:var(--accent)}
+.ver{padding:0 10px 6px;font-size:11px;color:var(--dim)}
+nav{display:flex;gap:2px;padding:0 6px 6px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+nav button{flex:1;min-width:78px;background:transparent;border:0;border-bottom:2px solid transparent;color:var(--dim);padding:7px 4px;font-size:13px;font-weight:600}
+nav button.on{color:var(--accent);border-bottom-color:var(--accent)}
+
+main{padding:10px;max-width:900px;margin:0 auto}
+.view{display:none}
+.view.on{display:block}
+
+/* ---------- generic bits ---------- */
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.panel-hd{display:flex;align-items:center;gap:8px;padding:9px 11px;background:var(--card2);cursor:pointer;user-select:none}
+.panel-hd h2{margin:0;font-size:13px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim);flex:1}
+.panel-hd .sum{font-size:12px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:50%;text-align:right}
+.panel-hd .chev{color:var(--dim);font-size:11px}
+.panel-bd{padding:11px;display:none}
+.panel.open .panel-bd{display:block}
+.muted{color:var(--dim)}
+.empty{color:var(--dim);font-size:13px;text-align:center;padding:22px 12px;line-height:1.6}
+.empty code{background:var(--card2);padding:1px 5px;border-radius:4px;font-size:12px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.grow{flex:1}
+.pill{display:inline-block;background:var(--card2);border:1px solid var(--line);border-radius:99px;padding:2px 9px;font-size:12px;margin:2px 3px 2px 0}
+.pill.tap{cursor:pointer}
+.pill.tap:active{background:var(--accent2)}
+.pill.core{border-color:var(--accent2);color:var(--accent)}
+.pill.inh{border-style:dashed;border-color:var(--warn);color:var(--warn)}
+.pill.kw{font-size:10.5px;letter-spacing:.5px;color:var(--dim);text-transform:uppercase}
+.pill.grant{border-color:var(--good);color:var(--good)}
+.tag{display:inline-block;font-size:10px;text-transform:uppercase;letter-spacing:.6px;padding:1px 6px;border-radius:4px;background:var(--accent2);color:#fff}
+.tag.up{background:var(--warn);color:#241c00}
+.sel{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 8px;max-width:100%}
+.btn{background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:6px 11px;font-size:13px}
+.btn.pri{background:var(--accent2);border-color:var(--accent)}
+.btn.danger{border-color:var(--bad);color:#e88}
+.btn:disabled{opacity:.4}
+.mini{font-size:12px;padding:3px 8px}
+
+/* ---------- unit card ---------- */
+.unit{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.unit-hd{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;background:var(--card2);border-bottom:1px solid var(--line)}
+.unit-hd h3{margin:0;font-size:15px;flex:1;line-height:1.25}
+.unit-hd .sub{display:block;font-size:11.5px;color:var(--dim);font-weight:400;margin-top:2px}
+.pts{font-weight:700;color:var(--accent);white-space:nowrap;font-size:14px}
+.esc{color:var(--warn);cursor:help}
+.unit-bd{padding:10px 11px}
+.sec{margin-top:11px}
+.sec:first-child{margin-top:0}
+.sec-t{font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--dim);margin-bottom:5px;border-bottom:1px solid var(--line);padding-bottom:3px}
+.statline{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}
+.stat{flex:1;min-width:44px;text-align:center;background:var(--card2);border:1px solid var(--line);border-radius:7px;padding:3px 2px}
+.stat b{display:block;font-size:9.5px;color:var(--dim);letter-spacing:.5px}
+.stat span{font-size:14px;font-weight:700}
+.prof-n{font-size:11.5px;color:var(--dim);margin:7px 0 3px}
+.inv{display:flex;align-items:center;gap:7px;margin-top:6px;font-size:12.5px}
+.inv b{color:var(--accent)}
+.wtbl{width:100%;border-collapse:collapse;font-size:12px}
+.wtbl th{font-size:9.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.4px;text-align:center;padding:2px 1px;font-weight:600}
+.wtbl th:first-child{text-align:left}
+.wtbl td{padding:3px 1px;text-align:center;border-top:1px solid var(--line)}
+.wtbl td:first-child{text-align:left;line-height:1.3}
+.wtbl .wn{font-weight:600}
+.wgrp{font-size:10.5px;color:var(--warn);padding:4px 0 1px;font-style:italic}
+.wab{margin-top:2px}
+.split-note{font-size:11px;color:var(--dim);font-style:italic;margin-top:4px}
+.leader-band{background:var(--accent2);color:#fff;font-size:10px;letter-spacing:.7px;text-transform:uppercase;padding:3px 11px;font-weight:700}
+.merged-sec{border-top:2px solid var(--accent2)}
+
+/* ---------- builder ---------- */
+.bnum{display:flex;align-items:center;gap:6px}
+.bnum button{width:28px;height:28px;border-radius:7px;background:var(--card2);border:1px solid var(--line);font-size:16px;line-height:1;padding:0}
+.bnum span{min-width:46px;text-align:center;font-size:13px}
+.ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px}
+.ctl label{font-size:11.5px;color:var(--dim);min-width:74px}
+.star{color:var(--warn)}
+.totals{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.totals .big{font-size:22px;font-weight:800;color:var(--accent)}
+.totals .big.over{color:var(--bad)}
+
+/* ---------- detachment cards ---------- */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.dcard{background:var(--card2);border:1px solid var(--line);border-radius:9px;overflow:hidden;text-align:left;padding:0;display:flex;flex-direction:column}
+.dcard .bar{height:4px;background:var(--dim)}
+.dcard .in{padding:7px 9px}
+.dcard .n{font-size:13px;font-weight:600;line-height:1.25}
+.dcard .m{font-size:11px;color:var(--dim);margin-top:3px}
+.dcard.on{border-color:var(--accent);background:var(--accent2)}
+.dcard.on .m{color:#dfeacd}
+.dcard.blocked{opacity:.38}
+.dp{font-weight:700}
+.dp.over{color:var(--bad)}
+
+/* ---------- enhancement overview ---------- */
+.egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.ecard{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:8px 9px;text-align:left;cursor:pointer}
+.ecard .n{font-size:13px;font-weight:600}
+.ecard .p{font-size:11px;color:var(--accent);font-weight:700}
+.ecard .g{font-size:10.5px;color:var(--dim);margin-top:3px}
+.ecard .s{font-size:11.5px;margin-top:4px;color:var(--dim)}
+.egroup{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);margin:10px 0 5px}
+.egroup:first-child{margin-top:0}
+
+/* ---------- stratagems ---------- */
+.chips{display:flex;gap:5px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12px;white-space:nowrap}
+.chip.on{background:var(--accent2);border-color:var(--accent)}
+.strat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
+.strat-hd{display:flex;gap:8px;align-items:flex-start;padding:8px 11px;background:var(--card2)}
+.strat-hd .n{flex:1;font-weight:600;font-size:14px}
+.strat-hd .n small{display:block;font-weight:400;font-size:11px;color:var(--dim);margin-top:2px}
+.cp{background:var(--accent2);border-radius:6px;padding:2px 7px;font-size:12px;font-weight:700;white-space:nowrap}
+.strat-bd{padding:9px 11px;font-size:13px}
+.strat-bd p{margin:0 0 6px}
+.strat-bd b{color:var(--accent)}
+
+/* ---------- points tab ---------- */
+.track{display:flex;align-items:center;gap:10px;padding:11px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:9px}
+.track .lbl{flex:1}
+.track .lbl b{display:block;font-size:14px}
+.track .lbl small{color:var(--dim);font-size:11px}
+.track .val{font-size:26px;font-weight:800;min-width:52px;text-align:center;color:var(--accent)}
+.track button{width:38px;height:38px;border-radius:9px;background:var(--card2);border:1px solid var(--line);font-size:20px;line-height:1;padding:0}
+
+/* ---------- modal / toast ---------- */
+#modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.65);display:none;align-items:flex-end;justify-content:center}
+#modal.on{display:flex}
+.mbox{background:var(--card);border:1px solid var(--line);border-radius:14px 14px 0 0;width:100%;max-width:640px;max-height:85vh;overflow:auto;padding:14px 15px calc(18px + env(safe-area-inset-bottom))}
+@media(min-width:640px){#modal{align-items:center}.mbox{border-radius:14px}}
+.mbox h3{margin:0;font-size:17px}
+.mbox .mtype{font-size:11.5px;color:var(--accent);text-transform:uppercase;letter-spacing:.6px;margin:3px 0 9px}
+.mbox .mbody{font-size:14px;line-height:1.55}
+.mbox .mbody p{margin:0 0 8px}
+.mclose{margin-top:14px;width:100%;padding:10px;border-radius:9px;background:var(--card2);border:1px solid var(--line)}
+.mwarn{margin-top:10px;font-size:11.5px;color:var(--warn);border-top:1px solid var(--line);padding-top:8px}
+#toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--card2);border:1px solid var(--accent);border-radius:9px;padding:9px 15px;font-size:13px;z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90vw;text-align:center}
+#toast.on{opacity:1}
+textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:8px;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace}
+.err{background:#3a1a1a;border:1px solid var(--bad);border-radius:9px;padding:11px;font-size:13px;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd-top">
+    <div class="hd-title">WAAAGH! <span>Army Builder</span></div>
+    <button class="hd-btn" id="btnDp" title="Detachment Points">DP <span id="dpChip">0/3</span></button>
+    <button class="hd-btn" id="btnMenu" title="Lists &amp; sharing">☰</button>
+    <button class="hd-btn" id="btnTheme" title="Toggle theme">◐</button>
+  </div>
+  <div class="ver" id="verLine"></div>
+  <nav>
+    <button data-tab="army">Army</button>
+    <button data-tab="builder" class="on">Builder</button>
+    <button data-tab="strats">Stratagems</button>
+    <button data-tab="points">Points</button>
+  </nav>
+</header>
+
+<main>
+  <div id="loadErr"></div>
+  <section class="view" id="view-army"></section>
+  <section class="view on" id="view-builder"></section>
+  <section class="view" id="view-strats"></section>
+  <section class="view" id="view-points"></section>
+</main>
+
+<div id="modal"><div class="mbox">
+  <h3 id="mTitle"></h3>
+  <div class="mtype" id="mType"></div>
+  <div class="mbody" id="mBody"></div>
+  <button class="mclose" id="mClose">Close</button>
+</div></div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+/* ==========================================================================
+   Ork Army Builder — Warhammer 40,000 11th edition
+   Built to NEW_ARMY_BUILD_GUIDE.md + DETACHMENT_POINTS_SPEC.md.
+   All rules content lives in data/*.json — never hard-code a rule here.
+   ========================================================================== */
+
+const EDITION = '11th Edition';
+const VERSION = '0.1.0';
+
+// Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
+// this number has changed between editions (guide §5.3).
+const MAX_ENHANCEMENTS = 3;
+const MAX_UPGRADE_COPIES = 3;
+
+const LS = {
+  army:'orks.army', dets:'orks.detachments', lists:'orks.lists', game:'orks.game',
+  theme:'orks.theme', limit:'orks.limit', name:'orks.listName', legacyDet:'orks.detachment'
+};
+
+/* ---------------------------------- data --------------------------------- */
+const DATA = {
+  abilities:{}, enhancements:{}, stratagems:{},
+  detachments:{}, detCategories:{}, dpBudget:3,
+  units:{}, unitOrder:[]
+};
+
+/* --------------------------------- state --------------------------------- */
+let armyList = [];              // instances, in list order
+let selectedDetachments = [];   // ARRAY of detachment ids (DP spec §2)
+let pointsLimit = 2000;
+let listName = 'Untitled list';
+let game = { cp:0, round:1, vpUs:0, vpThem:0, waaagh:false };
+let ui = { tab:'builder', detOpen:true, enhOpen:false, stratPhase:'all', stratTurn:'all' };
+
+/* -------------------------------- helpers -------------------------------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Math.random().toString(36).slice(2,10);
+const isMeta = k => k.charAt(0) === '_';
+
+function toast(msg){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove('on'), 2600);
+}
+
+function openModal(title, type, body, warn){
+  $('#mTitle').textContent = title;
+  $('#mType').textContent = type || '';
+  $('#mBody').innerHTML = body + (warn ? `<div class="mwarn">⚠ ${esc(warn)}</div>` : '');
+  $('#modal').classList.add('on');
+}
+$('#mClose').onclick = () => $('#modal').classList.remove('on');
+$('#modal').onclick = e => { if(e.target.id==='modal') $('#modal').classList.remove('on'); };
+
+/* ============================== DATA LOADING ============================== */
+async function getJSON(path){
+  const r = await fetch(path + '?v=' + VERSION, {cache:'no-cache'});
+  if(!r.ok) throw new Error(path + ' → HTTP ' + r.status);
+  return r.json();
+}
+function stripMeta(obj){
+  const out = {};
+  for(const k of Object.keys(obj||{})) if(!isMeta(k)) out[k] = obj[k];
+  return out;
+}
+
+async function loadData(){
+  const [ab, enh, str, det, manifest] = await Promise.all([
+    getJSON('data/abilities.json'),
+    getJSON('data/enhancements.json'),
+    getJSON('data/stratagems.json'),
+    getJSON('data/detachments.json'),
+    getJSON('data/units/index.json')
+  ]);
+  DATA.abilities    = stripMeta(ab);
+  DATA.enhancements = stripMeta(enh);
+  DATA.stratagems   = stripMeta(str);
+  DATA.detCategories= det.categories || {};
+  DATA.dpBudget     = det.budget ?? 3;
+  DATA.detachments  = stripMeta(det.detachments || {});
+  for(const [id,d] of Object.entries(DATA.detachments)) d.id = id;
+
+  const ids = (manifest.units || []).filter(x => typeof x === 'string' && !isMeta(x));
+  const units = await Promise.all(ids.map(async id => {
+    try { return await getJSON('data/units/' + id + '.json'); }
+    catch(e){ console.warn('unit failed:', id, e); return null; }
+  }));
+  units.forEach((u,i) => {
+    if(!u) return;
+    if(u.id !== ids[i]) console.warn(`unit id "${u.id}" != filename "${ids[i]}"`);
+    DATA.units[u.id] = u;
+    DATA.unitOrder.push(u.id);
+  });
+  DATA.unitOrder.sort((a,b)=> (DATA.units[a].name||'').localeCompare(DATA.units[b].name||''));
+}
+
+/* ============================ DETACHMENT POINTS =========================== */
+/* DETACHMENT_POINTS_SPEC.md §3 */
+const isDetachmentActive = id => selectedDetachments.includes(id);
+const dpSpent = () => selectedDetachments.reduce((s,id)=> s + (DATA.detachments[id]?.dp || 0), 0);
+const dpRemaining = () => DATA.dpBudget - dpSpent();
+
+function uniqueGroupTaken(group, exceptId){
+  if(!group) return false;
+  return selectedDetachments.some(id => id !== exceptId && DATA.detachments[id]?.unique === group);
+}
+function canAddDetachment(id){
+  const d = DATA.detachments[id];
+  if(!d || isDetachmentActive(id)) return false;
+  if((d.dp||0) > dpRemaining()) return false;
+  if(uniqueGroupTaken(d.unique)) return false;
+  return true;
+}
+function toggleDetachment(id){
+  const d = DATA.detachments[id];
+  if(!d) return;
+  if(isDetachmentActive(id)){
+    selectedDetachments = selectedDetachments.filter(x => x !== id);
+    clearOrphanedEnhancements();
+  } else {
+    if((d.dp||0) > dpRemaining()){
+      toast(`Not enough DP — ${d.name} costs ${d.dp}, ${dpRemaining()} left.`); return;
+    }
+    if(uniqueGroupTaken(d.unique)){
+      toast(`${d.name} can't be combined with another selected detachment.`); return;
+    }
+    selectedDetachments.push(id);
+  }
+  save(); renderAll();
+}
+// Content is available if it has no detachment requirement, or one of its
+// detachment(s) is active. Accepts a string OR an array (spec §7.2).
+function isContentDetachmentActive(item){
+  if(!item) return false;
+  if(!item.detachment) return true;
+  const dets = Array.isArray(item.detachment) ? item.detachment : [item.detachment];
+  return dets.some(isDetachmentActive);
+}
+function clearOrphanedEnhancements(){
+  armyList.forEach(inst => {
+    if(inst.enhancementId && !isContentDetachmentActive(DATA.enhancements[inst.enhancementId]))
+      inst.enhancementId = null;
+  });
+}
+function showDetachmentRules(){
+  const active = selectedDetachments.map(id => DATA.detachments[id]).filter(Boolean);
+  const body = active.length
+    ? active.map(d => `<p><strong>${esc(d.name)}</strong> <span class="muted">(${d.dp} DP · ${esc(d.category||'—')})</span><br>${d.ruleDescription || '<em>Rule to be added.</em>'}</p>`).join('')
+    : '<p class="muted">No detachments selected. Pick them on the Builder tab.</p>';
+  openModal('Detachment Rules', `${dpSpent()} / ${DATA.dpBudget} DP used`, body);
+}
+// A detachment rule that grants an ability to keyword-matched units (guide §5.8).
+// Table-driven: put `grants:[{keyword,abilityId}]` on the detachment in data.
+function getDetachmentGrantedAbilities(unit){
+  const out = [];
+  selectedDetachments.forEach(id => {
+    const d = DATA.detachments[id];
+    (d?.grants || []).forEach(g => {
+      if(g.keyword && !(unit.keywords||[]).includes(g.keyword)) return;
+      out.push({ id:g.abilityId, name: DATA.abilities[g.abilityId]?.name || g.abilityId, from:d.name });
+    });
+  });
+  return out;
+}
+
+/* ================================ COSTING ================================ */
+/* guide §5.1 */
+function unitCopyIndex(inst){
+  let n = 0;
+  for(const i of armyList){ if(i.unitId === inst.unitId){ n++; if(i.uid === inst.uid) return n; } }
+  return 1;
+}
+function sizeOptions(unit){
+  const t = unit.costing?.tiers?.[0];
+  if(t && t.length) return t.map(e => e.models);
+  return [unit.models ?? 1];
+}
+function tierFor(unit, copyIndex){
+  const c = unit.costing;
+  if(!c?.tiers?.length) return null;
+  const after = c.escalationAfter ?? Infinity;
+  if(copyIndex <= after) return c.tiers[0];
+  return c.tiers[Math.min(copyIndex - after, c.tiers.length - 1)];
+}
+function priceFor(unit, models, copyIndex){
+  const tier = tierFor(unit, copyIndex);
+  if(!tier) return unit.points || 0;
+  const exact = tier.find(e => e.models === models);
+  if(exact) return exact.points;
+  let best = tier[0];
+  for(const e of tier) if(e.models <= models) best = e;
+  return (best || tier[0]).points;
+}
+function isEscalated(unit, copyIndex){
+  const c = unit.costing;
+  return !!(c && c.escalationAfter != null && c.tiers?.length > 1 && copyIndex > c.escalationAfter);
+}
+function instancePoints(inst){
+  const u = DATA.units[inst.unitId];
+  if(!u) return 0;
+  let p = priceFor(u, inst.models, unitCopyIndex(inst));
+  const e = inst.enhancementId && DATA.enhancements[inst.enhancementId];
+  if(e) p += e.points || 0;
+  return p;
+}
+const armyPoints = () => armyList.reduce((s,i) => s + instancePoints(i), 0);
+
+/* ========================= ENHANCEMENTS & UPGRADES ======================== */
+/* guide §5.3 */
+function getEnhancementUsage(excludeUid){
+  const m = {};
+  armyList.forEach(i => {
+    if(i.uid === excludeUid || !i.enhancementId) return;
+    m[i.enhancementId] = (m[i.enhancementId] || 0) + 1;
+  });
+  return m;
+}
+// Cap count: every Enhancement counts; only the FIRST copy of each distinct Upgrade counts.
+function countArmyEnhancements(excludeUid, extraId){
+  const usage = getEnhancementUsage(excludeUid);
+  if(extraId) usage[extraId] = (usage[extraId] || 0) + 1;
+  let n = 0;
+  for(const [id,c] of Object.entries(usage)){
+    const e = DATA.enhancements[id];
+    if(!e) continue;
+    n += e.upgrade ? 1 : c;
+  }
+  return n;
+}
+function eligibleEnhancements(inst){
+  const u = DATA.units[inst.unitId];
+  if(!u || u.isEpicHero) return [];                       // Epic Heroes take neither
+  const isChar = (u.keywords||[]).includes('CHARACTER') || (u.type||[]).includes('Character');
+  const names = allWeaponNames(u);
+  return Object.entries(DATA.enhancements).filter(([id,e]) => {
+    if(!isContentDetachmentActive(e)) return false;
+    if(!e.upgrade && !isChar) return false;               // Enhancements: CHARACTER only
+    if(e.restrictedTo && !e.restrictedTo.includes(u.id)) return false;
+    if(e.restrictedToKeyword && !(u.keywords||[]).includes(e.restrictedToKeyword)) return false;
+    if(e.restrictedToWeapon && !names.includes(e.restrictedToWeapon)) return false;
+    return true;
+  }).map(([id,e]) => ({ id, ...e }));
+}
+// Why this enhancement can't be picked for this instance — or null if it can.
+function enhancementBlockReason(id, inst){
+  const e = DATA.enhancements[id];
+  if(!e) return 'Unknown';
+  const used = getEnhancementUsage(inst.uid)[id] || 0;
+  if(e.upgrade){ if(used >= MAX_UPGRADE_COPIES) return `max ${MAX_UPGRADE_COPIES}`; }
+  else if(used >= 1) return 'taken';
+  if(countArmyEnhancements(inst.uid, id) > MAX_ENHANCEMENTS) return 'cap';
+  return null;
+}
+
+/* ================================ WEAPONS ================================ */
+const weaponCount = (inst, w) => inst?.weaponCounts?.[w.name] ?? (w.count ?? 1);  // ?? not || (guide §9)
+
+function allWeaponNames(unit){
+  return ['ranged','melee'].flatMap(k => (unit.weapons?.[k] || []).map(w => w.name));
+}
+// Strip the profile suffix from a multi-profile weapon name: "Big Shoota – Focused" → "Big Shoota"
+function baseWeaponName(n){
+  return String(n).split(/\s+[–—-]\s+/)[0].replace(/\s*\([^)]*\)\s*$/,'').trim();
+}
+// ONE summariser, used by every summary path (guide §5.7).
+function summarizeWeaponEntries(unit, inst){
+  const out = [], seen = {};
+  ['ranged','melee'].forEach(k => (unit.weapons?.[k] || []).forEach(w => {
+    const c = weaponCount(inst, w);
+    if(!c) return;
+    const key = w.weaponGroup || w.name;
+    if(seen[key] != null){ out[seen[key]].count = Math.max(out[seen[key]].count, c); return; }
+    seen[key] = out.length;
+    out.push({ name: w.weaponGroup ? baseWeaponName(w.name) : w.name, count: c });
+  }));
+  return out;
+}
+const weaponSummaryText = (unit, inst) =>
+  summarizeWeaponEntries(unit, inst).map(w => (w.count > 1 ? w.count + '× ' : '') + w.name).join(', ');
+
+/* ================================ LEADERS ================================ */
+/* guide §5.4 — leaders keep their abilities when the bodyguard dies (11th ed) */
+const leaderInstOf = inst => armyList.find(x => x.uid === inst.leaderId) || null;
+const isAttachedLeader = inst => armyList.some(x => x.leaderId === inst.uid);
+function canLeadPair(leaderUnit, unit){
+  return (leaderUnit.canLead || []).includes(unit.id) || (unit.canBeLeadBy || []).includes(leaderUnit.id);
+}
+function availableLeadersFor(inst){
+  const u = DATA.units[inst.unitId];
+  if(!u || u.isLeader) return [];
+  return armyList.filter(l => {
+    const lu = DATA.units[l.unitId];
+    if(!lu?.isLeader) return false;
+    if(armyList.some(x => x.leaderId === l.uid && x.uid !== inst.uid)) return false;   // already attached
+    return canLeadPair(lu, u);
+  });
+}
+// Abilities a leader injects into its unit's weapon rows, as inherited badges.
+function inheritedAbilitiesFor(inst, weaponKind){
+  const l = leaderInstOf(inst);
+  const b = l && DATA.units[l.unitId]?.leaderBonus;
+  if(!b?.grantsAbilities?.length) return [];
+  if(b.appliesTo && b.appliesTo !== weaponKind) return [];
+  return b.grantsAbilities;
+}
+
+/* =============================== INSTANCES =============================== */
+function makeInstance(unitId){
+  const u = DATA.units[unitId];
+  return {
+    uid: uid(), unitId,
+    models: u ? (sizeOptions(u)[0] ?? u.models ?? 1) : 1,
+    leaderId: null, enhancementId: null,
+    wargear: {},        // wargearChoices id -> bool
+    exclusive: null,    // wargearExclusiveChoices pick
+    weaponCounts: {},   // weapon name -> count override
+    slots: {}           // guided-wargear decisions (guide §5.5c)
+  };
+}
+function addUnit(unitId){
+  if(!DATA.units[unitId]) return;
+  armyList.push(makeInstance(unitId));
+  save(); renderAll();
+}
+function removeInstance(uidToRemove){
+  armyList.forEach(i => { if(i.leaderId === uidToRemove) i.leaderId = null; });
+  armyList = armyList.filter(i => i.uid !== uidToRemove);
+  save(); renderAll();
+}
+function duplicateInstance(u){
+  const src = armyList.find(i => i.uid === u);
+  if(!src) return;
+  const copy = JSON.parse(JSON.stringify(src));
+  copy.uid = uid();
+  copy.leaderId = null;                    // a leader can only lead one unit
+  const enh = copy.enhancementId && DATA.enhancements[copy.enhancementId];
+  if(enh && enhancementBlockReason(copy.enhancementId, copy)) copy.enhancementId = null;
+  armyList.splice(armyList.indexOf(src) + 1, 0, copy);
+  save(); renderAll();
+}
+
+/* ============================== PERSISTENCE ============================== */
+/* guide §7 — localStorage, saved slots, share URL and text export must all
+   stay in sync whenever an instance field is added. */
+function save(){
+  try{
+    localStorage.setItem(LS.army, JSON.stringify(armyList));
+    localStorage.setItem(LS.dets, JSON.stringify(selectedDetachments));
+    localStorage.setItem(LS.game, JSON.stringify(game));
+    localStorage.setItem(LS.limit, String(pointsLimit));
+    localStorage.setItem(LS.name, listName);
+  }catch(e){ console.warn('save failed', e); }
+}
+function loadState(){
+  try{
+    const a = JSON.parse(localStorage.getItem(LS.army) || '[]');
+    if(Array.isArray(a)) armyList = a.filter(i => DATA.units[i.unitId]).map(normalizeInstance);
+  }catch{}
+  // detachments: array, migrating the legacy single-string key (spec §5)
+  try{
+    const arr = JSON.parse(localStorage.getItem(LS.dets));
+    if(Array.isArray(arr)) selectedDetachments = arr.filter(id => DATA.detachments[id]);
+    else throw 0;
+  }catch{
+    const old = localStorage.getItem(LS.legacyDet);
+    selectedDetachments = (old && DATA.detachments[old]) ? [old] : [];
+  }
+  try{ const g = JSON.parse(localStorage.getItem(LS.game)); if(g) game = {...game, ...g}; }catch{}
+  const lim = parseInt(localStorage.getItem(LS.limit), 10);
+  if(!isNaN(lim)) pointsLimit = lim;
+  listName = localStorage.getItem(LS.name) || listName;
+  const th = localStorage.getItem(LS.theme);
+  if(th) document.documentElement.setAttribute('data-theme', th);
+}
+// Accept older/partial instance shapes on load (guide §7).
+function normalizeInstance(i){
+  const u = DATA.units[i.unitId];
+  return {
+    uid: i.uid || uid(), unitId: i.unitId,
+    models: i.models ?? (u ? sizeOptions(u)[0] : 1),
+    leaderId: i.leaderId ?? null,
+    enhancementId: i.enhancementId ?? null,
+    wargear: i.wargear || {},
+    exclusive: i.exclusive ?? null,
+    weaponCounts: i.weaponCounts || {},
+    slots: i.slots || {}
+  };
+}
+
+/* ---- saved list slots ---- */
+const getLists = () => { try{ return JSON.parse(localStorage.getItem(LS.lists) || '[]'); }catch{ return []; } };
+const putLists = l => localStorage.setItem(LS.lists, JSON.stringify(l));
+function saveListSlot(name){
+  const lists = getLists();
+  const rec = { name, army: armyList, detachments: [...selectedDetachments], limit: pointsLimit, savedAt: Date.now() };
+  const i = lists.findIndex(x => x.name === name);
+  if(i >= 0) lists[i] = rec; else lists.push(rec);
+  putLists(lists); listName = name; save();
+  toast('Saved “' + name + '”');
+}
+function loadListSlot(name){
+  const rec = getLists().find(x => x.name === name);
+  if(!rec) return;
+  armyList = (rec.army || []).filter(i => DATA.units[i.unitId]).map(normalizeInstance);
+  selectedDetachments = Array.isArray(rec.detachments)
+    ? rec.detachments.filter(id => DATA.detachments[id])
+    : (rec.detachment && DATA.detachments[rec.detachment] ? [rec.detachment] : []);
+  pointsLimit = rec.limit ?? pointsLimit;
+  listName = rec.name;
+  clearOrphanedEnhancements();
+  save(); renderAll(); toast('Loaded “' + name + '”');
+}
+
+/* ---- share URL: pack → deflate → base64url in the hash ---- */
+function packList(){
+  const idx = {}; armyList.forEach((i,n) => idx[i.uid] = n);
+  return {
+    v:1, n:listName, l:pointsLimit, d:selectedDetachments,
+    a: armyList.map(i => {
+      const o = { u:i.unitId, m:i.models };
+      if(i.leaderId != null && idx[i.leaderId] != null) o.L = idx[i.leaderId];
+      if(i.enhancementId) o.e = i.enhancementId;
+      if(Object.keys(i.wargear||{}).length) o.w = i.wargear;
+      if(i.exclusive) o.x = i.exclusive;
+      if(Object.keys(i.weaponCounts||{}).length) o.c = i.weaponCounts;
+      if(Object.keys(i.slots||{}).length) o.s = i.slots;
+      return o;
+    })
+  };
+}
+function unpackList(p){
+  if(!p || !Array.isArray(p.a)) return false;
+  listName = p.n || listName;
+  if(p.l) pointsLimit = p.l;
+  selectedDetachments = Array.isArray(p.d) ? p.d.filter(id => DATA.detachments[id])
+                      : (DATA.detachments[p.d] ? [p.d] : []);      // legacy single string
+  armyList = p.a.filter(o => DATA.units[o.u]).map(o => ({
+    uid: uid(), unitId:o.u, models:o.m, leaderId:null,
+    enhancementId:o.e || null, wargear:o.w || {}, exclusive:o.x || null,
+    weaponCounts:o.c || {}, slots:o.s || {}
+  }));
+  p.a.forEach((o,n) => { if(o.L != null && armyList[n] && armyList[o.L]) armyList[n].leaderId = armyList[o.L].uid; });
+  clearOrphanedEnhancements();
+  return true;
+}
+const b64u  = b => btoa(String.fromCharCode(...b)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const unb64u= s => Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')), c => c.charCodeAt(0));
+
+async function encodeShare(){
+  const json = JSON.stringify(packList());
+  if(window.CompressionStream){
+    try{
+      const cs = new CompressionStream('deflate-raw');
+      const w = cs.writable.getWriter();
+      w.write(new TextEncoder().encode(json)); w.close();
+      return 'z' + b64u(new Uint8Array(await new Response(cs.readable).arrayBuffer()));
+    }catch(e){ /* fall through */ }
+  }
+  return 'p' + b64u(new TextEncoder().encode(json));
+}
+async function decodeShare(str){
+  const mode = str[0], body = unb64u(str.slice(1));
+  if(mode === 'z'){
+    const ds = new DecompressionStream('deflate-raw');
+    const w = ds.writable.getWriter(); w.write(body); w.close();
+    return JSON.parse(new TextDecoder().decode(await new Response(ds.readable).arrayBuffer()));
+  }
+  return JSON.parse(new TextDecoder().decode(body));
+}
+async function shareLink(){
+  const code = await encodeShare();
+  const url = location.origin + location.pathname + '#l=' + code;
+  try{ await navigator.clipboard.writeText(url); toast('Share link copied'); }
+  catch{ openModal('Share link','Copy this URL', `<textarea class="exp" readonly>${esc(url)}</textarea>`); }
+}
+async function readShareFromHash(){
+  const m = location.hash.match(/#l=(.+)$/);
+  if(!m) return false;
+  try{
+    const ok = unpackList(await decodeShare(m[1]));
+    if(ok){ history.replaceState(null,'',location.pathname); save(); toast('List loaded from link'); }
+    return ok;
+  }catch(e){ console.warn('bad share link', e); toast('Share link could not be read'); return false; }
+}
+
+/* ---- plain-text export ---- */
+function exportText(){
+  const lines = [];
+  lines.push(listName);
+  lines.push(`${armyPoints()} / ${pointsLimit} pts · ${EDITION}`);
+  const dets = selectedDetachments.map(id => `${DATA.detachments[id].name} (${DATA.detachments[id].dp} DP)`);
+  lines.push(`Detachments (${dpSpent()}/${DATA.dpBudget} DP): ` + (dets.join(', ') || 'none'));
+  lines.push('');
+  armyList.forEach(i => {
+    const u = DATA.units[i.unitId]; if(!u) return;
+    const ci = unitCopyIndex(i);
+    lines.push(`${u.name}${i.models > 1 ? ' ×' + i.models : ''} — ${priceFor(u, i.models, ci)} pts${isEscalated(u,ci) ? ' (escalated)' : ''}`);
+    const l = leaderInstOf(i);
+    if(l) lines.push(`  Led by: ${DATA.units[l.unitId].name}`);
+    if(i.enhancementId && DATA.enhancements[i.enhancementId]){
+      const e = DATA.enhancements[i.enhancementId];
+      lines.push(`  ${e.upgrade ? 'Upgrade' : 'Enhancement'}: ${e.name} (+${e.points||0} pts)`);
+    }
+    const ws = weaponSummaryText(u, i);
+    if(ws) lines.push('  ' + ws);
+  });
+  return lines.join('\n');
+}
+
+/* ================================ RENDER ================================= */
+function renderAll(){
+  $('#verLine').textContent = `${EDITION} — Version ${VERSION} · ${listName}`;
+  $('#dpChip').textContent = `${dpSpent()}/${DATA.dpBudget}`;
+  $('#btnDp').style.display = (ui.tab === 'builder' || ui.tab === 'strats') ? '' : 'none';
+  renderArmy(); renderBuilder(); renderStrats(); renderPoints();
+}
+
+/* --------------------------- shared card pieces --------------------------- */
+function abilityPill(id, cls, label){
+  const a = DATA.abilities[id];
+  const name = label || (a ? a.name : id);
+  return `<span class="pill tap ${cls||''}" data-ab="${esc(id)}">${esc(name)}</span>`;
+}
+function statBlock(stats){
+  const keys = [['m','M'],['t','T'],['sv','SV'],['w','W'],['ld','LD'],['oc','OC']];
+  return `<div class="statline">${keys.map(([k,l]) =>
+    `<div class="stat"><b>${l}</b><span>${esc(stats?.[k] ?? '–')}</span></div>`).join('')}</div>`;
+}
+function weaponRows(unit, inst, kind){
+  const list = (unit.weapons?.[kind] || []).filter(w => weaponCount(inst, w) > 0);
+  if(!list.length) return '';
+  const inherited = inheritedAbilitiesFor(inst, kind);
+  const ranged = kind === 'ranged';
+  const head = ranged ? ['Range','A','BS','S','AP','D'] : ['','A','WS','S','AP','D'];
+  let html = `<div class="sec"><div class="sec-t">${ranged?'Ranged':'Melee'} weapons</div>
+    <table class="wtbl"><tr><th>Weapon</th>${head.map(h=>`<th>${h}</th>`).join('')}</tr>`;
+  let lastGroup = null;
+  list.forEach(w => {
+    if(w.weaponGroup && w.weaponGroup !== lastGroup){
+      html += `<tr><td colspan="7" class="wgrp">${esc(w.weaponGroupLabel || 'Choose one profile')}</td></tr>`;
+      lastGroup = w.weaponGroup;
+    }
+    if(!w.weaponGroup) lastGroup = null;
+    const n = weaponCount(inst, w);
+    const abs = (w.abilities || []).map(a =>
+      typeof a === 'string' ? abilityPill(a) : abilityPill(a.id, '', a.display));
+    const inh = inherited.map(id => abilityPill(id, 'inh'));
+    const all = abs.concat(inh);
+    html += `<tr>
+      <td><span class="wn">${n>1?n+'× ':''}${esc(w.name)}</span>${all.length?`<div class="wab">${all.join('')}</div>`:''}</td>
+      <td>${esc(ranged ? (w.range||'–') : '')}</td><td>${esc(w.a??'–')}</td>
+      <td>${esc((ranged ? w.bs : w.ws) ?? '–')}</td><td>${esc(w.s??'–')}</td>
+      <td>${esc(w.ap??'–')}</td><td>${esc(w.d??'–')}</td></tr>`;
+  });
+  return html + '</table></div>';
+}
+function unitBody(unit, inst){
+  let h = '';
+  if(unit.modelProfiles?.length){
+    h += unit.modelProfiles.map(p =>
+      `<div class="prof-n">${esc(p.name)}${p.count?` ×${p.count}`:''}</div>${statBlock(p.stats)}`).join('');
+  } else if(unit.stats){
+    h += statBlock(unit.stats);
+  }
+  if(unit.invulnerableSave){
+    h += `<div class="inv">🛡 <b>Invulnerable save ${esc(unit.invulnerableSave)}</b>` +
+         (unit.invulnerableSource ? ` ${abilityPill(unit.invulnerableSource)}` : '') + `</div>`;
+  }
+  const granted = getDetachmentGrantedAbilities(unit);
+  if(granted.length){
+    h += `<div class="inv">✦ ${granted.map(g => abilityPill(g.id, 'grant', g.name)).join('')}</div>`;
+  }
+  if(unit.transportCapacity) h += `<div class="inv">🚚 Transport capacity ${esc(unit.transportCapacity)}</div>`;
+  h += weaponRows(unit, inst, 'ranged');
+  h += weaponRows(unit, inst, 'melee');
+
+  const core = (unit.coreAbilities || []).map(id => abilityPill(id, 'core'));
+  const abil = (unit.abilities || []).map(id => abilityPill(id));
+  const wg   = (unit.wargear || []).map(id => abilityPill(id));
+  if(inst?.exclusive) wg.push(abilityPill(inst.exclusive));
+  Object.entries(inst?.wargear || {}).forEach(([id,on]) => { if(on) wg.push(abilityPill(id)); });
+  if(core.length || abil.length) h += `<div class="sec"><div class="sec-t">Abilities</div>${core.join('')}${abil.join('')}</div>`;
+  if(wg.length) h += `<div class="sec"><div class="sec-t">Wargear</div>${wg.join('')}</div>`;
+
+  const enh = inst?.enhancementId && DATA.enhancements[inst.enhancementId];
+  if(enh){
+    h += `<div class="sec"><div class="sec-t">${enh.upgrade?'Upgrade':'Enhancement'}</div>
+      <span class="pill tap" data-enh="${esc(inst.enhancementId)}">★ ${esc(enh.name)} (${enh.points||0} pts)</span>
+      ${(enh.grantsAbilities||[]).map(id => abilityPill(id,'grant')).join('')}</div>`;
+  }
+  if(unit.keywords?.length){
+    h += `<div class="sec"><div class="sec-t">Keywords</div>${unit.keywords.map(k =>
+      `<span class="pill kw">${esc(k)}</span>`).join('')}</div>`;
+  }
+  return h;
+}
+
+/* --------------------------------- ARMY --------------------------------- */
+// Duplicate handling (guide §6): identical configs converge into one card;
+// same-datasheet units with different configs get a short diff label.
+function instanceSignature(i){
+  return JSON.stringify([i.unitId, i.models, i.enhancementId,
+    leaderInstOf(i)?.unitId || null, i.exclusive, i.wargear, i.weaponCounts, i.slots]);
+}
+function diffLabel(i){
+  const u = DATA.units[i.unitId], bits = [];
+  if(sizeOptions(u).length > 1) bits.push(i.models + ' models');
+  const e = i.enhancementId && DATA.enhancements[i.enhancementId];
+  if(e) bits.push(e.name);
+  const l = leaderInstOf(i);
+  if(l) bits.push('led by ' + DATA.units[l.unitId].name);
+  if(i.exclusive && DATA.abilities[i.exclusive]) bits.push(DATA.abilities[i.exclusive].name);
+  return bits.join(' · ');
+}
+function renderArmy(){
+  const el = $('#view-army');
+  if(!armyList.length){
+    el.innerHTML = `<div class="empty">No units in the list.<br>Add some on the <strong>Builder</strong> tab.</div>`;
+    return;
+  }
+  // leaders that are attached render inside their bodyguard's merged card
+  const shown = armyList.filter(i => !isAttachedLeader(i));
+  const groups = [];
+  const bySig = {};
+  shown.forEach(i => {
+    const s = instanceSignature(i);
+    if(bySig[s] != null){ groups[bySig[s]].n++; return; }
+    bySig[s] = groups.length;
+    groups.push({ inst:i, n:1 });
+  });
+  const multiConfig = {};
+  shown.forEach(i => { multiConfig[i.unitId] = (multiConfig[i.unitId] || 0) + 1; });
+
+  el.innerHTML = groups.map(g => {
+    const i = g.inst, u = DATA.units[i.unitId];
+    const l = leaderInstOf(i), lu = l && DATA.units[l.unitId];
+    const label = multiConfig[i.unitId] > 1 ? diffLabel(i) : '';
+    const ci = unitCopyIndex(i);
+    // An Attached unit is one card, so it shows one combined cost (guide §5.1).
+    const pts = instancePoints(i) + (l ? instancePoints(l) : 0);
+    const sub = [u.modelBreakdown || (i.models > 1 ? i.models + ' models' : ''), label,
+                 l ? `${instancePoints(i)} + ${instancePoints(l)} pts` : ''].filter(Boolean).join(' · ');
+    return `<div class="unit">
+      <div class="unit-hd">
+        <h3>${esc(u.name)}${g.n>1?` <span class="muted">×${g.n}</span>`:''}
+          <span class="sub">${esc(sub)}</span></h3>
+        <span class="pts">${pts}${isEscalated(u,ci)?' <span class="esc" title="Escalated cost — copy #'+ci+'">↑</span>':''}</span>
+      </div>
+      ${lu ? `<div class="leader-band">Leader — ${esc(lu.name)}</div><div class="unit-bd">${unitBody(lu, l)}</div>
+              <div class="leader-band merged-sec">Unit — ${esc(u.name)}</div>` : ''}
+      <div class="unit-bd">${unitBody(u, i)}</div>
+    </div>`;
+  }).join('');
+}
+
+/* -------------------------------- BUILDER -------------------------------- */
+function panel(id, title, summary, bodyHtml, open){
+  return `<div class="panel ${open?'open':''}" id="${id}">
+    <div class="panel-hd" data-panel="${id}">
+      <h2>${esc(title)}</h2><div class="sum">${summary}</div><div class="chev">${open?'▲':'▼'}</div>
+    </div>
+    <div class="panel-bd">${bodyHtml}</div></div>`;
+}
+function detachmentPanel(){
+  const ids = Object.keys(DATA.detachments).sort((a,b) =>
+    (DATA.detachments[a].name||'').localeCompare(DATA.detachments[b].name||''));
+  const body = ids.length ? `
+    <div class="row" style="margin-bottom:9px">
+      <span class="dp ${dpSpent()>DATA.dpBudget?'over':''}">${dpSpent()} / ${DATA.dpBudget} DP</span>
+      <span class="grow"></span>
+      <button class="btn mini" id="btnRules">Detachment rules</button>
+    </div>
+    <div class="dgrid">${ids.map(id => {
+      const d = DATA.detachments[id], on = isDetachmentActive(id);
+      const blocked = !on && !canAddDetachment(id);
+      const colour = DATA.detCategories[d.category] || 'var(--dim)';
+      return `<button class="dcard ${on?'on':''} ${blocked?'blocked':''}" data-det="${esc(id)}" ${blocked?'disabled':''}>
+        <div class="bar" style="background:${esc(colour)}"></div>
+        <div class="in"><div class="n">${esc(d.name)}</div>
+        <div class="m">${on?'✓ ':''}${d.dp} DP · ${esc(d.category||'—')}${d.unique?`<br>Unique: ${esc(d.unique)}`:''}</div></div>
+      </button>`;
+    }).join('')}</div>`
+    : `<div class="empty">No detachments yet.<br>Add them to <code>data/detachments.json</code>.</div>`;
+  const sum = selectedDetachments.length
+    ? esc(selectedDetachments.map(id => DATA.detachments[id].name).join(', '))
+    : '<span class="muted">none selected</span>';
+  return panel('pDet', 'Detachments', sum, body, ui.detOpen);
+}
+function enhancementOverview(){
+  const all = Object.entries(DATA.enhancements).filter(([,e]) => isContentDetachmentActive(e));
+  const byDet = {};
+  all.forEach(([id,e]) => {
+    const keys = !e.detachment ? ['Universal'] : (Array.isArray(e.detachment)?e.detachment:[e.detachment])
+      .filter(isDetachmentActive).map(d => DATA.detachments[d]?.name || d);
+    (keys.length?keys:['Universal']).forEach(k => (byDet[k] = byDet[k] || []).push({id, ...e}));
+  });
+  const body = all.length ? Object.entries(byDet).map(([grp, list]) => `
+      <div class="egroup">${esc(grp)}</div>
+      <div class="egrid">${list.map(e => `
+        <div class="ecard" data-enh="${esc(e.id)}">
+          <div class="row" style="gap:5px"><span class="n grow">${esc(e.name)}</span><span class="p">${e.points||0}</span></div>
+          ${e.upgrade?'<span class="tag up">Upgrade</span>':''}
+          <div class="g">Goes on: ${esc(e.restriction || (e.upgrade?'any non-Epic-Hero unit':'CHARACTER model'))}</div>
+          <div class="s">${esc(e.short || '')}</div>
+        </div>`).join('')}</div>`).join('')
+    : `<div class="empty">No enhancements available.<br>${Object.keys(DATA.enhancements).length
+        ? 'Select a detachment to see its enhancements.'
+        : 'Add them to <code>data/enhancements.json</code>.'}</div>`;
+  const used = countArmyEnhancements();
+  return panel('pEnh', 'Available enhancements',
+    `<span class="tag">${used}/${MAX_ENHANCEMENTS} used</span>`, body, ui.enhOpen);
+}
+function addUnitControl(){
+  if(!DATA.unitOrder.length){
+    return `<div class="empty">No datasheets loaded yet.<br>
+      Add unit files to <code>data/units/</code> and list their ids in <code>data/units/index.json</code>.</div>`;
+  }
+  const groups = { 'Characters':[], 'Battleline':[], 'Other':[] };
+  DATA.unitOrder.forEach(id => {
+    const u = DATA.units[id];
+    const g = u.isLeader || u.isEpicHero || (u.keywords||[]).includes('CHARACTER') ? 'Characters'
+            : u.isBattleline ? 'Battleline' : 'Other';
+    groups[g].push(u);
+  });
+  return `<div class="row">
+    <select class="sel grow" id="addSel">
+      <option value="">+ Add a unit…</option>
+      ${Object.entries(groups).filter(([,l]) => l.length).map(([g,l]) =>
+        `<optgroup label="${esc(g)}">${l.map(u =>
+          `<option value="${esc(u.id)}">${esc(u.name)} — ${priceFor(u, sizeOptions(u)[0], 1)} pts</option>`).join('')}</optgroup>`).join('')}
+    </select></div>`;
+}
+function builderCard(inst){
+  const u = DATA.units[inst.unitId];
+  if(!u) return '';
+  const ci = unitCopyIndex(inst);
+  const sizes = sizeOptions(u);
+  const enh = inst.enhancementId && DATA.enhancements[inst.enhancementId];
+  const elig = eligibleEnhancements(inst);
+  const leaders = availableLeadersFor(inst);
+  const summary = weaponSummaryText(u, inst);
+
+  let h = `<div class="unit"><div class="unit-hd">
+    <h3>${enh?'<span class="star">★</span> ':''}${esc(u.name)}
+      <span class="sub">${esc(u.modelBreakdown||'')}${summary?(u.modelBreakdown?' · ':'')+esc(summary):''}</span></h3>
+    <span class="pts">${instancePoints(inst)}${isEscalated(u,ci)?` <span class="esc" title="Copy #${ci} — escalated cost">↑</span>`:''}</span>
+  </div><div class="unit-bd">`;
+
+  if(sizes.length > 1){
+    h += `<div class="ctl"><label>Models</label><div class="bnum">
+      <button data-size="${inst.uid}:-1">−</button><span>${inst.models}</span><button data-size="${inst.uid}:1">+</button>
+    </div><span class="muted" style="font-size:11.5px">${sizes.join(' / ')}</span></div>`;
+  }
+  if(u.wargearExclusiveChoices?.length){
+    h += `<div class="ctl"><label>Choose one</label><select class="sel grow" data-excl="${inst.uid}">
+      <option value="">— none —</option>
+      ${u.wargearExclusiveChoices.map(id => `<option value="${esc(id)}" ${inst.exclusive===id?'selected':''}>${esc(DATA.abilities[id]?.name || id)}</option>`).join('')}
+    </select></div>`;
+  }
+  if(u.wargearChoices?.length){
+    h += `<div class="ctl"><label>Wargear</label><div class="grow">${u.wargearChoices.map(id =>
+      `<label class="pill" style="cursor:pointer"><input type="checkbox" data-wg="${inst.uid}:${esc(id)}" ${inst.wargear[id]?'checked':''}> ${esc(DATA.abilities[id]?.name || id)}</label>`).join('')}</div></div>`;
+  }
+  if(!u.fixedWeapons){
+    const opts = ['ranged','melee'].flatMap(k => (u.weapons?.[k]||[]).map(w => ({...w, kind:k})))
+      .filter(w => (w.count ?? 1) === 0 || inst.weaponCounts[w.name] != null);
+    if(opts.length){
+      h += `<div class="ctl"><label>Options</label><div class="grow">${opts.map(w =>
+        `<label class="pill" style="cursor:pointer"><input type="checkbox" data-wpn="${inst.uid}:${esc(w.name)}" ${weaponCount(inst,w)>0?'checked':''}> ${esc(w.name)}</label>`).join('')}</div></div>`;
+    }
+  }
+  if(leaders.length){
+    h += `<div class="ctl"><label>Led by</label><select class="sel grow" data-leader="${inst.uid}">
+      <option value="">— no leader —</option>
+      ${leaders.map(l => `<option value="${esc(l.uid)}" ${inst.leaderId===l.uid?'selected':''}>${esc(DATA.units[l.unitId].name)}</option>`).join('')}
+    </select></div>`;
+  }
+  if(elig.length){
+    h += `<div class="ctl"><label>Enhancement</label><select class="sel grow" data-enhsel="${inst.uid}">
+      <option value="">— none —</option>
+      ${elig.map(e => {
+        const block = inst.enhancementId === e.id ? null : enhancementBlockReason(e.id, inst);
+        return `<option value="${esc(e.id)}" ${inst.enhancementId===e.id?'selected':''} ${block?'disabled':''}>${esc(e.name)} (+${e.points||0})${e.upgrade?' [Upgrade]':''}${block?' — '+block:''}</option>`;
+      }).join('')}
+    </select></div>`;
+  }
+  h += `<div class="ctl"><span class="grow"></span>
+    <button class="btn mini" data-dup="${inst.uid}">Duplicate</button>
+    <button class="btn mini danger" data-del="${inst.uid}">Remove</button></div>`;
+  return h + '</div></div>';
+}
+function renderBuilder(){
+  const total = armyPoints(), over = total > pointsLimit;
+  $('#view-builder').innerHTML = `
+    <div class="panel open"><div class="panel-bd">
+      <div class="totals">
+        <span class="big ${over?'over':''}">${total}</span>
+        <span class="muted">/</span>
+        <input class="sel" id="limitIn" type="number" min="0" step="5" value="${pointsLimit}" style="width:86px">
+        <span class="muted">pts</span><span class="grow"></span>
+        <span class="muted" style="font-size:12px">${armyList.length} unit${armyList.length===1?'':'s'}</span>
+      </div>
+    </div></div>
+    ${detachmentPanel()}
+    ${enhancementOverview()}
+    <div class="panel open"><div class="panel-bd">${addUnitControl()}</div></div>
+    ${armyList.length ? armyList.map(builderCard).join('')
+      : `<div class="empty">Your list is empty.</div>`}`;
+}
+
+/* ------------------------------- STRATAGEMS ------------------------------- */
+const PHASES = ['command','movement','shooting','charge','fight'];
+function renderStrats(){
+  const all = Object.entries(DATA.stratagems).map(([id,s]) => ({id, ...s}))
+    .filter(s => !s.detachment || isContentDetachmentActive(s));
+  const shown = all.filter(s =>
+    (ui.stratPhase === 'all' || (s.phases||[]).includes(ui.stratPhase)) &&
+    (ui.stratTurn === 'all' || !s.turn || s.turn === 'either' || s.turn === ui.stratTurn));
+
+  const groups = {};
+  shown.forEach(s => {
+    const key = !s.detachment ? 'Core'
+      : (Array.isArray(s.detachment) ? s.detachment : [s.detachment])
+          .filter(isDetachmentActive).map(d => DATA.detachments[d]?.name || d).join(' / ') || 'Core';
+    (groups[key] = groups[key] || []).push(s);
+  });
+
+  $('#view-strats').innerHTML = `
+    <div class="chips">
+      <button class="chip ${ui.stratPhase==='all'?'on':''}" data-phase="all">All phases</button>
+      ${PHASES.map(p => `<button class="chip ${ui.stratPhase===p?'on':''}" data-phase="${p}">${p[0].toUpperCase()+p.slice(1)}</button>`).join('')}
+    </div>
+    <div class="chips">
+      ${[['all','Any turn'],['your','Your turn'],['opponent',"Opponent's turn"]].map(([v,l]) =>
+        `<button class="chip ${ui.stratTurn===v?'on':''}" data-turn="${v}">${l}</button>`).join('')}
+    </div>
+    ${Object.keys(groups).length ? Object.entries(groups).map(([g,list]) => `
+      <div class="egroup">${esc(g)}</div>
+      ${list.map(s => `<div class="strat">
+        <div class="strat-hd"><div class="n">${esc(s.name)}<small>${esc(s.type||'')}</small></div>
+          <span class="cp">${s.cpCost ?? 0} CP</span></div>
+        <div class="strat-bd">
+          ${s.summary?`<p class="muted">${esc(s.summary)}</p>`:''}
+          ${s.when?`<p><b>WHEN:</b> ${s.when}</p>`:''}
+          ${s.target?`<p><b>TARGET:</b> ${s.target}</p>`:''}
+          ${s.effect?`<p><b>EFFECT:</b> ${s.effect}</p>`:''}
+          ${s.restrictions?`<p><b>RESTRICTIONS:</b> ${s.restrictions}</p>`:''}
+        </div></div>`).join('')}`).join('')
+    : `<div class="empty">${Object.keys(DATA.stratagems).length
+        ? 'No stratagems match this filter.'
+        : 'No stratagems loaded.<br>Add them to <code>data/stratagems.json</code>.'}</div>`}`;
+}
+
+/* --------------------------------- POINTS --------------------------------- */
+function renderPoints(){
+  const t = (key,label,sub,val,extra='') => `<div class="track">
+    <div class="lbl"><b>${label}</b><small>${sub}</small></div>
+    <button data-g="${key}:-1">−</button><div class="val">${val}</div><button data-g="${key}:1">+</button>${extra}</div>`;
+  $('#view-points').innerHTML =
+    t('cp','Command Points','Spent on stratagems', game.cp) +
+    t('round','Battle round','1–5', game.round) +
+    t('vpUs','Your VP','Victory points scored', game.vpUs) +
+    t('vpThem','Opponent VP','Victory points scored', game.vpThem) +
+    `<div class="track"><div class="lbl"><b>WAAAGH!</b><small>Once per battle</small></div>
+      <button class="btn ${game.waaagh?'pri':''}" id="btnWaaagh" style="width:auto;padding:8px 14px;font-size:14px">${game.waaagh?'CALLED':'Call it'}</button></div>
+    <div class="panel open"><div class="panel-bd row">
+      <span class="muted grow" style="font-size:12px">${armyPoints()} / ${pointsLimit} pts · ${dpSpent()}/${DATA.dpBudget} DP</span>
+      <button class="btn mini" id="btnResetGame">Reset game state</button>
+    </div></div>`;
+}
+
+/* ================================ EVENTS ================================= */
+document.addEventListener('click', e => {
+  const el = t => e.target.closest(t);
+
+  // tabs
+  const tab = el('nav button');
+  if(tab){
+    ui.tab = tab.dataset.tab;
+    document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b === tab));
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'view-' + ui.tab));
+    $('#btnDp').style.display = (ui.tab === 'builder' || ui.tab === 'strats') ? '' : 'none';
+    return;
+  }
+  // collapsible panels
+  const ph = el('.panel-hd');
+  if(ph){
+    const id = ph.dataset.panel;
+    if(id === 'pDet') ui.detOpen = !ui.detOpen;
+    if(id === 'pEnh') ui.enhOpen = !ui.enhOpen;
+    renderBuilder(); return;
+  }
+  // ability / enhancement popups
+  const ab = el('[data-ab]');
+  if(ab){
+    const a = DATA.abilities[ab.dataset.ab];
+    if(a) openModal(a.name, a.type || '', a.description || '<em>Rule to be added.</em>',
+      a.needsVerification ? 'Seeded text — not yet verified against your 11th-ed source.' : null);
+    else openModal(ab.dataset.ab, 'Unknown ability', '<em>Not found in data/abilities.json.</em>');
+    return;
+  }
+  const en = el('[data-enh]');
+  if(en){
+    const x = DATA.enhancements[en.dataset.enh];
+    if(x) openModal(x.name, x.type || (x.upgrade?'Upgrade':'Enhancement'),
+      `<p class="muted">Goes on: ${esc(x.restriction || (x.upgrade?'any non-Epic-Hero unit':'CHARACTER model'))} · ${x.points||0} pts</p>` +
+      (x.description || '<em>Rule to be added.</em>'));
+    return;
+  }
+  // detachments
+  const dc = el('[data-det]');
+  if(dc){ toggleDetachment(dc.dataset.det); return; }
+  if(el('#btnRules')){ showDetachmentRules(); return; }
+  if(el('#btnDp')){ ui.detOpen = true; renderBuilder(); showDetachmentRules(); return; }
+
+  // builder controls
+  const sz = el('[data-size]');
+  if(sz){
+    const [u,dir] = sz.dataset.size.split(':');
+    const inst = armyList.find(i => i.uid === u), unit = DATA.units[inst.unitId];
+    const sizes = sizeOptions(unit), at = sizes.indexOf(inst.models);
+    const next = sizes[Math.min(Math.max((at < 0 ? 0 : at) + (+dir), 0), sizes.length - 1)];
+    if(next != null && next !== inst.models){ inst.models = next; save(); renderAll(); }
+    return;
+  }
+  const dup = el('[data-dup]'); if(dup){ duplicateInstance(dup.dataset.dup); return; }
+  const del = el('[data-del]'); if(del){ removeInstance(del.dataset.del); return; }
+
+  // stratagem filters
+  const ch = el('[data-phase]'); if(ch){ ui.stratPhase = ch.dataset.phase; renderStrats(); return; }
+  const ct = el('[data-turn]');  if(ct){ ui.stratTurn  = ct.dataset.turn;  renderStrats(); return; }
+
+  // game trackers
+  const g = el('[data-g]');
+  if(g){
+    const [k,d] = g.dataset.g.split(':');
+    game[k] = Math.max(0, (game[k]||0) + (+d));
+    if(k === 'round') game[k] = Math.min(5, Math.max(1, game[k]));
+    save(); renderPoints(); return;
+  }
+  if(el('#btnWaaagh')){ game.waaagh = !game.waaagh; save(); renderPoints(); return; }
+  if(el('#btnResetGame')){ game = {cp:0, round:1, vpUs:0, vpThem:0, waaagh:false}; save(); renderPoints(); return; }
+
+  // header
+  if(el('#btnTheme')){
+    const cur = document.documentElement.getAttribute('data-theme') === 'light' ? '' : 'light';
+    if(cur) document.documentElement.setAttribute('data-theme','light');
+    else document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem(LS.theme, cur); return;
+  }
+  if(el('#btnMenu')){ showMenu(); return; }
+});
+
+document.addEventListener('change', e => {
+  const t = e.target;
+  const find = u => armyList.find(i => i.uid === u);
+
+  if(t.id === 'addSel' && t.value){ addUnit(t.value); return; }
+  if(t.id === 'limitIn'){ pointsLimit = parseInt(t.value,10) || 0; save(); renderBuilder(); return; }
+
+  if(t.dataset.excl){ const i = find(t.dataset.excl); i.exclusive = t.value || null; save(); renderAll(); return; }
+  if(t.dataset.leader){ const i = find(t.dataset.leader); i.leaderId = t.value || null; save(); renderAll(); return; }
+  if(t.dataset.enhsel){
+    const i = find(t.dataset.enhsel);
+    i.enhancementId = t.value || null;
+    save(); renderAll(); return;
+  }
+  if(t.dataset.wg){
+    const [u,id] = t.dataset.wg.split(':');
+    const i = find(u); i.wargear[id] = t.checked; save(); renderAll(); return;
+  }
+  if(t.dataset.wpn){
+    const idx = t.dataset.wpn.indexOf(':');
+    const u = t.dataset.wpn.slice(0, idx), name = t.dataset.wpn.slice(idx+1);
+    const i = find(u), unit = DATA.units[i.unitId];
+    const w = ['ranged','melee'].flatMap(k => unit.weapons?.[k]||[]).find(x => x.name === name);
+    i.weaponCounts[name] = t.checked ? Math.max(1, w?.count ?? 1) : 0;
+    save(); renderAll(); return;
+  }
+});
+
+/* --------------------------------- menu --------------------------------- */
+function showMenu(){
+  const lists = getLists();
+  openModal('Lists & sharing', listName, `
+    <p><button class="btn" id="mSave">Save list…</button>
+       <button class="btn" id="mShare">Share link</button>
+       <button class="btn" id="mExport">Text export</button></p>
+    <p><button class="btn danger" id="mClear">Clear army list</button></p>
+    <div class="sec-t" style="margin-top:12px">Saved lists</div>
+    ${lists.length ? lists.map(l => `<p class="row">
+      <span class="grow">${esc(l.name)} <span class="muted" style="font-size:12px">· ${(l.army||[]).length} units</span></span>
+      <button class="btn mini" data-loadlist="${esc(l.name)}">Load</button>
+      <button class="btn mini danger" data-dellist="${esc(l.name)}">✕</button></p>`).join('')
+      : '<p class="muted">No saved lists yet.</p>'}`);
+
+  $('#mSave').onclick = () => {
+    const n = prompt('Name this list:', listName);
+    if(n) { saveListSlot(n.trim()); $('#modal').classList.remove('on'); renderAll(); }
+  };
+  $('#mShare').onclick = () => shareLink();
+  $('#mExport').onclick = () => openModal('Text export', listName,
+    `<textarea class="exp" readonly>${esc(exportText())}</textarea>`);
+  $('#mClear').onclick = () => {
+    if(confirm('Remove every unit from the current list?')){
+      armyList = []; save(); renderAll(); $('#modal').classList.remove('on');
+    }
+  };
+  $('#mBody').querySelectorAll('[data-loadlist]').forEach(b =>
+    b.onclick = () => { loadListSlot(b.dataset.loadlist); $('#modal').classList.remove('on'); });
+  $('#mBody').querySelectorAll('[data-dellist]').forEach(b =>
+    b.onclick = () => { putLists(getLists().filter(x => x.name !== b.dataset.dellist)); showMenu(); });
+}
+
+/* --------------------------------- boot --------------------------------- */
+(async function boot(){
+  $('#verLine').textContent = `${EDITION} — Version ${VERSION}`;
+  try{
+    await loadData();
+  }catch(err){
+    console.error(err);
+    $('#loadErr').innerHTML = `<div class="err"><strong>Couldn't load data.</strong><br>${esc(err.message)}<br><br>
+      If you opened this file directly, serve it over HTTP instead — <code>python3 -m http.server</code> — browsers block <code>fetch</code> on <code>file://</code>.</div>`;
+  }
+  loadState();
+  await readShareFromHash();
+  renderAll();
+})();
+</script>
+</body>
+</html>

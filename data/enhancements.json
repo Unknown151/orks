@@ -1,0 +1,17 @@
+{
+  "_note": "Enhancements and Upgrades, keyed by id. See NEW_ARMY_BUILD_GUIDE.md §4.3 / §5.3. Keys starting with an underscore are ignored by the loader. Awaiting Ork data.",
+  "_schema": {
+    "name": "Enhancement Name",
+    "type": "Enhancement (15 pts)",
+    "upgrade": false,
+    "restriction": "ORKS CHARACTER model only",
+    "restrictedTo": ["unit-id"],
+    "restrictedToKeyword": "KEYWORD",
+    "restrictedToWeapon": "Weapon Name",
+    "detachment": "det-id",
+    "points": 15,
+    "short": "One-line blurb for the overview grid.",
+    "grantsAbilities": ["ability-id"],
+    "description": "Full HTML text."
+  }
+}

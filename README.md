@@ -44,10 +44,11 @@ The nav is **Army · Builder · Stratagems · Combat Patrol**. The in-game track
 (CP / battle round / VP / WAAAGH!) moved into the ☰ menu — nothing was removed.
 A **faction call button** is pinned to the bottom of the Combat Patrol tab (see below).
 
-**Combat Patrol** is complete apart from its stratagems (`data/combat-patrol/`) —
-6 units, 33 models, the 'Ard As Nails detachment, and both enhancements. Still empty,
-awaiting matched-play data: `data/detachments.json`, `data/enhancements.json`,
-`data/stratagems.json`, `data/units/`.
+**Combat Patrol** is complete (`data/combat-patrol/`) — 6 units, 33 models, the
+'Ard As Nails detachment, both enhancements and its seven stratagems.
+`data/stratagems.json` holds the 11th-ed core stratagems. Still empty, awaiting
+matched-play data: `data/detachments.json`, `data/enhancements.json`,
+`data/units/`.
 `data/abilities.json` is seeded with edition-core weapon/core abilities, each flagged
 `needsVerification` until the wording is checked against an 11th-ed source — the app
 shows a ⚠ note in those popups.
@@ -161,7 +162,8 @@ Everything is driven by `data/combat-patrol/index.json`:
     { "unit": "cp-boyz", "count": 2, "ledBy": "cp-nob", "note": "free text" }
   ],
   "rule": [ { "name": "…", "description": "HTML" } ],
-  "stratagems": { "id": { /* same schema as data/stratagems.json, no detachment */ } }
+  "coreStratagems": ["command-re-roll", …],   // ids from data/stratagems.json
+  "stratagems": { "id": { /* Combat-Patrol-only, same schema */ } }
 }
 ```
 
@@ -206,6 +208,19 @@ the keys are absent.
   restores it.
 - Choices persist across reloads, and any stored choice the data no longer offers is
   discarded on load.
+
+### Stratagems
+
+Core stratagems are edition rules shared with matched play, so Combat Patrol
+**references them by id** from `data/stratagems.json` rather than holding its own
+copies — one place to fix a wording, and the force can allow a subset. Anything
+Combat-Patrol-only goes in the force's own `stratagems` object and never leaks onto
+the Stratagems tab. A referenced id that doesn't exist renders a visible note rather
+than vanishing.
+
+A stratagem that can cost more if you take an option carries `cpCostNote` (e.g.
+Heroic Intervention's `"+1 CP for Into the Fray"`), shown as a second badge so the
+card never under-reports what you might spend.
 - A unit with `canLead` renders the datasheet's **Leader** block listing what it can
   attach to. Names are de-duplicated, so a leader pointing at both 'Ardmob Boyz units
   shows that name once, as the datasheet does. The block is suppressed on a leader

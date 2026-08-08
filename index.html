@@ -167,6 +167,7 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .strat-hd .n{flex:1;font-weight:600;font-size:14px}
 .strat-hd .n small{display:block;font-weight:400;font-size:11px;color:var(--dim);margin-top:2px}
 .cp{background:var(--accent2);border-radius:6px;padding:2px 7px;font-size:12px;font-weight:700;white-space:nowrap}
+.cp.alt{background:transparent;border:1px dashed var(--warn);color:var(--warn);font-weight:600;font-size:11px}
 .strat-bd{padding:9px 11px;font-size:13px}
 .strat-bd p{margin:0 0 6px}
 .strat-bd b{color:var(--accent)}
@@ -280,7 +281,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.6.1';
+const VERSION = '0.7.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -1187,7 +1188,8 @@ const PHASES = ['command','movement','shooting','charge','fight'];
 function stratCard(s){
   return `<div class="strat">
     <div class="strat-hd"><div class="n">${esc(s.name)}<small>${esc(s.type||'')}</small></div>
-      <span class="cp">${s.cpCost ?? 0} CP</span></div>
+      <span class="cp">${s.cpCost ?? 0} CP</span>
+      ${s.cpCostNote ? `<span class="cp alt">${esc(s.cpCostNote)}</span>` : ''}</div>
     <div class="strat-bd">
       ${s.summary?`<p class="muted">${esc(s.summary)}</p>`:''}
       ${s.when?`<p><b>WHEN:</b> ${s.when}</p>`:''}
@@ -1315,7 +1317,13 @@ function renderCombatPatrol(){
   }
   const entries = cpLayout();
   const models = cpRosterEntries().reduce((n,e) => n + (DATA.cpUnits[e.unit]?.models || 0) * e.count, 0);
-  const strats = Object.entries(cp.stratagems || {}).map(([id,s]) => ({id, ...s}));
+  // Core stratagems are shared edition rules, referenced by id rather than
+  // copied; anything Combat-Patrol-only is defined inline alongside them.
+  const missingCore = (cp.coreStratagems || []).filter(id => !DATA.stratagems[id]);
+  const strats = [
+    ...(cp.coreStratagems || []).filter(id => DATA.stratagems[id]).map(id => ({id, ...DATA.stratagems[id]})),
+    ...Object.entries(cp.stratagems || {}).map(([id,s]) => ({id, ...s}))
+  ];
 
   const rules = [].concat(cp.rule || cp.rules || []).filter(Boolean);
   const det = cp.detachment;
@@ -1367,9 +1375,12 @@ function renderCombatPatrol(){
     ? panel('cpChoice', 'Force choices', choiceSummary, choiceBits.join(''), ui.panels.cpChoice)
     : '';
 
-  const stratPanel = strats.length ? panel('cpStrat', 'Combat Patrol stratagems',
+  const stratPanel = (strats.length || missingCore.length) ? panel('cpStrat', 'Stratagems',
     `<span class="tag">${strats.length}</span>`,
-    strats.map(stratCard).join(''), ui.panels.cpStrat) : '';
+    strats.map(stratCard).join('') + missingCore.map(id =>
+      `<div class="empty">Stratagem <code>${esc(id)}</code> is listed for this force but is not in
+       <code>data/stratagems.json</code>.</div>`).join(''),
+    ui.panels.cpStrat) : '';
 
   el.innerHTML = `
     <div class="panel open"><div class="panel-bd">

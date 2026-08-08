@@ -304,9 +304,16 @@ await p.click('#mClose');
 t('CP rule panel opens', await p.evaluate(()=>document.querySelector('#cpRule').classList.contains('open')));
 t('CP rule text shown', await p.evaluate(()=>document.querySelector('#cpRule .panel-bd').textContent.includes('Rule body')));
 await p.click('[data-panel="cpStrat"]');
-t('CP stratagem shown in its own panel', await p.evaluate(()=>document.querySelectorAll('#cpStrat .strat').length)===1);
-t('CP stratagem absent from the Stratagems tab',
+t('CP panel shows its own + the referenced core stratagems',
+  await p.evaluate(()=>[...document.querySelectorAll('#cpStrat .strat .n')].map(x=>x.firstChild.textContent).sort().join())==='Core Strat,Patrol Strat');
+t('core stratagem is referenced, not copied into the CP file',
+  await p.evaluate(()=>!DATA.combatPatrol.stratagems['core-a'] && !!DATA.stratagems['core-a']));
+t('a dangling core reference is reported, not silently dropped',
+  await p.evaluate(()=>document.querySelector('#cpStrat').textContent.includes('no-such-strat')));
+t('CP-only stratagem absent from the Stratagems tab',
   await p.evaluate(()=>!document.querySelector('#view-strats').textContent.includes('Patrol Strat')));
+t('core stratagem IS on the Stratagems tab',
+  await p.evaluate(()=>document.querySelector('#view-strats').textContent.includes('Core Strat')));
 t('builder panel state independent of CP panels',
   await p.evaluate(()=>document.querySelector('#pDet').classList.contains('open')));
 // in-game tracker still reachable
@@ -400,6 +407,13 @@ t('dock hides when the ability has no call data', await p.evaluate(()=>{
   const hidden=document.querySelector('#dock').style.display==='none';
   DATA.abilities.waaagh=keep; renderDock(); return hidden;}));
 await p.waitForTimeout(120);
+
+// the optional extra cost must be visible, not rounded away
+t('cpCostNote renders as its own badge', await p.evaluate(()=>{
+  DATA.stratagems['core-a'].cpCostNote='+1 CP for X'; renderStrats(); renderCombatPatrol();
+  const n=document.querySelector('#view-strats .cp.alt');
+  const ok=!!n && n.textContent==='+1 CP for X';
+  delete DATA.stratagems['core-a'].cpCostNote; renderStrats(); renderCombatPatrol(); return ok;}));
 
 // ---------------------- WEAPON SECTION BANDING -----------------------
 await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);

@@ -1,16 +1,97 @@
 {
-  "_note": "Core + detachment stratagems, keyed by id. See NEW_ARMY_BUILD_GUIDE.md §4.4. detachment:null means a Core stratagem, always available. Keys starting with an underscore are ignored by the loader. Awaiting 11th-ed core stratagems and Ork detachment stratagems.",
-  "_schema": {
-    "name": "Stratagem Name",
+  "_note": "Core + detachment stratagems, keyed by id. See NEW_ARMY_BUILD_GUIDE.md §4.4. detachment:null means a Core stratagem, available in every list. Keys starting with an underscore are ignored by the loader.",
+
+  "command-re-roll": {
+    "name": "Command Re-roll",
     "type": "Core Stratagem",
     "turn": "either",
     "phases": ["command", "movement", "shooting", "charge", "fight"],
     "cpCost": 1,
-    "summary": "One-line gist for the card.",
-    "when": "…",
-    "target": "…",
-    "effect": "…",
-    "restrictions": "…",
+    "summary": "Re-roll one dice you just rolled.",
+    "when": "Any phase, just after you make one of the following rolls for a friendly unit or model: an Advance roll, a Charge roll, a Damage roll, a Hazard roll, a Hit roll, a Save roll, a Wound roll, or a roll to determine the number of attacks generated with a weapon.",
+    "target": "That unit or model.",
+    "effect": "You re-roll that roll. If you are rolling more than one dice together, select one of those dice to re-roll (excluding charge rolls, which you must re-roll in full).",
+    "detachment": null
+  },
+
+  "epic-challenge": {
+    "name": "Epic Challenge",
+    "type": "Core Stratagem",
+    "turn": "either",
+    "phases": ["fight"],
+    "cpCost": 1,
+    "summary": "A Character's melee weapons gain [PRECISION].",
+    "when": "Fight phase, just after a friendly <strong>CHARACTER</strong> unit is selected to fight.",
+    "target": "That <strong>CHARACTER</strong> unit.",
+    "effect": "Select one <strong>CHARACTER</strong> model in your unit. Until the end of the phase, that model's melee weapons have the <strong>[PRECISION]</strong> ability.",
+    "detachment": null
+  },
+
+  "insane-bravery": {
+    "name": "Insane Bravery",
+    "type": "Core Stratagem",
+    "turn": "your",
+    "phases": ["command"],
+    "cpCost": 1,
+    "summary": "Auto-pass one Battle-shock test.",
+    "when": "Battle-shock step of your Command phase, just before you make a Battle-shock roll for a friendly unit.",
+    "target": "That unit.",
+    "effect": "That Battle-shock roll is automatically successful.",
+    "restrictions": "You cannot use this Stratagem more than once per battle.",
+    "detachment": null
+  },
+
+  "fire-overwatch": {
+    "name": "Fire Overwatch",
+    "type": "Core Stratagem",
+    "turn": "opponent",
+    "phases": ["movement"],
+    "cpCost": 1,
+    "summary": "Snap shoot at the end of your opponent's Movement phase.",
+    "when": "End of your opponent's Movement phase.",
+    "target": "One friendly unengaged unit (excluding <strong>TITANIC</strong> units).",
+    "effect": "Your unit shoots using a Snap Shooting action. While snap shooting: you can only target one visible enemy unit within 24\" of your unit (and only if it is an eligible target); each attack only hits on an unmodified Hit roll of 6 (irrespective of the attacking weapon's <strong>BS</strong> characteristic or any modifiers); and you cannot re-roll Hit rolls.",
+    "restrictions": "After shooting, until the end of the phase your unit is not eligible to start an Action.",
+    "detachment": null
+  },
+
+  "smokescreen": {
+    "name": "Smokescreen",
+    "type": "Core Stratagem",
+    "turn": "opponent",
+    "phases": ["shooting"],
+    "cpCost": 1,
+    "summary": "A SMOKE unit and what it screens gain the Benefit of Cover.",
+    "when": "Start of your opponent's Shooting phase.",
+    "target": "One friendly <strong>SMOKE</strong> unit.",
+    "effect": "Until the end of the phase, each time an attack targets either your <strong>SMOKE</strong> unit, or a unit that is not fully visible to the attacking model because of one or more models in your <strong>SMOKE</strong> unit, the target has the Benefit of Cover against that attack.",
+    "detachment": null
+  },
+
+  "heroic-intervention": {
+    "name": "Heroic Intervention",
+    "type": "Core Stratagem",
+    "turn": "opponent",
+    "phases": ["charge"],
+    "cpCost": 1,
+    "cpCostNote": "+1 CP for Into the Fray",
+    "summary": "Charge at the end of your opponent's Charge phase.",
+    "when": "End of your opponent's Charge phase.",
+    "target": "One friendly unengaged unit within 12\" of one or more enemy units. You can only select a <strong>VEHICLE/WALKER</strong> unit if it is a <strong>CHARACTER</strong> unit.",
+    "effect": "Resolve a charge with your unit. Before making the charge roll, select one of the following modes:<br>• <strong>Leap to Defend</strong> — when selecting charge targets, you can only select enemy units that made a charge move this phase and are within the Maximum charge distance.<br>• <strong>Into the Fray (+1CP)</strong> — when making the charge roll, if the result is greater than 6 (after modifiers), change it to 6; and when selecting charge targets, you can select any enemy units within 6\" of your unit and within the Maximum charge distance.",
+    "detachment": null
+  },
+
+  "counter-offensive": {
+    "name": "Counter-offensive",
+    "type": "Core Stratagem",
+    "turn": "either",
+    "phases": ["fight"],
+    "cpCost": 2,
+    "summary": "Fight out of sequence, with Fights First.",
+    "when": "Fight phase, just after an enemy unit has resolved its attacks.",
+    "target": "One friendly unit that is eligible to fight.",
+    "effect": "Until the end of the phase, your unit has the Fights First ability and it must be the next unit you select to fight.",
     "detachment": null
   }
 }

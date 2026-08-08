@@ -74,5 +74,9 @@
     "invulnerableSave": "4+"
    }
   }
- }
+ },
+ "coreStratagems": [
+  "core-a",
+  "no-such-strat"
+ ]
 }

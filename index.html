@@ -302,7 +302,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.9.1';
+const VERSION = '0.10.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -312,7 +312,7 @@ const MAX_UPGRADE_COPIES = 3;
 const LS = {
   army:'orks.army', dets:'orks.detachments', lists:'orks.lists', game:'orks.game',
   theme:'orks.theme', limit:'orks.limit', name:'orks.listName', legacyDet:'orks.detachment',
-  collapsed:'orks.collapsed', cpChoice:'orks.cpChoice'
+  openCard:'orks.openCard', cpChoice:'orks.cpChoice', legacyCollapsed:'orks.collapsed'
 };
 
 /* ---------------------------------- data --------------------------------- */
@@ -335,9 +335,10 @@ let game = { cp:0, round:1, vpUs:0, vpThem:0, waaagh:false };
 let ui = { tab:'builder', detOpen:true, enhOpen:false, stratPhase:'all',
   // Force choices default open — it is the one panel you set before a game.
   panels:{ cpChoice:true } };
-// Which unit cards are collapsed, keyed by a stable per-card id. Persisted so a
-// tidied-up list stays tidy across a reload mid-game.
-let collapsed = {};
+// Unit cards are an accordion: at most one open per view, everything else
+// collapsed. Stored as the open card's key per view prefix (a=army, b=builder,
+// c=combat patrol), so "nothing recorded" naturally means "all collapsed".
+let openCard = {};
 // Combat Patrol force choices: which enhancement is active, and which leader is
 // attached to which roster entry. Both are per-game picks, so they persist.
 let cpChoice = { enh:null, leader:null, target:null };
@@ -727,7 +728,8 @@ function loadState(){
   const lim = parseInt(localStorage.getItem(LS.limit), 10);
   if(!isNaN(lim)) pointsLimit = lim;
   listName = localStorage.getItem(LS.name) || listName;
-  try{ const c = JSON.parse(localStorage.getItem(LS.collapsed)); if(c && typeof c === 'object') collapsed = c; }catch{}
+  try{ const c = JSON.parse(localStorage.getItem(LS.openCard)); if(c && typeof c === 'object') openCard = c; }catch{}
+  localStorage.removeItem(LS.legacyCollapsed);   // inverted meaning; must not be read as open cards
   try{ const c = JSON.parse(localStorage.getItem(LS.cpChoice)); if(c && typeof c === 'object') cpChoice = {...cpChoice, ...c}; }catch{}
   const th = localStorage.getItem(LS.theme);
   if(th) document.documentElement.setAttribute('data-theme', th);
@@ -888,15 +890,30 @@ function setTab(name){
 }
 
 /* ------------------------------ collapsing ------------------------------- */
-const isCollapsed = key => !!collapsed[key];
+const cardView = key => key.split(':')[0];
+const isCollapsed = key => openCard[cardView(key)] !== key;
 const collapseClass = key => isCollapsed(key) ? ' collapsed' : '';
 // Chevron sits at the end of the header; the whole header is the hit target.
 const collapseChevron = () => '<span class="ucv">\u203A</span>';
 function toggleCollapse(key, card){
-  if(collapsed[key]) delete collapsed[key]; else collapsed[key] = 1;
-  // Toggle in place rather than re-rendering, so the page doesn't jump.
-  card.classList.toggle('collapsed', isCollapsed(key));
-  try { localStorage.setItem(LS.collapsed, JSON.stringify(collapsed)); } catch {}
+  const view = card.closest('.view') || document;
+  const hd = card.querySelector('.unit-hd');
+  const before = hd.getBoundingClientRect().top;
+
+  const v = cardView(key);
+  openCard[v] = (openCard[v] === key) ? null : key;
+
+  // Apply to every card in this view rather than re-rendering, so the page
+  // keeps its DOM and we can correct the scroll afterwards.
+  view.querySelectorAll('[data-ucol]').forEach(h =>
+    h.closest('.unit').classList.toggle('collapsed', h.dataset.ucol !== openCard[v]));
+
+  // Closing a card above the one you tapped would otherwise yank it up the
+  // screen — hold the tapped header where your thumb left it.
+  const after = hd.getBoundingClientRect().top;
+  if(after !== before) window.scrollBy(0, after - before);
+
+  try { localStorage.setItem(LS.openCard, JSON.stringify(openCard)); } catch {}
   renderDock();
 }
 

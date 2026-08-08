@@ -441,7 +441,10 @@ t('cpCostNote renders as its own badge', await p.evaluate(()=>{
   delete DATA.stratagems['core-a'].cpCostNote; renderStrats(); return ok;}));
 
 // --------------------------- WEAPON ROWS -----------------------------
-await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
+await p.evaluate(()=>{ setTab('cp'); renderAll();
+  // cards are collapsed by default; expand them all so their contents can be inspected
+  document.querySelectorAll('#view-cp .unit').forEach(c=>c.classList.remove('collapsed')); });
+await p.waitForTimeout(150);
 t('every weapon carries its own stat labels', await p.evaluate(()=>{
   const r=document.querySelector('#view-cp .wrow.ranged');
   return [...r.querySelectorAll('.wst b')].map(x=>x.textContent).join()==='Range,A,BS,S,AP,D';}));
@@ -469,7 +472,10 @@ t('the old shared header row is gone',
   await p.evaluate(()=>document.querySelectorAll('#view-cp .wtbl').length)===0);
 
 // ---------------------- WEAPON SECTION BANDING -----------------------
-await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
+await p.evaluate(()=>{ setTab('cp'); renderAll();
+  // cards are collapsed by default; expand them all so their contents can be inspected
+  document.querySelectorAll('#view-cp .unit').forEach(c=>c.classList.remove('collapsed')); });
+await p.waitForTimeout(150);
 t('ranged and melee headers are distinguishable', await p.evaluate(()=>{
   const r=document.querySelector('#view-cp .wsec-t.ranged'), m=document.querySelector('#view-cp .wsec-t.melee');
   if(!r||!m) return false;
@@ -491,7 +497,10 @@ t('banding survives the light theme', await p.evaluate(()=>{
   return r!==m;}));
 
 // --------------------------- LEADER BLOCK ----------------------------
-await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
+await p.evaluate(()=>{ setTab('cp'); renderAll();
+  // cards are collapsed by default; expand them all so their contents can be inspected
+  document.querySelectorAll('#view-cp .unit').forEach(c=>c.classList.remove('collapsed')); });
+await p.waitForTimeout(150);
 const leadSec = () => p.evaluate(()=>{
   const s=[...document.querySelectorAll('#view-cp .sec')].find(x=>x.querySelector('.sec-t')?.textContent==='Leader');
   return s ? [...s.querySelectorAll('.pill')].map(x=>x.textContent) : null;});
@@ -518,36 +527,61 @@ t('both profiles still listed under it',
 t('CP summary merges the profiles into one weapon',
   await p.evaluate(()=>weaponSummaryText(DATA.cpUnits['cp-buggy'],null))==='2× Big Shoota');
 
-// ---------------------------- COLLAPSING -----------------------------
-await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
+// -------------------- COLLAPSING (accordion) -------------------------
+await p.evaluate(()=>{openCard={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
+// Scope to real cards: the missing-datasheet placeholder has no collapsible
+// body and no header hit target, so it is not part of the accordion.
+const cpCards = () => p.evaluate(()=>[...document.querySelectorAll('#view-cp [data-ucol]')]
+  .map(h=>h.closest('.unit').classList.contains('collapsed')));
+const cpHd = i => p.locator('#view-cp .unit-hd[data-ucol]').nth(i).click();
+
 t('every unit card has a chevron',
   await p.evaluate(()=>document.querySelectorAll('#view-cp .unit-hd .ucv').length)>0);
-t('cards start expanded',
-  await p.evaluate(()=>document.querySelectorAll('#view-cp .unit.collapsed').length)===0);
-await p.click('#view-cp .unit-hd');
-t('tapping the header collapses the card',
-  await p.evaluate(()=>document.querySelectorAll('#view-cp .unit')[0].classList.contains('collapsed')));
-t('collapsed body is hidden',
-  await p.evaluate(()=>getComputedStyle(document.querySelectorAll('#view-cp .unit')[0].querySelector('.unit-bd')).display)==='none');
-t('header stays visible when collapsed',
-  await p.evaluate(()=>document.querySelectorAll('#view-cp .unit')[0].querySelector('h3').offsetParent!==null));
-t('collapsing one card leaves its neighbour alone',
-  await p.evaluate(()=>!document.querySelectorAll('#view-cp .unit')[1].classList.contains('collapsed')));
-await p.click('#view-cp .unit-hd');
-t('tapping again expands it',
-  await p.evaluate(()=>!document.querySelectorAll('#view-cp .unit')[0].classList.contains('collapsed')));
+t('all cards start collapsed', (await cpCards()).every(Boolean));
+
+// open the first
+await cpHd(0);
+t('tapping a header opens that card', (await cpCards())[0]===false);
+t('all others stay collapsed', (await cpCards()).slice(1).every(Boolean));
+t('opened body is visible', await p.evaluate(()=>{
+  const c=document.querySelector('#view-cp [data-ucol]').closest('.unit');
+  return getComputedStyle(c.querySelector('.unit-bd')).display;})!=='none');
+t('the placeholder card is not part of the accordion', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-cp .unit')].some(c=>!c.querySelector('[data-ucol]'))));
+
+// open a second — the first must close
+await cpHd(1);
+t('opening another closes the first', (await cpCards())[0]===true);
+t('only one card open at a time', (await cpCards()).filter(x=>!x).length===1);
+t('the newly tapped one is the open one', (await cpCards())[1]===false);
+
+// tapping the open one closes it, leaving none open
+await cpHd(1);
+t('tapping the open card closes it', (await cpCards()).every(Boolean));
+
+// per view, not global
+await p.evaluate(()=>{setTab('cp');}); await cpHd(2);
+await p.evaluate(()=>setTab('builder')); await p.waitForTimeout(120);
+t('a Combat Patrol card open does not open a Builder card', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-builder .unit')].every(c=>c.classList.contains('collapsed'))));
+await p.locator('#view-builder .unit').nth(0).locator('.unit-hd').click();
+t('builder accordion is independent', await p.evaluate(()=>
+  openCard.b!=null && openCard.c!=null && openCard.b!==openCard.c));
+t('builder also allows only one open', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-builder .unit')].filter(c=>!c.classList.contains('collapsed')).length)===1);
 
 // survives a re-render and a reload
-await p.click('#view-cp .unit-hd');
 t('state survives a full re-render', await p.evaluate(()=>{
-  renderAll(); return document.querySelectorAll('#view-cp .unit')[0].classList.contains('collapsed');}));
+  const k=openCard.b; renderAll();
+  const open=[...document.querySelectorAll('#view-builder [data-ucol]')].find(h=>!h.closest('.unit').classList.contains('collapsed'));
+  return !!open && open.dataset.ucol===k;}));
 await p.reload({waitUntil:'networkidle'}); await p.waitForTimeout(400);
 await p.evaluate(()=>setTab('cp')); await p.waitForTimeout(150);
-t('state survives a reload',
-  await p.evaluate(()=>document.querySelectorAll('#view-cp .unit')[0].classList.contains('collapsed')));
-await p.click('#view-cp .unit-hd');   // tidy up
+t('open card survives a reload', (await cpCards()).filter(x=>!x).length===1);
+t('legacy collapsed key is discarded, not misread as open cards',
+  await p.evaluate(()=>localStorage.getItem('orks.collapsed'))===null);
 
-// merged leader cards collapse whole (an earlier test removed the leader, so re-attach)
+// merged leader cards still collapse whole
 await p.evaluate(()=>{
   addUnit('demo-warboss');
   armyList[0].leaderId = armyList[armyList.length-1].uid;
@@ -555,22 +589,10 @@ await p.evaluate(()=>{
 }); await p.waitForTimeout(150);
 t('merged card present for the collapse check',
   await p.evaluate(()=>document.querySelectorAll('#view-army .leader-band').length)===2);
-const mk = await p.evaluate(()=>{const c=[...document.querySelectorAll('#view-army .unit')]
-  .find(x=>x.querySelector('.leader-band')); c.querySelector('.unit-hd').click();
-  return [...c.querySelectorAll('.leader-band,.unit-bd')].every(e=>getComputedStyle(e).display==='none');});
-t('merged card hides leader AND unit sections', mk);
-await p.evaluate(()=>{const c=[...document.querySelectorAll('#view-army .unit')]
-  .find(x=>x.querySelector('.leader-band')); c.querySelector('.unit-hd').click();});
-
-// builder cards too, and independently of the army view
-await p.evaluate(()=>setTab('builder')); await p.waitForTimeout(150);
-await p.click('#view-builder .unit-hd');
-t('builder cards collapse',
-  await p.evaluate(()=>document.querySelectorAll('#view-builder .unit')[0].classList.contains('collapsed')));
-t('builder collapse is keyed separately from the army view',
-  await p.evaluate(()=>{const uid=armyList[0].uid; return !!collapsed['b:'+uid] && !collapsed['a:'+uid];}));
-await p.click('#view-builder .unit-hd');
-await p.evaluate(()=>{collapsed={};localStorage.removeItem('orks.collapsed');renderAll();});
+t('merged card hides leader AND unit sections', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-army .unit')].find(x=>x.querySelector('.leader-band'));
+  return [...c.querySelectorAll('.leader-band,.unit-bd')].every(e=>getComputedStyle(e).display==='none');}));
+await p.evaluate(()=>{openCard={};localStorage.removeItem('orks.openCard');renderAll();});
 
 t('no console/page errors: '+errs.join(' | '), errs.length===0);
 await b.close();

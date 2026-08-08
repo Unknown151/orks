@@ -15,7 +15,13 @@
   "waaagh": {
     "name": "Waaagh!",
     "type": "Faction Ability — Orks",
-    "description": "<em>Rule to be added — wording not supplied yet.</em>"
+    "description": "You can re-roll <strong>advance rolls</strong> made for friendly <strong>ORKS</strong> units.<br><br>Once per battle, at the start of the Command phase, you can call a Waaagh!. If you do, until the end of the next turn, the Waaagh! is called for friendly <strong>ORKS</strong> units. While a Waaagh! is called for a unit, it can <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which it made an <strong>advance move</strong>.",
+
+    "_call_note": "These three keys drive the always-on call button at the bottom of the screen. Remove them and the button disappears — it is entirely data-driven.",
+    "callLabel": "WAAAGH! CALLED",
+    "callWhen": "Start of the Command phase · once per battle",
+    "callDuration": "Until the end of the next turn",
+    "callEffect": "Friendly <strong>ORKS</strong> units can <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which they made an <strong>advance move</strong>."
   },
 
   "lethal-hits": {

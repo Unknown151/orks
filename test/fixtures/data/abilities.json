@@ -251,5 +251,14 @@
   "name": "Fixture Faction Ability",
   "type": "Faction Ability \u2014 Demo",
   "description": "Body."
+ },
+ "waaagh": {
+  "name": "Waaagh!",
+  "type": "Faction Ability \u2014 Demo",
+  "description": "Full text.",
+  "callLabel": "WAAAGH! CALLED",
+  "callWhen": "Start of the Command phase \u00b7 once per battle",
+  "callDuration": "Until the end of the next turn",
+  "callEffect": "Units can <strong>shoot</strong> and <strong>declare a charge</strong> after an advance."
  }
 }

@@ -256,6 +256,69 @@ t('tracker still increments',
   }))===2);
 await p.evaluate(()=>{game.cp=0;save();});
 
+// -------------------------- FACTION CALL DOCK --------------------------
+await p.evaluate(()=>{game.waaagh=false;save();renderAll();}); await p.waitForTimeout(120);
+t('dock button always on screen (fixed)',
+  await p.evaluate(()=>getComputedStyle(document.querySelector('#dock')).position)==='fixed');
+t('dock survives tab changes', await p.evaluate(()=>{
+  setTab('army'); const a=document.querySelector('#dockBtn').offsetParent!==null;
+  setTab('builder'); return a && document.querySelector('#dockBtn').offsetParent!==null;}));
+t('button labelled from data', await p.evaluate(()=>document.querySelector('#dockBtn').textContent)==='WAAAGH!');
+t('no banner before it is called', await p.evaluate(()=>!document.querySelector('#dockBanner').classList.contains('on')));
+t('page content is padded clear of the dock',
+  await p.evaluate(()=>parseInt(getComputedStyle(document.querySelector('main')).paddingBottom,10))>60);
+
+// press it
+await p.click('#dockBtn');
+t('press plays the visual effect', await p.evaluate(()=>
+  document.querySelector('#dockBtn').classList.contains('fire') &&
+  document.querySelector('#dockFlash').classList.contains('on')));
+t('state set immediately on press', await p.evaluate(()=>game.waaagh)===true);
+await p.waitForTimeout(500);
+t('ongoing banner appears above the button', await p.evaluate(()=>document.querySelector('#dockBanner').classList.contains('on')));
+t('banner sits above the button', await p.evaluate(()=>
+  document.querySelector('#dockBanner').getBoundingClientRect().bottom <=
+  document.querySelector('#dockBtn').getBoundingClientRect().top + 1));
+t('banner states the gained effect', await p.evaluate(()=>
+  document.querySelector('#dockBanner').textContent.includes('declare a charge')));
+t('banner states the duration', await p.evaluate(()=>
+  document.querySelector('#dockBanner').textContent.includes('Until the end of the next turn')));
+t('button switches to its active look', await p.evaluate(()=>document.querySelector('#dockBtn').classList.contains('on')));
+await p.waitForTimeout(500);   // animation classes are stripped at 800ms
+t('effect animation cleaned up', await p.evaluate(()=>
+  !document.querySelector('#dockBtn').classList.contains('fire') &&
+  !document.querySelector('#dockFlash').classList.contains('on')));
+t('padding grows to clear the taller dock',
+  await p.evaluate(()=>parseInt(getComputedStyle(document.querySelector('main')).paddingBottom,10))>110);
+
+// pressing again while active must not toggle it off by accident
+await p.click('#dockBtn'); await p.waitForTimeout(400);
+t('second press does not cancel the call', await p.evaluate(()=>game.waaagh)===true);
+
+// survives a reload
+await p.reload({waitUntil:'networkidle'}); await p.waitForTimeout(400);
+t('call persists across reload', await p.evaluate(()=>game.waaagh)===true);
+t('banner restored on load', await p.evaluate(()=>document.querySelector('#dockBanner').classList.contains('on')));
+
+// end it from the banner
+await p.click('#dockEnd'); await p.waitForTimeout(150);
+t('End clears the call', await p.evaluate(()=>game.waaagh)===false);
+t('banner hidden after End', await p.evaluate(()=>!document.querySelector('#dockBanner').classList.contains('on')));
+
+// stays in sync with the in-game tracker
+await p.evaluate(()=>setTab('points'));
+await p.click('#btnWaaagh'); await p.waitForTimeout(120);
+t('tracker toggle drives the dock', await p.evaluate(()=>document.querySelector('#dockBanner').classList.contains('on')));
+await p.click('#btnResetGame'); await p.waitForTimeout(120);
+t('reset game clears the dock', await p.evaluate(()=>!document.querySelector('#dockBanner').classList.contains('on')));
+
+// data-driven: no call* keys => no dock at all
+t('dock hides when the ability has no call data', await p.evaluate(()=>{
+  const keep=DATA.abilities.waaagh; delete DATA.abilities.waaagh; renderDock();
+  const hidden=document.querySelector('#dock').style.display==='none';
+  DATA.abilities.waaagh=keep; renderDock(); return hidden;}));
+await p.waitForTimeout(120);
+
 t('no console/page errors: '+errs.join(' | '), errs.length===0);
 await b.close();
 server.close();

@@ -40,6 +40,7 @@ The **engine is complete and tested**; the **Ork data is not in yet.** Guide §8
 
 The nav is **Army · Builder · Stratagems · Combat Patrol**. The in-game tracker
 (CP / battle round / VP / WAAAGH!) moved into the ☰ menu — nothing was removed.
+A **faction call button** is pinned to the bottom of every tab (see below).
 
 **Empty data files, waiting on datasheets:** `data/detachments.json`,
 `data/enhancements.json`, `data/stratagems.json`, `data/units/`.
@@ -78,6 +79,37 @@ Two rules that will bite otherwise:
 
 Copy `data/units/_TEMPLATE.json` to start a new datasheet. `data/detachments.json`
 carries the DP budget (default 3) and the category → colour map.
+
+## The faction call button
+
+A button fixed to the bottom of the screen on every tab, for the faction's
+once-per-battle call. Pressing it plays a shake + ring + screen-flash effect (and a
+haptic buzz where supported), then an **ongoing banner** rises above it naming the
+effect you just gained and how long it lasts. It stays there until you press **End**
+on the banner.
+
+It is **entirely data-driven** — nothing about Waaagh! is written in the code. The
+button renders only if the ability named by `FACTION_CALL_ID` exists in
+`data/abilities.json` *and* carries these keys:
+
+```jsonc
+"waaagh": {
+  "name": "Waaagh!",
+  "description": "…full rule, shown when you tap the badge on a datasheet…",
+
+  "callLabel":    "WAAAGH! CALLED",                    // banner heading
+  "callWhen":     "Start of the Command phase · once per battle",  // idle tooltip
+  "callDuration": "Until the end of the next turn",     // shown under the effect
+  "callEffect":   "…HTML naming what you gained…"       // the ongoing text
+}
+```
+
+Delete those `call*` keys and the button disappears; point `FACTION_CALL_ID` at a
+different ability and another faction's call works the same way. The button shares
+its state with the WAAAGH! toggle on the in-game tracker, so the two can't disagree,
+and it survives a reload. Pressing it again while active re-plays the effect but will
+**not** cancel the call — ending it is deliberate, via the banner. It honours
+`prefers-reduced-motion`.
 
 ## Combat Patrol
 

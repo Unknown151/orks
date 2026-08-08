@@ -84,6 +84,15 @@ Two rules that will bite otherwise:
 Copy `data/units/_TEMPLATE.json` to start a new datasheet. `data/detachments.json`
 carries the DP budget (default 3) and the category → colour map.
 
+## Weapon sections
+
+Ranged and melee weapons carry colour-banded headers — cool blue and warm red — with
+a left accent stripe and matching column headers, so the two blocks separate at a
+glance while scrolling a card mid-game. Every other section (Abilities, Wargear,
+Keywords, Leader) deliberately keeps the plain header: the banding only means
+something because it is used sparingly. The colours are theme tokens
+(`--ranged*` / `--melee*`) with light-theme variants.
+
 ## Collapsing unit cards
 
 Every unit card — Army, Builder and Combat Patrol — collapses to its header by

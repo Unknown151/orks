@@ -401,6 +401,28 @@ t('dock hides when the ability has no call data', await p.evaluate(()=>{
   DATA.abilities.waaagh=keep; renderDock(); return hidden;}));
 await p.waitForTimeout(120);
 
+// ---------------------- WEAPON SECTION BANDING -----------------------
+await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
+t('ranged and melee headers are distinguishable', await p.evaluate(()=>{
+  const r=document.querySelector('#view-cp .wsec-t.ranged'), m=document.querySelector('#view-cp .wsec-t.melee');
+  if(!r||!m) return false;
+  const cr=getComputedStyle(r), cm=getComputedStyle(m);
+  return cr.color!==cm.color && cr.backgroundColor!==cm.backgroundColor
+      && cr.borderLeftColor!==cm.borderLeftColor;}));
+t('both bands are actually painted, not transparent', await p.evaluate(()=>{
+  const bg=el=>getComputedStyle(el).backgroundColor;
+  const t=v=>v==='transparent'||v==='rgba(0, 0, 0, 0)';
+  return !t(bg(document.querySelector('#view-cp .wsec-t.ranged')))
+      && !t(bg(document.querySelector('#view-cp .wsec-t.melee')));}));
+t('non-weapon sections keep the plain header', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-cp .sec-t')].some(x=>x.textContent==='Abilities')));
+t('banding survives the light theme', await p.evaluate(()=>{
+  document.documentElement.setAttribute('data-theme','light');
+  const r=getComputedStyle(document.querySelector('#view-cp .wsec-t.ranged')).color;
+  const m=getComputedStyle(document.querySelector('#view-cp .wsec-t.melee')).color;
+  document.documentElement.removeAttribute('data-theme');
+  return r!==m;}));
+
 // --------------------------- LEADER BLOCK ----------------------------
 await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
 const leadSec = () => p.evaluate(()=>{

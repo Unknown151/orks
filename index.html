@@ -308,7 +308,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.11.0';
+const VERSION = '0.11.1';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -1495,38 +1495,54 @@ function renderDock(){
   const setH = () => document.body.style.setProperty('--dock-h', dock.offsetHeight + 'px');
   setH();
   requestAnimationFrame(setH);
+  warmCallGif();
 }
 // Optional background flourish: a near-transparent full-screen gif that fades
-// in and out. Deliberately starts only after the button's own animation has
-// finished, so the gif's first decode never competes with it. Data-driven via
+// in and out, starting the instant the button is pressed. Data-driven via
 // callGif on the faction-call ability; absent or unloadable means nothing
 // happens at all.
-const GIF_DELAY = 800;    // matches how long the button animation runs
-const GIF_RUN   = 3000;   // matches the dGif keyframes
-let gifTimers = [];
+const GIF_RUN = 3000;     // matches the dGif keyframes
+let gifTimer = null;
 let gifBroken = false;
+let gifWarmed = false;
+
+// Because the gif now starts together with the button animation, its first
+// decode would otherwise land right on top of that animation. Fetch and decode
+// it once while the app is idle, so pressing only ever hits the cache.
+function warmCallGif(){
+  const src = factionCall()?.callGif;
+  if(gifWarmed || gifBroken || !src) return;
+  gifWarmed = true;
+  const load = () => {
+    const img = new Image();
+    img.onerror = () => { gifBroken = true; };
+    img.src = src;
+    img.decode?.().catch(() => {});
+  };
+  (window.requestIdleCallback || (f => setTimeout(f, 1500)))(load);
+}
+
 function playCallGif(){
   const el = $('#dockGif'), src = factionCall()?.callGif;
   if(!el || !src || gifBroken) return;
   if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return;
 
-  gifTimers.forEach(clearTimeout); gifTimers = [];
-  el.classList.remove('on');
+  clearTimeout(gifTimer);
   el.onerror = () => { gifBroken = true; el.classList.remove('on'); el.removeAttribute('src'); };
 
-  gifTimers.push(setTimeout(() => {
-    // Re-assigning the same URL restarts the animation and comes from cache
-    // after the first play, so this does not re-download.
+  // Re-assigning the same URL restarts the animation and comes from cache, so
+  // this neither re-downloads nor waits.
+  el.classList.remove('on');
+  el.removeAttribute('src');
+  el.src = src;
+  void el.offsetWidth;
+  el.classList.add('on');
+
+  // Drop the source when it is done so nothing keeps decoding in the background.
+  gifTimer = setTimeout(() => {
+    el.classList.remove('on');
     el.removeAttribute('src');
-    el.src = src;
-    void el.offsetWidth;
-    el.classList.add('on');
-    // Drop the source when it is done so nothing keeps decoding in the background.
-    gifTimers.push(setTimeout(() => {
-      el.classList.remove('on');
-      el.removeAttribute('src');
-    }, GIF_RUN));
-  }, GIF_DELAY));
+  }, GIF_RUN);
 }
 
 function fireDock(){

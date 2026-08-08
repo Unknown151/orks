@@ -175,8 +175,10 @@ behind the UI and taking no clicks.
 "callGif": "assets/waaagh.gif"
 ```
 
-- It **starts only after the button's own animation has finished** (800 ms), so the
-  GIF's first decode never competes with the shake and flash.
+- It **starts the instant the button is pressed**, alongside the shake and flash.
+  To keep that from stuttering, the GIF is **fetched and decoded once while the app
+  is idle** (via `requestIdleCallback` when the dock first renders), so a press only
+  ever hits the cache.
 - The source is **released when the run ends**, so nothing keeps decoding in the
   background between presses. Re-assigning the same URL on the next press restarts
   the animation from cache rather than re-downloading it.

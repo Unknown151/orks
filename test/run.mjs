@@ -427,13 +427,15 @@ await p.evaluate(()=>{game.waaagh=false;save();setTab('cp');renderAll();}); awai
 t('gif is idle before the button is pressed', await p.evaluate(()=>{
   const g=document.querySelector('#dockGif');
   return !g.classList.contains('on') && !g.getAttribute('src');}));
+t('gif is preloaded while idle, without touching the on-screen element',
+  await p.evaluate(()=>gifWarmed===true && !document.querySelector('#dockGif').getAttribute('src')));
 await p.click('#dockBtn');
-t('gif waits for the button animation to finish', await p.evaluate(()=>
+t('gif starts on the press, alongside the button animation', await p.evaluate(()=>
   document.querySelector('#dockBtn').classList.contains('fire') &&
-  !document.querySelector('#dockGif').classList.contains('on')));
-await p.waitForTimeout(1000);
-t('gif plays once the animation has lapsed', await p.evaluate(()=>
   document.querySelector('#dockGif').classList.contains('on')));
+t('gif has a source immediately, not after a delay',
+  await p.evaluate(()=>!!document.querySelector('#dockGif').getAttribute('src')));
+await p.waitForTimeout(600);
 t('gif actually decoded (not a broken image)', await p.evaluate(()=>{
   const g=document.querySelector('#dockGif');
   return g.complete && g.naturalWidth>0;}));
@@ -444,7 +446,7 @@ t('gif sits behind the button and takes no clicks', await p.evaluate(()=>{
 t('gif is faint, not opaque', await p.evaluate(()=>{
   const o=parseFloat(getComputedStyle(document.querySelector('#dockGif')).opacity);
   return o>0 && o<0.5;}));
-await p.waitForTimeout(3200);
+await p.waitForTimeout(2800);
 t('gif stops and releases its source when done', await p.evaluate(()=>{
   const g=document.querySelector('#dockGif');
   return !g.classList.contains('on') && !g.getAttribute('src');}));

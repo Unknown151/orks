@@ -1,0 +1,43 @@
+{
+  "id": "cp-ardmob-boyz-kustom",
+  "name": "'Ardmob Boyz",
+  "type": ["Infantry"],
+  "keywords": ["'ARDMOB", "EXPLOSIVES", "INFANTRY", "MOB"],
+
+  "models": 10,
+  "modelBreakdown": "1 Boss Nob + 9 Boyz",
+
+  "_note": "Second 'Ardmob Boyz unit — same datasheet name and abilities as cp-ardmob-boyz, different Boss Nob loadout (Kustom Shoota instead of the two Kombi weapons). Statlines and keywords were not re-supplied and are carried over from cp-ardmob-boyz.",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 1, "ld": "7+", "oc": 2 },
+  "modelProfiles": [
+    { "name": "Boss Nob", "count": 1, "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 2, "ld": "7+", "oc": 2 } },
+    { "name": "Boyz",     "count": 9, "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 1, "ld": "7+", "oc": 2 } }
+  ],
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "The Boss Nob is equipped with: 1 Big Choppa; 1 Kustom Shoota; 1 Slugga. Every Boyz is equipped with: 1 Choppa; 1 Shoota; 1 Slugga.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kustom Shoota", "count": 1, "range": "18\"", "a": "4", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{ "id": "rapid-fire", "display": "Rapid Fire 2" }] },
+      { "name": "Shoota", "count": 9, "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "_abilities_note": "Transcribed as shown: this datasheet lists no weapon ability on Shoota, whereas cp-ardmob-boyz gives the same profile Rapid Fire 1. Flagged for checking against the source.",
+        "abilities": [] },
+      { "name": "Slugga", "count": 10, "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters"] }
+    ],
+    "melee": [
+      { "name": "Big Choppa", "count": 1, "a": "3", "ws": "3+", "s": "5", "ap": "-1", "d": "2", "abilities": [] },
+      { "name": "Choppa",     "count": 9, "a": "1", "ws": "3+", "s": "4", "ap": "-1", "d": "1", "abilities": [] }
+    ]
+  },
+
+  "abilities": ["grab-dat-scrap"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

@@ -49,8 +49,7 @@
     "name": "Rapid Fire",
     "type": "Weapon Ability",
     "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "Add the specified value to this weapon's Attacks characteristic when it targets a unit within half range (e.g. <strong>Rapid Fire 1</strong>)."
+    "description": "This ability always takes the form <strong>[RAPID FIRE X]</strong>. Each time you gather <strong>attack dice</strong> for a <strong>[RAPID FIRE]</strong> weapon, add <strong>X</strong> additional <strong>attack dice</strong> if the target unit was within half range of that weapon in the Select Targets step.<br><br><strong>Example:</strong> If a <strong>[RAPID FIRE 1]</strong> weapon with an <strong>A</strong> characteristic of 1 targets a unit that is within half range, you would gather one additional <strong>attack dice</strong> for that weapon (for a total of two for that weapon)."
   },
   "assault": {
     "name": "Assault",

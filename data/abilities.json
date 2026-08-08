@@ -76,8 +76,7 @@
     "name": "Devastating Wounds",
     "type": "Weapon Ability",
     "phases": ["shooting", "fight"],
-    "needsVerification": true,
-    "description": "Each Critical Wound scored with this weapon inflicts mortal wounds instead of the normal damage."
+    "description": "Each time an attack made with a <strong>[DEVASTATING WOUNDS]</strong> weapon results in a <strong>critical wound</strong>, the attack sequence for that attack ends and the target unit suffers a number of <strong>mortal wounds</strong> equal to the <strong>D</strong> characteristic of that weapon. These are inflicted after resolving any normal damage inflicted by those attacks.<br><br><strong>Mortal wounds</strong> inflicted by <strong>[DEVASTATING WOUNDS]</strong> weapons can damage a maximum of one model for each <strong>critical wound</strong>; any remaining <strong>mortal wounds</strong> inflicted by that attack are lost.<br><br><strong>Example:</strong> <em>An attack made with a <strong>[DEVASTATING WOUNDS]</strong> weapon with a <strong>D</strong> characteristic of 3 results in a <strong>critical wound</strong> against an Intercessor Squad, so inflicts 3 <strong>mortal wounds</strong>. The first 2 <strong>mortal wounds</strong> are sufficient to destroy 1 Intercessor model, so the remaining <strong>mortal wound</strong> is lost.</em>"
   },
   "rapid-fire": {
     "name": "Rapid Fire",
@@ -110,8 +109,7 @@
     "name": "Blast",
     "type": "Weapon Ability",
     "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "Add 1 to this weapon's Attacks characteristic for every five models in the target unit. This weapon cannot target a unit within Engagement Range of the bearer's unit."
+    "description": "Each time you gather <strong>attack dice</strong> for a <strong>[BLAST]</strong> weapon, add one additional <strong>attack dice</strong> for every five models that were in the target unit in the Select Targets step (rounding down).<br><br>If this ability takes the form <strong>[BLAST X]</strong>, each time you gather <strong>attack dice</strong> for such a weapon, add <strong>X</strong> additional <strong>attack dice</strong> for every five models that were in the target unit in the Select Targets step (rounding down) instead.<br><br><strong>Example:</strong> <em>If a <strong>[BLAST 2]</strong> weapon with an <strong>A</strong> characteristic of 3 targets a unit containing 12 models, you would gather four additional <strong>attack dice</strong> for that weapon (for a total of seven for that weapon).</em>"
   },
   "torrent": {
     "name": "Torrent",
@@ -124,8 +122,7 @@
     "name": "Precision",
     "type": "Weapon Ability",
     "phases": ["shooting", "fight"],
-    "needsVerification": true,
-    "description": "If the target is an Attached unit, the attacking model's controlling player can allocate the attack to a Character model in that unit."
+    "description": "While resolving attacks made with one or more <strong>[PRECISION]</strong> weapons, at the start of the Allocation Order step (05.03), if the target unit contains one or more <strong>CHARACTER</strong> models <strong>visible</strong> to one or more of the attacking models, the active player can select one allocation group that contains one of those <strong>visible CHARACTER</strong> models. If they do, until those attacks are resolved, or until that <strong>CHARACTER</strong> group is destroyed (whichever happens first), that <strong>CHARACTER</strong> group is the current allocation group."
   },
   "ignores-cover": {
     "name": "Ignores Cover",
@@ -138,8 +135,7 @@
     "name": "Hazardous",
     "type": "Weapon Ability",
     "phases": ["shooting", "fight"],
-    "needsVerification": true,
-    "description": "After a unit has shot or fought with Hazardous weapons, roll one D6 for each such weapon; on a 1 the bearer suffers damage."
+    "description": "Each time a unit is <strong>selected to shoot</strong> or <strong>selected to fight</strong>, after that unit has resolved all of its attacks, make a number of <strong>hazard rolls</strong> (06.03) for that unit equal to the number of <strong>[HAZARDOUS]</strong> weapons you selected in the Select Weapons step."
   },
   "melta": {
     "name": "Melta",

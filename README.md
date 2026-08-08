@@ -49,9 +49,11 @@ A **faction call button** is pinned to the bottom of the Combat Patrol tab (see 
 `data/stratagems.json` holds the 11th-ed core stratagems. Still empty, awaiting
 matched-play data: `data/detachments.json`, `data/enhancements.json`,
 `data/units/`.
-`data/abilities.json` is seeded with edition-core weapon/core abilities, each flagged
-`needsVerification` until the wording is checked against an 11th-ed source — the app
-shows a ⚠ note in those popups.
+`data/abilities.json` holds every ability. **Everything the Ork data actually
+references is verified** — no ⚠ appears anywhere in the current force. The remaining
+25 entries are unused edition-core scaffolding still flagged `needsVerification`,
+which shows a ⚠ in their popup until their wording is checked. They cost nothing
+until a datasheet references one.
 
 ## Adding data
 

@@ -1,0 +1,39 @@
+{
+  "id": "cp-ardmob-warboss",
+  "name": "'Ardmob Warboss",
+  "type": ["Infantry", "Character"],
+  "keywords": ["'ARDMOB", "CHARACTER", "EXPLOSIVES", "INFANTRY"],
+
+  "isLeader": true,
+  "isEpicHero": false,
+
+  "models": 1,
+  "modelBreakdown": "1 Warboss",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "4+", "w": 6, "ld": "6+", "oc": 1 },
+
+  "invulnerableSave": "5+",
+  "invulnerableSource": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Kustom Choppa; 1 Kustom Shoota.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kustom Shoota", "count": 1, "range": "18\"", "a": "4", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{ "id": "rapid-fire", "display": "Rapid Fire 2" }] }
+    ],
+    "melee": [
+      { "name": "Kustom Choppa", "count": 1, "a": "6", "ws": "2+", "s": "8", "ap": "-2", "d": "2",
+        "abilities": [{ "id": "cleave", "display": "Cleave 1" }] }
+    ]
+  },
+
+  "abilities": ["smash-em-up"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": [],
+
+  "_canLead_note": "The datasheet names 'ARDMOB BOYZ, and the force contains two units with that name, so both are listed. The card lists the name once, as the datasheet does.",
+  "canLead": ["cp-ardmob-boyz", "cp-ardmob-boyz-kustom"]
+}

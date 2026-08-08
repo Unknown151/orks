@@ -44,9 +44,10 @@ The nav is **Army · Builder · Stratagems · Combat Patrol**. The in-game track
 (CP / battle round / VP / WAAAGH!) moved into the ☰ menu — nothing was removed.
 A **faction call button** is pinned to the bottom of the Combat Patrol tab (see below).
 
-**Combat Patrol** has three units in (`data/combat-patrol/`). Still empty, awaiting
-matched-play data: `data/detachments.json`, `data/enhancements.json`,
-`data/stratagems.json`, `data/units/`.
+**Combat Patrol** has its full force in (`data/combat-patrol/`) — 6 units, 33 models.
+Still empty, awaiting matched-play data: `data/detachments.json`,
+`data/enhancements.json`, `data/stratagems.json`, `data/units/`. The Combat Patrol
+force rule and its stratagems have not been supplied yet either.
 `data/abilities.json` is seeded with edition-core weapon/core abilities, each flagged
 `needsVerification` until the wording is checked against an 11th-ed source — the app
 shows a ⚠ note in those popups.

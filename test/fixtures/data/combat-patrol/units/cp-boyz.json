@@ -31,7 +31,13 @@
     "s": "4",
     "ap": "0",
     "d": "1",
-    "abilities": []
+    "abilities": [
+     {
+      "id": "rapid-fire",
+      "display": "Rapid Fire 1"
+     },
+     "lethal-hits"
+    ]
    }
   ],
   "melee": [
@@ -43,7 +49,9 @@
     "s": "5",
     "ap": "-1",
     "d": "1",
-    "abilities": []
+    "abilities": [
+     "lethal-hits"
+    ]
    }
   ]
  },

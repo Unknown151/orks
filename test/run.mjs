@@ -415,6 +415,34 @@ t('cpCostNote renders as its own badge', await p.evaluate(()=>{
   const ok=!!n && n.textContent==='+1 CP for X';
   delete DATA.stratagems['core-a'].cpCostNote; renderStrats(); renderCombatPatrol(); return ok;}));
 
+// --------------------------- WEAPON ROWS -----------------------------
+await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
+t('every weapon carries its own stat labels', await p.evaluate(()=>{
+  const r=document.querySelector('#view-cp .wrow.ranged');
+  return [...r.querySelectorAll('.wst b')].map(x=>x.textContent).join()==='Range,A,BS,S,AP,D';}));
+t('melee drops the Range column instead of leaving it blank', await p.evaluate(()=>{
+  const m=document.querySelector('#view-cp .wrow.melee');
+  return [...m.querySelectorAll('.wst b')].map(x=>x.textContent).join()==='A,WS,S,AP,D';}));
+t('abilities sit below the stats, not beside them', await p.evaluate(()=>{
+  const row=[...document.querySelectorAll('#view-cp .wrow')].find(r=>r.querySelector('.wab'));
+  return row.querySelector('.wab').getBoundingClientRect().top
+       >= row.querySelector('.wstats').getBoundingClientRect().bottom - 1;}));
+t('stat values no longer crowd the right edge', await p.evaluate(()=>{
+  const row=[...document.querySelectorAll('#view-cp .wrow')].find(r=>r.querySelector('.wab'));
+  const rowBox=row.getBoundingClientRect(), stats=row.querySelector('.wstats').getBoundingClientRect();
+  return stats.width > rowBox.width*0.9;}));
+t('no ability pill overlaps a stat cell', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-cp .wrow')].every(r=>{
+    const w=r.querySelector('.wstats'), a=r.querySelector('.wab');
+    if(!a) return true;
+    const wb=w.getBoundingClientRect(), ab=a.getBoundingClientRect();
+    return ab.top >= wb.bottom - 1;})));
+t('stat labels take the section colour', await p.evaluate(()=>
+  getComputedStyle(document.querySelector('#view-cp .wrow.ranged .wst b')).color
+  !== getComputedStyle(document.querySelector('#view-cp .wrow.melee .wst b')).color));
+t('the old shared header row is gone',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .wtbl').length)===0);
+
 // ---------------------- WEAPON SECTION BANDING -----------------------
 await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
 t('ranged and melee headers are distinguishable', await p.evaluate(()=>{

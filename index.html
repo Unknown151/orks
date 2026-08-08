@@ -112,14 +112,18 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .prof-n{font-size:11.5px;color:var(--dim);margin:7px 0 3px}
 .inv{display:flex;align-items:center;gap:7px;margin-top:6px;font-size:12.5px}
 .inv b{color:var(--accent)}
-.wtbl{width:100%;border-collapse:collapse;font-size:12px}
-.wtbl th{font-size:9.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.4px;text-align:center;padding:2px 1px;font-weight:600}
-.wtbl th:first-child{text-align:left}
-.wtbl td{padding:3px 1px;text-align:center;border-top:1px solid var(--line)}
-.wtbl td:first-child{text-align:left;line-height:1.3}
-.wtbl .wn{font-weight:600}
-.wgrp{font-size:10.5px;color:var(--warn);padding:4px 0 1px;font-style:italic}
-.wab{margin-top:2px}
+.wrow{padding:8px 0;border-top:1px solid var(--line)}
+.wrow:first-of-type{border-top:0}
+.wn{font-weight:600;font-size:13.5px;line-height:1.25;margin-bottom:6px}
+.wstats{display:flex}
+.wst{flex:1;min-width:0;text-align:center;padding:1px 2px;border-left:1px solid var(--line)}
+.wst:first-child{border-left:0}
+.wst b{display:block;font-size:9px;letter-spacing:.6px;font-weight:700;color:var(--dim);margin-bottom:1px}
+.wst span{font-size:14px;font-weight:700}
+.wrow.ranged .wst b{color:var(--ranged)}
+.wrow.melee  .wst b{color:var(--melee)}
+.wgrp{font-size:10.5px;color:var(--warn);padding:6px 0 2px;font-style:italic;line-height:1.35}
+.wab{margin-top:7px}
 .split-note{font-size:11px;color:var(--dim);font-style:italic;margin-top:4px}
 .leader-band{background:var(--accent2);color:#fff;font-size:10px;letter-spacing:.7px;text-transform:uppercase;padding:3px 11px;font-weight:700}
 .merged-sec{border-top:2px solid var(--accent2)}
@@ -281,7 +285,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.7.0';
+const VERSION = '0.8.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -883,34 +887,38 @@ function statBlock(stats, mods){
   return `<div class="statline">${keys.map(([k,l]) =>
     `<div class="stat${mods && mods[k] ? ' mod' : ''}"><b>${l}</b><span>${esc(stats?.[k] ?? '–')}</span></div>`).join('')}</div>`;
 }
+// One block per weapon: name, then its stats with their own labels, then its
+// abilities underneath. A shared header row forced the stats into narrow
+// right-hand columns and left melee with a dead Range column.
 function weaponRows(unit, inst, kind){
   const list = (unit.weapons?.[kind] || []).filter(w => weaponCount(inst, w) > 0);
   if(!list.length) return '';
   const inherited = inheritedAbilitiesFor(inst, kind);
   const ranged = kind === 'ranged';
-  const head = ranged ? ['Range','A','BS','S','AP','D'] : ['','A','WS','S','AP','D'];
+  const cols = ranged
+    ? [['range','Range'],['a','A'],['bs','BS'],['s','S'],['ap','AP'],['d','D']]
+    : [['a','A'],['ws','WS'],['s','S'],['ap','AP'],['d','D']];
   const kindClass = ranged ? 'ranged' : 'melee';
-  let html = `<div class="sec"><div class="wsec-t ${kindClass}">${ranged?'Ranged':'Melee'} weapons</div>
-    <table class="wtbl ${kindClass}"><tr><th>Weapon</th>${head.map(h=>`<th>${h}</th>`).join('')}</tr>`;
+  let html = `<div class="sec"><div class="wsec-t ${kindClass}">${ranged?'Ranged':'Melee'} weapons</div>`;
   let lastGroup = null;
   list.forEach(w => {
     if(w.weaponGroup && w.weaponGroup !== lastGroup){
-      html += `<tr><td colspan="7" class="wgrp">${esc(w.weaponGroupLabel || 'Choose one profile')}</td></tr>`;
+      html += `<div class="wgrp">${esc(w.weaponGroupLabel || 'Choose one profile')}</div>`;
       lastGroup = w.weaponGroup;
     }
     if(!w.weaponGroup) lastGroup = null;
     const n = weaponCount(inst, w);
     const abs = (w.abilities || []).map(a =>
       typeof a === 'string' ? abilityPill(a) : abilityPill(a.id, '', a.display));
-    const inh = inherited.map(id => abilityPill(id, 'inh'));
-    const all = abs.concat(inh);
-    html += `<tr>
-      <td><span class="wn">${n>1?n+'× ':''}${esc(w.name)}</span>${all.length?`<div class="wab">${all.join('')}</div>`:''}</td>
-      <td>${esc(ranged ? (w.range||'–') : '')}</td><td>${esc(w.a??'–')}</td>
-      <td>${esc((ranged ? w.bs : w.ws) ?? '–')}</td><td>${esc(w.s??'–')}</td>
-      <td>${esc(w.ap??'–')}</td><td>${esc(w.d??'–')}</td></tr>`;
+    const all = abs.concat(inherited.map(id => abilityPill(id, 'inh')));
+    html += `<div class="wrow ${kindClass}">
+      <div class="wn">${n>1?n+'× ':''}${esc(w.name)}</div>
+      <div class="wstats">${cols.map(([k,l]) =>
+        `<div class="wst"><b>${l}</b><span>${esc(w[k] ?? '–')}</span></div>`).join('')}</div>
+      ${all.length ? `<div class="wab">${all.join('')}</div>` : ''}
+    </div>`;
   });
-  return html + '</table></div>';
+  return html + '</div>';
 }
 function unitBody(unit, inst, opts){
   opts = opts || {};

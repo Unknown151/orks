@@ -87,9 +87,14 @@ carries the DP budget (default 3) and the category → colour map.
 
 ## Weapon sections
 
-Ranged and melee weapons carry colour-banded headers — cool blue and warm red — with
-a left accent stripe and matching column headers, so the two blocks separate at a
-glance while scrolling a card mid-game. Every other section (Abilities, Wargear,
+Each weapon is its own block: **name, then its stats with their own labels across the
+full width, then its abilities underneath.** There is no shared header row — that
+layout squeezed the values into narrow right-hand columns, left melee with a dead
+Range column, and pushed ability badges alongside the numbers where they collided.
+
+Ranged and melee carry colour-banded headers — cool blue and warm red — with a left
+accent stripe, and each weapon's stat labels take the same colour, so the two blocks
+separate at a glance while scrolling a card mid-game. Every other section (Abilities, Wargear,
 Keywords, Leader) deliberately keeps the plain header: the banding only means
 something because it is used sparingly. The colours are theme tokens
 (`--ranged*` / `--melee*`) with light-theme variants.

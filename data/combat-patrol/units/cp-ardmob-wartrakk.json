@@ -1,0 +1,34 @@
+{
+  "id": "cp-ardmob-wartrakk",
+  "name": "'Ardmob Wartrakk",
+  "type": ["Mounted"],
+  "keywords": ["'ARDMOB", "MOUNTED", "SPEED FREEKS"],
+
+  "models": 1,
+  "modelBreakdown": "1 Wartrakk",
+
+  "stats": { "m": "12\"", "t": 6, "sv": "4+", "w": 7, "ld": "7+", "oc": 3 },
+
+  "invulnerableSave": "6+",
+  "invulnerableSource": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Choppas; 1 Kustom Shoota; 1 Rokkit Launcha.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kustom Shoota", "count": 1, "range": "18\"", "a": "4", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{ "id": "rapid-fire", "display": "Rapid Fire 2" }] },
+      { "name": "Rokkit Launcha", "count": 1, "range": "24\"", "a": "D3+3", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [] }
+    ],
+    "melee": [
+      { "name": "Choppas", "count": 1, "a": "6", "ws": "3+", "s": "4", "ap": "-1", "d": "1", "abilities": [] }
+    ]
+  },
+
+  "abilities": ["indiscriminate-detonations"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

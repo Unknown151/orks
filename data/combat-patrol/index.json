@@ -8,7 +8,8 @@
   "roster": [
     { "unit": "cp-ardmob-boyz",        "count": 1, "note": "Boss Nob with Kombi-rokkit & Kombi-shoota" },
     { "unit": "cp-ardmob-boyz-kustom", "count": 1, "note": "Boss Nob with Kustom Shoota" },
-    { "unit": "cp-ardmob-gretchin",     "count": 1 }
+    { "unit": "cp-ardmob-gretchin",     "count": 1 },
+    { "unit": "cp-ardmob-wartrakk",     "count": 1 }
   ],
 
   "_rule_help": "One rule object, or an array of them: {\"name\":\"…\", \"description\":\"HTML\"}.",

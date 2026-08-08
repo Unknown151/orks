@@ -6,6 +6,12 @@
     "type": "Ability — 'Ardmob Boyz",
     "description": "While this unit is <strong>engaged</strong>, this unit has +1 <strong>OC</strong>."
   },
+  "indiscriminate-detonations": {
+    "name": "Indiscriminate Detonations",
+    "type": "Ability — 'Ardmob Wartrakk",
+    "phases": ["shooting"],
+    "description": "In your Shooting phase, when this unit has shot, select one enemy unit hit by those attacks. That unit is <strong>suppressed</strong> until the start of your next turn:<br>• While a unit is <strong>suppressed</strong>, that unit's attacks have -1 to <strong>hit rolls</strong>."
+  },
   "grot-infestation": {
     "name": "Grot Infestation (Once per battle per unit)",
     "type": "Ability — 'Ardmob Gretchin",

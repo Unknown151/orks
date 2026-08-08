@@ -257,12 +257,17 @@ t('tracker still increments',
 await p.evaluate(()=>{game.cp=0;save();});
 
 // -------------------------- FACTION CALL DOCK --------------------------
-await p.evaluate(()=>{game.waaagh=false;save();renderAll();}); await p.waitForTimeout(120);
-t('dock button always on screen (fixed)',
+await p.evaluate(()=>{game.waaagh=false;save();setTab('cp');renderAll();}); await p.waitForTimeout(120);
+t('dock is fixed to the screen',
   await p.evaluate(()=>getComputedStyle(document.querySelector('#dock')).position)==='fixed');
-t('dock survives tab changes', await p.evaluate(()=>{
-  setTab('army'); const a=document.querySelector('#dockBtn').offsetParent!==null;
-  setTab('builder'); return a && document.querySelector('#dockBtn').offsetParent!==null;}));
+t('dock shown on Combat Patrol', await p.evaluate(()=>{
+  setTab('cp'); return document.querySelector('#dock').style.display!=='none';}));
+t('dock hidden on every other tab', await p.evaluate(()=>{
+  const hidden=t=>{setTab(t);return document.querySelector('#dock').style.display==='none';};
+  const r=['army','builder','strats','points'].every(hidden); setTab('cp'); return r;}));
+t('hidden dock reclaims its page padding', await p.evaluate(()=>{
+  setTab('builder'); const pad=parseInt(getComputedStyle(document.querySelector('main')).paddingBottom,10);
+  setTab('cp'); return pad<30;}));
 t('button labelled from data', await p.evaluate(()=>document.querySelector('#dockBtn').textContent)==='WAAAGH!');
 t('no banner before it is called', await p.evaluate(()=>!document.querySelector('#dockBanner').classList.contains('on')));
 t('page content is padded clear of the dock',
@@ -298,21 +303,34 @@ t('second press does not cancel the call', await p.evaluate(()=>game.waaagh)===t
 // survives a reload
 await p.reload({waitUntil:'networkidle'}); await p.waitForTimeout(400);
 t('call persists across reload', await p.evaluate(()=>game.waaagh)===true);
-t('banner restored on load', await p.evaluate(()=>document.querySelector('#dockBanner').classList.contains('on')));
+t('dock not shown on the default tab after reload',
+  await p.evaluate(()=>document.querySelector('#dock').style.display)==='none');
+await p.evaluate(()=>setTab('cp')); await p.waitForTimeout(150);
+t('banner restored when returning to Combat Patrol',
+  await p.evaluate(()=>document.querySelector('#dockBanner').classList.contains('on')));
 
 // end it from the banner
 await p.click('#dockEnd'); await p.waitForTimeout(150);
 t('End clears the call', await p.evaluate(()=>game.waaagh)===false);
 t('banner hidden after End', await p.evaluate(()=>!document.querySelector('#dockBanner').classList.contains('on')));
 
-// stays in sync with the in-game tracker
+// stays in sync with the in-game tracker (which lives on another tab)
 await p.evaluate(()=>setTab('points'));
 await p.click('#btnWaaagh'); await p.waitForTimeout(120);
-t('tracker toggle drives the dock', await p.evaluate(()=>document.querySelector('#dockBanner').classList.contains('on')));
+t('tracker toggle sets the call', await p.evaluate(()=>game.waaagh)===true);
+await p.evaluate(()=>setTab('cp')); await p.waitForTimeout(150);
+t('tracker toggle drives the dock banner',
+  await p.evaluate(()=>document.querySelector('#dockBanner').classList.contains('on')));
+await p.evaluate(()=>setTab('points'));
 await p.click('#btnResetGame'); await p.waitForTimeout(120);
+await p.evaluate(()=>setTab('cp')); await p.waitForTimeout(150);
 t('reset game clears the dock', await p.evaluate(()=>!document.querySelector('#dockBanner').classList.contains('on')));
 
 // data-driven: no call* keys => no dock at all
+t('adding a tab to FACTION_CALL_TABS is all it takes', await p.evaluate(()=>{
+  FACTION_CALL_TABS.push('army'); setTab('army');
+  const shown=document.querySelector('#dock').style.display!=='none';
+  FACTION_CALL_TABS.pop(); setTab('cp'); return shown;}));
 t('dock hides when the ability has no call data', await p.evaluate(()=>{
   const keep=DATA.abilities.waaagh; delete DATA.abilities.waaagh; renderDock();
   const hidden=document.querySelector('#dock').style.display==='none';

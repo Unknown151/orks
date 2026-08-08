@@ -40,7 +40,7 @@ The **engine is complete and tested**; the **Ork data is not in yet.** Guide §8
 
 The nav is **Army · Builder · Stratagems · Combat Patrol**. The in-game tracker
 (CP / battle round / VP / WAAAGH!) moved into the ☰ menu — nothing was removed.
-A **faction call button** is pinned to the bottom of every tab (see below).
+A **faction call button** is pinned to the bottom of the Combat Patrol tab (see below).
 
 **Empty data files, waiting on datasheets:** `data/detachments.json`,
 `data/enhancements.json`, `data/stratagems.json`, `data/units/`.
@@ -82,8 +82,9 @@ carries the DP budget (default 3) and the category → colour map.
 
 ## The faction call button
 
-A button fixed to the bottom of the screen on every tab, for the faction's
-once-per-battle call. Pressing it plays a shake + ring + screen-flash effect (and a
+A button fixed to the bottom of the screen, for the faction's once-per-battle call.
+It currently shows on the **Combat Patrol** tab only — which tabs it appears on is the
+`FACTION_CALL_TABS` array in `index.html`, so adding `'army'` to it is the whole change. Pressing it plays a shake + ring + screen-flash effect (and a
 haptic buzz where supported), then an **ongoing banner** rises above it naming the
 effect you just gained and how long it lasts. It stays there until you press **End**
 on the banner.

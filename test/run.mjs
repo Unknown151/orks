@@ -337,6 +337,60 @@ t('dock hides when the ability has no call data', await p.evaluate(()=>{
   DATA.abilities.waaagh=keep; renderDock(); return hidden;}));
 await p.waitForTimeout(120);
 
+// ---------------------------- COLLAPSING -----------------------------
+await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
+t('every unit card has a chevron',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .unit-hd .ucv').length)>0);
+t('cards start expanded',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .unit.collapsed').length)===0);
+await p.click('#view-cp .unit-hd');
+t('tapping the header collapses the card',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .unit')[0].classList.contains('collapsed')));
+t('collapsed body is hidden',
+  await p.evaluate(()=>getComputedStyle(document.querySelectorAll('#view-cp .unit')[0].querySelector('.unit-bd')).display)==='none');
+t('header stays visible when collapsed',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .unit')[0].querySelector('h3').offsetParent!==null));
+t('collapsing one card leaves its neighbour alone',
+  await p.evaluate(()=>!document.querySelectorAll('#view-cp .unit')[1].classList.contains('collapsed')));
+await p.click('#view-cp .unit-hd');
+t('tapping again expands it',
+  await p.evaluate(()=>!document.querySelectorAll('#view-cp .unit')[0].classList.contains('collapsed')));
+
+// survives a re-render and a reload
+await p.click('#view-cp .unit-hd');
+t('state survives a full re-render', await p.evaluate(()=>{
+  renderAll(); return document.querySelectorAll('#view-cp .unit')[0].classList.contains('collapsed');}));
+await p.reload({waitUntil:'networkidle'}); await p.waitForTimeout(400);
+await p.evaluate(()=>setTab('cp')); await p.waitForTimeout(150);
+t('state survives a reload',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .unit')[0].classList.contains('collapsed')));
+await p.click('#view-cp .unit-hd');   // tidy up
+
+// merged leader cards collapse whole (an earlier test removed the leader, so re-attach)
+await p.evaluate(()=>{
+  addUnit('demo-warboss');
+  armyList[0].leaderId = armyList[armyList.length-1].uid;
+  setTab('army'); renderAll();
+}); await p.waitForTimeout(150);
+t('merged card present for the collapse check',
+  await p.evaluate(()=>document.querySelectorAll('#view-army .leader-band').length)===2);
+const mk = await p.evaluate(()=>{const c=[...document.querySelectorAll('#view-army .unit')]
+  .find(x=>x.querySelector('.leader-band')); c.querySelector('.unit-hd').click();
+  return [...c.querySelectorAll('.leader-band,.unit-bd')].every(e=>getComputedStyle(e).display==='none');});
+t('merged card hides leader AND unit sections', mk);
+await p.evaluate(()=>{const c=[...document.querySelectorAll('#view-army .unit')]
+  .find(x=>x.querySelector('.leader-band')); c.querySelector('.unit-hd').click();});
+
+// builder cards too, and independently of the army view
+await p.evaluate(()=>setTab('builder')); await p.waitForTimeout(150);
+await p.click('#view-builder .unit-hd');
+t('builder cards collapse',
+  await p.evaluate(()=>document.querySelectorAll('#view-builder .unit')[0].classList.contains('collapsed')));
+t('builder collapse is keyed separately from the army view',
+  await p.evaluate(()=>{const uid=armyList[0].uid; return !!collapsed['b:'+uid] && !collapsed['a:'+uid];}));
+await p.click('#view-builder .unit-hd');
+await p.evaluate(()=>{collapsed={};localStorage.removeItem('orks.collapsed');renderAll();});
+
 t('no console/page errors: '+errs.join(' | '), errs.length===0);
 await b.close();
 server.close();

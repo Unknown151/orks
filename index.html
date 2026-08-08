@@ -75,7 +75,16 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 
 /* ---------- unit card ---------- */
 .unit{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
-.unit-hd{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;background:var(--card2);border-bottom:1px solid var(--line)}
+.unit-hd{display:flex;align-items:flex-start;gap:8px;padding:9px 11px;background:var(--card2);
+  border-bottom:1px solid var(--line);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.unit-hd:active{background:var(--line)}
+.ucv{color:var(--accent);font-size:21px;line-height:.9;display:inline-block;flex:none;
+  transform:rotate(90deg);transition:transform .2s ease}
+.unit.collapsed .ucv{transform:rotate(0deg)}
+.unit.collapsed{margin-bottom:7px}
+.unit.collapsed .unit-hd{border-bottom:0}
+.unit.collapsed .unit-bd,.unit.collapsed .leader-band{display:none}
+@media (prefers-reduced-motion: reduce){ .ucv{transition:none} }
 .unit-hd h3{margin:0;font-size:15px;flex:1;line-height:1.25}
 .unit-hd .sub{display:block;font-size:11.5px;color:var(--dim);font-weight:400;margin-top:2px}
 .pts{font-weight:700;color:var(--accent);white-space:nowrap;font-size:14px}
@@ -259,7 +268,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.3.2';
+const VERSION = '0.4.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -268,7 +277,8 @@ const MAX_UPGRADE_COPIES = 3;
 
 const LS = {
   army:'orks.army', dets:'orks.detachments', lists:'orks.lists', game:'orks.game',
-  theme:'orks.theme', limit:'orks.limit', name:'orks.listName', legacyDet:'orks.detachment'
+  theme:'orks.theme', limit:'orks.limit', name:'orks.listName', legacyDet:'orks.detachment',
+  collapsed:'orks.collapsed'
 };
 
 /* ---------------------------------- data --------------------------------- */
@@ -289,6 +299,9 @@ let pointsLimit = 2000;
 let listName = 'Untitled list';
 let game = { cp:0, round:1, vpUs:0, vpThem:0, waaagh:false };
 let ui = { tab:'builder', detOpen:true, enhOpen:false, stratPhase:'all', stratTurn:'all', panels:{} };
+// Which unit cards are collapsed, keyed by a stable per-card id. Persisted so a
+// tidied-up list stays tidy across a reload mid-game.
+let collapsed = {};
 
 /* -------------------------------- helpers -------------------------------- */
 const $ = s => document.querySelector(s);
@@ -658,6 +671,7 @@ function loadState(){
   const lim = parseInt(localStorage.getItem(LS.limit), 10);
   if(!isNaN(lim)) pointsLimit = lim;
   listName = localStorage.getItem(LS.name) || listName;
+  try{ const c = JSON.parse(localStorage.getItem(LS.collapsed)); if(c && typeof c === 'object') collapsed = c; }catch{}
   const th = localStorage.getItem(LS.theme);
   if(th) document.documentElement.setAttribute('data-theme', th);
 }
@@ -816,6 +830,19 @@ function setTab(name){
   renderDock();
 }
 
+/* ------------------------------ collapsing ------------------------------- */
+const isCollapsed = key => !!collapsed[key];
+const collapseClass = key => isCollapsed(key) ? ' collapsed' : '';
+// Chevron sits at the end of the header; the whole header is the hit target.
+const collapseChevron = () => '<span class="ucv">\u203A</span>';
+function toggleCollapse(key, card){
+  if(collapsed[key]) delete collapsed[key]; else collapsed[key] = 1;
+  // Toggle in place rather than re-rendering, so the page doesn't jump.
+  card.classList.toggle('collapsed', isCollapsed(key));
+  try { localStorage.setItem(LS.collapsed, JSON.stringify(collapsed)); } catch {}
+  renderDock();
+}
+
 /* --------------------------- shared card pieces --------------------------- */
 function abilityPill(id, cls, label){
   const a = DATA.abilities[id];
@@ -944,11 +971,13 @@ function renderArmy(){
     const pts = instancePoints(i) + (l ? instancePoints(l) : 0);
     const sub = [u.modelBreakdown || (i.models > 1 ? i.models + ' models' : ''), label,
                  l ? `${instancePoints(i)} + ${instancePoints(l)} pts` : ''].filter(Boolean).join(' · ');
-    return `<div class="unit">
-      <div class="unit-hd">
+    const ck = 'a:' + i.uid;
+    return `<div class="unit${collapseClass(ck)}">
+      <div class="unit-hd" data-ucol="${ck}">
         <h3>${esc(u.name)}${g.n>1?` <span class="muted">×${g.n}</span>`:''}
           <span class="sub">${esc(sub)}</span></h3>
         <span class="pts">${pts}${isEscalated(u,ci)?' <span class="esc" title="Escalated cost — copy #'+ci+'">↑</span>':''}</span>
+        ${collapseChevron()}
       </div>
       ${lu ? `<div class="leader-band">Leader — ${esc(lu.name)}</div><div class="unit-bd">${unitBody(lu, l)}</div>
               <div class="leader-band merged-sec">Unit — ${esc(u.name)}</div>` : ''}
@@ -1044,10 +1073,12 @@ function builderCard(inst){
   const leaders = availableLeadersFor(inst);
   const summary = weaponSummaryText(u, inst);
 
-  let h = `<div class="unit"><div class="unit-hd">
+  const ck = 'b:' + inst.uid;
+  let h = `<div class="unit${collapseClass(ck)}"><div class="unit-hd" data-ucol="${ck}">
     <h3>${enh?'<span class="star">★</span> ':''}${esc(u.name)}
       <span class="sub">${esc(u.modelBreakdown||'')}${summary?(u.modelBreakdown?' · ':'')+esc(summary):''}</span></h3>
     <span class="pts">${instancePoints(inst)}${isEscalated(u,ci)?` <span class="esc" title="Copy #${ci} — escalated cost">↑</span>`:''}</span>
+    ${collapseChevron()}
   </div><div class="unit-bd">`;
 
   if(sizes.length > 1){
@@ -1162,17 +1193,18 @@ function renderStrats(){
 /* A separate, introductory game mode: one fixed force, its own datasheets and
    its own stratagems. No list building, no wargear choices, no points, no
    detachments — so this view is read-only by design. */
-function cpCard(entry){
+function cpCard(entry, idx){
+  const ck = 'c:' + idx;
   const u = DATA.cpUnits[entry.unit];
   if(!u){
-    return `<div class="unit"><div class="unit-hd"><h3>${esc(entry.unit)}
+    return `<div class="unit"><div class="unit-hd" style="cursor:default"><h3>${esc(entry.unit)}
       <span class="sub">Datasheet missing — expected <code>data/combat-patrol/units/${esc(entry.unit)}.json</code></span></h3></div></div>`;
   }
   const l = entry.ledBy ? DATA.cpUnits[entry.ledBy] : null;
   const sub = [u.modelBreakdown || (u.models > 1 ? u.models + ' models' : ''), entry.note].filter(Boolean).join(' · ');
-  return `<div class="unit">
-    <div class="unit-hd"><h3>${esc(u.name)}${entry.count > 1 ? ` <span class="muted">×${entry.count}</span>` : ''}
-      <span class="sub">${esc(sub)}</span></h3></div>
+  return `<div class="unit${collapseClass(ck)}">
+    <div class="unit-hd" data-ucol="${ck}"><h3>${esc(u.name)}${entry.count > 1 ? ` <span class="muted">×${entry.count}</span>` : ''}
+      <span class="sub">${esc(sub)}</span></h3>${collapseChevron()}</div>
     ${l ? `<div class="leader-band">Leader — ${esc(l.name)}</div>
            <div class="unit-bd">${unitBody(l, null, {noGrants:true})}</div>
            <div class="leader-band merged-sec">Unit — ${esc(u.name)}</div>` : ''}
@@ -1330,6 +1362,10 @@ document.addEventListener('click', e => {
       (x.description || '<em>Rule to be added.</em>'));
     return;
   }
+  // collapse / expand a unit card
+  const uc = el('[data-ucol]');
+  if(uc){ toggleCollapse(uc.dataset.ucol, uc.closest('.unit')); return; }
+
   // detachments
   const dc = el('[data-det]');
   if(dc){ toggleDetachment(dc.dataset.det); return; }

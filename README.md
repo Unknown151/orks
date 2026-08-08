@@ -80,6 +80,22 @@ Two rules that will bite otherwise:
 Copy `data/units/_TEMPLATE.json` to start a new datasheet. `data/detachments.json`
 carries the DP budget (default 3) and the category → colour map.
 
+## Collapsing unit cards
+
+Every unit card — Army, Builder and Combat Patrol — collapses to its header by
+tapping anywhere on that header. The chevron on the right points down when open and
+right when closed. Collapsed, a card still shows its name, its sub-line (model
+breakdown, loadout note, diff label) and its points, so a tidied list stays readable.
+
+- Collapsing an **Attached unit** hides the leader and bodyguard sections together —
+  it is one card, so it collapses as one.
+- State is **per card and per view**: the same unit collapsed on the Builder stays
+  open on the Army tab, and vice versa.
+- It **persists across reloads** (`orks.collapsed` in localStorage), so a list tidied
+  before a game is still tidy after a refresh mid-game.
+- Toggling happens **in place** rather than through a re-render, so the page doesn't
+  jump under your thumb.
+
 ## The faction call button
 
 A button fixed to the bottom of the screen, for the faction's once-per-battle call.

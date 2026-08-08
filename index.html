@@ -188,7 +188,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
     <button data-tab="army">Army</button>
     <button data-tab="builder" class="on">Builder</button>
     <button data-tab="strats">Stratagems</button>
-    <button data-tab="points">Points</button>
+    <button data-tab="cp">Combat Patrol</button>
   </nav>
 </header>
 
@@ -197,6 +197,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
   <section class="view" id="view-army"></section>
   <section class="view on" id="view-builder"></section>
   <section class="view" id="view-strats"></section>
+  <section class="view" id="view-cp"></section>
   <section class="view" id="view-points"></section>
 </main>
 
@@ -217,7 +218,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -233,7 +234,11 @@ const LS = {
 const DATA = {
   abilities:{}, enhancements:{}, stratagems:{},
   detachments:{}, detCategories:{}, dpBudget:3,
-  units:{}, unitOrder:[]
+  units:{}, unitOrder:[],
+  // Combat Patrol is a separate game mode with its own fixed force, its own
+  // datasheets and its own stratagems — kept in its own namespace so it can
+  // never mix with matched-play data.
+  combatPatrol:null, cpUnits:{}
 };
 
 /* --------------------------------- state --------------------------------- */
@@ -242,7 +247,7 @@ let selectedDetachments = [];   // ARRAY of detachment ids (DP spec §2)
 let pointsLimit = 2000;
 let listName = 'Untitled list';
 let game = { cp:0, round:1, vpUs:0, vpThem:0, waaagh:false };
-let ui = { tab:'builder', detOpen:true, enhOpen:false, stratPhase:'all', stratTurn:'all' };
+let ui = { tab:'builder', detOpen:true, enhOpen:false, stratPhase:'all', stratTurn:'all', panels:{} };
 
 /* -------------------------------- helpers -------------------------------- */
 const $ = s => document.querySelector(s);
@@ -304,6 +309,36 @@ async function loadData(){
     DATA.unitOrder.push(u.id);
   });
   DATA.unitOrder.sort((a,b)=> (DATA.units[a].name||'').localeCompare(DATA.units[b].name||''));
+
+  await loadCombatPatrol();
+}
+
+// Combat Patrol is optional: a missing file just leaves the tab empty rather
+// than failing the whole app.
+async function loadCombatPatrol(){
+  let cp;
+  try { cp = await getJSON('data/combat-patrol/index.json'); }
+  catch { return; }
+  DATA.combatPatrol = stripMeta(cp);
+  DATA.combatPatrol.stratagems = stripMeta(cp.stratagems || {});
+  // The datasheet manifest is the roster unless one is given explicitly.
+  const ids = Array.isArray(cp.units) && cp.units.length
+    ? cp.units.filter(x => typeof x === 'string' && !isMeta(x))
+    : [...new Set(cpRosterEntries().flatMap(e => [e.unit, e.ledBy]).filter(Boolean))];
+  const loaded = await Promise.all(ids.map(async id => {
+    try { return await getJSON('data/combat-patrol/units/' + id + '.json'); }
+    catch(e){ console.warn('combat patrol unit failed:', id, e); return null; }
+  }));
+  loaded.forEach((u,i) => {
+    if(!u) return;
+    if(u.id !== ids[i]) console.warn(`combat patrol unit id "${u.id}" != filename "${ids[i]}"`);
+    DATA.cpUnits[u.id] = u;
+  });
+}
+// Roster entries are either a plain unit id or {unit, count, ledBy}.
+function cpRosterEntries(){
+  return (DATA.combatPatrol?.roster || []).map(r =>
+    typeof r === 'string' ? { unit:r, count:1 } : { count:1, ...r });
 }
 
 /* ============================ DETACHMENT POINTS =========================== */
@@ -509,6 +544,7 @@ function availableLeadersFor(inst){
 }
 // Abilities a leader injects into its unit's weapon rows, as inherited badges.
 function inheritedAbilitiesFor(inst, weaponKind){
+  if(!inst) return [];
   const l = leaderInstOf(inst);
   const b = l && DATA.units[l.unitId]?.leaderBonus;
   if(!b?.grantsAbilities?.length) return [];
@@ -723,8 +759,19 @@ function exportText(){
 function renderAll(){
   $('#verLine').textContent = `${EDITION} — Version ${VERSION} · ${listName}`;
   $('#dpChip').textContent = `${dpSpent()}/${DATA.dpBudget}`;
+  syncHeader();
+  renderArmy(); renderBuilder(); renderStrats(); renderCombatPatrol(); renderPoints();
+}
+
+// DP is a matched-play concept — hide the control outside those tabs (guide §6).
+function syncHeader(){
   $('#btnDp').style.display = (ui.tab === 'builder' || ui.tab === 'strats') ? '' : 'none';
-  renderArmy(); renderBuilder(); renderStrats(); renderPoints();
+}
+function setTab(name){
+  ui.tab = name;
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'view-' + name));
+  syncHeader();
 }
 
 /* --------------------------- shared card pieces --------------------------- */
@@ -766,7 +813,8 @@ function weaponRows(unit, inst, kind){
   });
   return html + '</table></div>';
 }
-function unitBody(unit, inst){
+function unitBody(unit, inst, opts){
+  opts = opts || {};
   let h = '';
   if(unit.modelProfiles?.length){
     h += unit.modelProfiles.map(p =>
@@ -778,7 +826,7 @@ function unitBody(unit, inst){
     h += `<div class="inv">🛡 <b>Invulnerable save ${esc(unit.invulnerableSave)}</b>` +
          (unit.invulnerableSource ? ` ${abilityPill(unit.invulnerableSource)}` : '') + `</div>`;
   }
-  const granted = getDetachmentGrantedAbilities(unit);
+  const granted = opts.noGrants ? [] : getDetachmentGrantedAbilities(unit);
   if(granted.length){
     h += `<div class="inv">✦ ${granted.map(g => abilityPill(g.id, 'grant', g.name)).join('')}</div>`;
   }
@@ -1022,6 +1070,18 @@ function renderBuilder(){
 
 /* ------------------------------- STRATAGEMS ------------------------------- */
 const PHASES = ['command','movement','shooting','charge','fight'];
+function stratCard(s){
+  return `<div class="strat">
+    <div class="strat-hd"><div class="n">${esc(s.name)}<small>${esc(s.type||'')}</small></div>
+      <span class="cp">${s.cpCost ?? 0} CP</span></div>
+    <div class="strat-bd">
+      ${s.summary?`<p class="muted">${esc(s.summary)}</p>`:''}
+      ${s.when?`<p><b>WHEN:</b> ${s.when}</p>`:''}
+      ${s.target?`<p><b>TARGET:</b> ${s.target}</p>`:''}
+      ${s.effect?`<p><b>EFFECT:</b> ${s.effect}</p>`:''}
+      ${s.restrictions?`<p><b>RESTRICTIONS:</b> ${s.restrictions}</p>`:''}
+    </div></div>`;
+}
 function renderStrats(){
   const all = Object.entries(DATA.stratagems).map(([id,s]) => ({id, ...s}))
     .filter(s => !s.detachment || isContentDetachmentActive(s));
@@ -1048,19 +1108,68 @@ function renderStrats(){
     </div>
     ${Object.keys(groups).length ? Object.entries(groups).map(([g,list]) => `
       <div class="egroup">${esc(g)}</div>
-      ${list.map(s => `<div class="strat">
-        <div class="strat-hd"><div class="n">${esc(s.name)}<small>${esc(s.type||'')}</small></div>
-          <span class="cp">${s.cpCost ?? 0} CP</span></div>
-        <div class="strat-bd">
-          ${s.summary?`<p class="muted">${esc(s.summary)}</p>`:''}
-          ${s.when?`<p><b>WHEN:</b> ${s.when}</p>`:''}
-          ${s.target?`<p><b>TARGET:</b> ${s.target}</p>`:''}
-          ${s.effect?`<p><b>EFFECT:</b> ${s.effect}</p>`:''}
-          ${s.restrictions?`<p><b>RESTRICTIONS:</b> ${s.restrictions}</p>`:''}
-        </div></div>`).join('')}`).join('')
+      ${list.map(stratCard).join('')}`).join('')
     : `<div class="empty">${Object.keys(DATA.stratagems).length
         ? 'No stratagems match this filter.'
         : 'No stratagems loaded.<br>Add them to <code>data/stratagems.json</code>.'}</div>`}`;
+}
+
+/* ----------------------------- COMBAT PATROL ------------------------------ */
+/* A separate, introductory game mode: one fixed force, its own datasheets and
+   its own stratagems. No list building, no wargear choices, no points, no
+   detachments — so this view is read-only by design. */
+function cpCard(entry){
+  const u = DATA.cpUnits[entry.unit];
+  if(!u){
+    return `<div class="unit"><div class="unit-hd"><h3>${esc(entry.unit)}
+      <span class="sub">Datasheet missing — expected <code>data/combat-patrol/units/${esc(entry.unit)}.json</code></span></h3></div></div>`;
+  }
+  const l = entry.ledBy ? DATA.cpUnits[entry.ledBy] : null;
+  const sub = [u.modelBreakdown || (u.models > 1 ? u.models + ' models' : ''), entry.note].filter(Boolean).join(' · ');
+  return `<div class="unit">
+    <div class="unit-hd"><h3>${esc(u.name)}${entry.count > 1 ? ` <span class="muted">×${entry.count}</span>` : ''}
+      <span class="sub">${esc(sub)}</span></h3></div>
+    ${l ? `<div class="leader-band">Leader — ${esc(l.name)}</div>
+           <div class="unit-bd">${unitBody(l, null, {noGrants:true})}</div>
+           <div class="leader-band merged-sec">Unit — ${esc(u.name)}</div>` : ''}
+    <div class="unit-bd">${unitBody(u, null, {noGrants:true})}</div></div>`;
+}
+function renderCombatPatrol(){
+  const el = $('#view-cp'), cp = DATA.combatPatrol;
+  if(!cp){
+    el.innerHTML = `<div class="empty">No Combat Patrol data yet.<br>
+      Add <code>data/combat-patrol/index.json</code> and its datasheets to
+      <code>data/combat-patrol/units/</code>.</div>`;
+    return;
+  }
+  const entries = cpRosterEntries();
+  const models = entries.reduce((n,e) => n + (DATA.cpUnits[e.unit]?.models || 0) * e.count, 0);
+  const strats = Object.entries(cp.stratagems || {}).map(([id,s]) => ({id, ...s}));
+
+  const rules = [].concat(cp.rule || cp.rules || []).filter(Boolean);
+  const rulesPanel = rules.length ? panel('cpRule', 'Combat Patrol rules',
+    esc(rules.map(r => r.name).join(', ')),
+    rules.map(r => `<p><strong>${esc(r.name || '')}</strong><br>${r.description || '<em>Rule to be added.</em>'}</p>`).join(''),
+    ui.panels.cpRule) : '';
+
+  const stratPanel = strats.length ? panel('cpStrat', 'Combat Patrol stratagems',
+    `<span class="tag">${strats.length}</span>`,
+    strats.map(stratCard).join(''), ui.panels.cpStrat) : '';
+
+  el.innerHTML = `
+    <div class="panel open"><div class="panel-bd">
+      <div class="totals">
+        <span class="big">${entries.reduce((n,e) => n + e.count, 0)}</span>
+        <span class="muted">units${models ? ` · ${models} models` : ''}</span>
+        <span class="grow"></span>
+        <span class="muted" style="font-size:12px">${esc(cp.name || 'Combat Patrol')}</span>
+      </div>
+      ${cp.notes ? `<p class="muted" style="font-size:12.5px;margin:8px 0 0">${cp.notes}</p>` : ''}
+    </div></div>
+    ${rulesPanel}${stratPanel}
+    ${entries.length ? entries.map(cpCard).join('')
+      : `<div class="empty">No units in the Combat Patrol roster yet.<br>
+         Add them to the <code>roster</code> array in <code>data/combat-patrol/index.json</code>.</div>`}`;
 }
 
 /* --------------------------------- POINTS --------------------------------- */
@@ -1087,20 +1196,15 @@ document.addEventListener('click', e => {
 
   // tabs
   const tab = el('nav button');
-  if(tab){
-    ui.tab = tab.dataset.tab;
-    document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b === tab));
-    document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'view-' + ui.tab));
-    $('#btnDp').style.display = (ui.tab === 'builder' || ui.tab === 'strats') ? '' : 'none';
-    return;
-  }
+  if(tab){ setTab(tab.dataset.tab); return; }
   // collapsible panels
   const ph = el('.panel-hd');
   if(ph){
     const id = ph.dataset.panel;
     if(id === 'pDet') ui.detOpen = !ui.detOpen;
-    if(id === 'pEnh') ui.enhOpen = !ui.enhOpen;
-    renderBuilder(); return;
+    else if(id === 'pEnh') ui.enhOpen = !ui.enhOpen;
+    else ui.panels[id] = !ui.panels[id];
+    renderBuilder(); renderCombatPatrol(); return;
   }
   // ability / enhancement popups
   const ab = el('[data-ab]');
@@ -1198,6 +1302,8 @@ function showMenu(){
     <p><button class="btn" id="mSave">Save list…</button>
        <button class="btn" id="mShare">Share link</button>
        <button class="btn" id="mExport">Text export</button></p>
+    <p><button class="btn" id="mTracker">In-game tracker</button>
+       <span class="muted" style="font-size:12px">CP · battle round · VP · WAAAGH!</span></p>
     <p><button class="btn danger" id="mClear">Clear army list</button></p>
     <div class="sec-t" style="margin-top:12px">Saved lists</div>
     ${lists.length ? lists.map(l => `<p class="row">
@@ -1211,6 +1317,7 @@ function showMenu(){
     if(n) { saveListSlot(n.trim()); $('#modal').classList.remove('on'); renderAll(); }
   };
   $('#mShare').onclick = () => shareLink();
+  $('#mTracker').onclick = () => { setTab('points'); $('#modal').classList.remove('on'); };
   $('#mExport').onclick = () => openModal('Text export', listName,
     `<textarea class="exp" readonly>${esc(exportText())}</textarea>`);
   $('#mClear').onclick = () => {

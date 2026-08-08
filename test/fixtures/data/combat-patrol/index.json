@@ -1,0 +1,5 @@
+{ "name":"Demo Combat Patrol", "notes":"Fixture force.",
+  "roster":[ {"unit":"cp-boyz","count":2,"ledBy":"cp-nob","note":"fixture note"}, "cp-buggy", {"unit":"cp-absent"} ],
+  "rule":[{"name":"Demo Patrol Rule","description":"<strong>Rule body.</strong>"}],
+  "stratagems":{ "cp-strat":{"name":"Patrol Strat","type":"Combat Patrol Stratagem","turn":"your",
+    "phases":["shooting"],"cpCost":1,"summary":"s","when":"w","target":"t","effect":"e"} } }

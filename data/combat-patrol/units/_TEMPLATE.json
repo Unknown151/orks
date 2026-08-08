@@ -1,0 +1,34 @@
+{
+  "_comment": "Reference copy of the Combat Patrol datasheet schema. NOT loaded — it is not in the roster. Copy it to <unit-id>.json and add the id to the roster in ../index.json. Same schema as a matched-play unit (see ../../units/_TEMPLATE.json) MINUS everything list-building: no points, no costing, no baseModels/maxModels, no wargearChoices/wargearExclusiveChoices, no enhancements. Combat Patrol loadouts are static, so weapons are listed exactly as the models are armed and every weapon needs a real count.",
+
+  "id": "cp-unit-id",
+  "name": "Unit Name",
+  "type": ["Infantry"],
+  "keywords": ["INFANTRY", "ORKS"],
+
+  "models": 10,
+  "modelBreakdown": "1 Boss Nob + 9 Boyz",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 1, "ld": "6+", "oc": 2 },
+  "modelProfiles": [],
+
+  "invulnerableSave": null,
+  "invulnerableSource": null,
+  "transportCapacity": null,
+
+  "fixedWeapons": true,
+
+  "weapons": {
+    "ranged": [
+      { "name": "Weapon Name", "count": 9, "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["rapid-fire"] }
+    ],
+    "melee": [
+      { "name": "Melee Weapon", "count": 10, "a": "3", "ws": "3+", "s": "5", "ap": "-1", "d": "1", "abilities": [] }
+    ]
+  },
+
+  "abilities": ["ability-id"],
+  "coreAbilities": ["leader"],
+  "wargear": ["always-equipped-item"]
+}

@@ -46,7 +46,11 @@ await new Promise(r => server.listen(PORT, '127.0.0.1', r));
 
 const B = `http://127.0.0.1:${PORT}/`;
 const b=await chromium.launch(); const p=await b.newPage();
-const errs=[]; p.on('console',m=>{if(m.type()==='error')errs.push(m.text())}); p.on('pageerror',e=>errs.push('PAGEERR '+e.message));
+// cp-absent is fetched on purpose by the "missing datasheet" test — its 404 is expected.
+const EXPECTED_404 = /cp-absent/;
+const errs=[];
+p.on('console',m=>{ if(m.type()==='error' && !EXPECTED_404.test(m.location()?.url||'')) errs.push(m.text()); });
+p.on('pageerror',e=>errs.push('PAGEERR '+e.message));
 const ok=[],bad=[];
 const t=(n,c)=> (c?ok:bad).push(n+(c?'':'  <-- FAIL'));
 
@@ -190,6 +194,54 @@ t('export merges multi-profile weapon (no profile suffix, no dupes)',
 // --- removal cleanup
 await p.evaluate(()=>{const w=armyList.find(i=>i.unitId==='demo-warboss');removeInstance(w.uid);});
 t('removing a leader clears dangling leaderId', await p.evaluate(()=>armyList.every(i=>i.leaderId===null)));
+
+// ---------------------------- COMBAT PATROL ----------------------------
+await p.evaluate(()=>{
+  selectedDetachments.slice().forEach(toggleDetachment);   // clear (lil-one blocks big-one's unique group)
+  toggleDetachment('big-one');                             // grants active for the leak test
+});
+t('cleared then re-selected: big-one active', await p.evaluate(()=>isDetachmentActive('big-one')));
+t('nav has Combat Patrol, not Points',
+  await p.evaluate(()=>[...document.querySelectorAll('nav button')].map(b=>b.dataset.tab).join(','))==='army,builder,strats,cp');
+await p.click('nav button[data-tab="cp"]');
+t('CP view is the visible one', await p.evaluate(()=>document.querySelector('#view-cp').classList.contains('on')));
+t('DP control hidden on CP tab', await p.evaluate(()=>getComputedStyle(document.querySelector('#btnDp')).display)==='none');
+t('CP force loaded', await p.evaluate(()=>DATA.combatPatrol.name)==='Demo Combat Patrol');
+t('CP datasheets loaded from roster (incl. ledBy)',
+  await p.evaluate(()=>Object.keys(DATA.cpUnits).sort().join())==='cp-boyz,cp-buggy,cp-nob');
+t('CP units kept out of the matched-play pool', await p.evaluate(()=>DATA.units['cp-boyz']===undefined));
+t('roster renders one card per entry', await p.evaluate(()=>document.querySelectorAll('#view-cp .unit').length)===3);
+t('ledBy renders a merged card', await p.evaluate(()=>document.querySelectorAll('#view-cp .leader-band').length)===2);
+t('roster count shown', await p.evaluate(()=>document.querySelector('#view-cp .unit-hd .muted').textContent.trim())==='×2');
+t('missing datasheet flagged, not silent',
+  await p.evaluate(()=>document.querySelector('#view-cp').textContent.includes('data/combat-patrol/units/cp-absent.json')));
+t('unit totals line', await p.evaluate(()=>document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('4 units')));
+t('  (control: the same keyword DOES grant in matched play)',
+  await p.evaluate(()=>document.querySelectorAll('#view-army .pill.grant').length)>0);
+t('detachment grants do NOT leak into CP cards',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .pill.grant').length)===0);
+t('  ...and the CP unit really does carry the granted keyword',
+  await p.evaluate(()=>DATA.cpUnits['cp-boyz'].keywords.includes('MOB')));
+// CP panels
+await p.click('[data-panel="cpRule"]');
+t('CP rule panel opens', await p.evaluate(()=>document.querySelector('#cpRule').classList.contains('open')));
+t('CP rule text shown', await p.evaluate(()=>document.querySelector('#cpRule .panel-bd').textContent.includes('Rule body')));
+await p.click('[data-panel="cpStrat"]');
+t('CP stratagem shown in its own panel', await p.evaluate(()=>document.querySelectorAll('#cpStrat .strat').length)===1);
+t('CP stratagem absent from the Stratagems tab',
+  await p.evaluate(()=>!document.querySelector('#view-strats').textContent.includes('Patrol Strat')));
+t('builder panel state independent of CP panels',
+  await p.evaluate(()=>document.querySelector('#pDet').classList.contains('open')));
+// in-game tracker still reachable
+await p.click('#btnMenu'); await p.click('#mTracker');
+t('tracker reachable from menu', await p.evaluate(()=>document.querySelector('#view-points').classList.contains('on')));
+t('tracker still increments',
+  (await p.evaluate(()=>{
+    document.querySelector('[data-g="cp:1"]').click();
+    document.querySelector('[data-g="cp:1"]').click();
+    return game.cp;
+  }))===2);
+await p.evaluate(()=>{game.cp=0;save();});
 
 t('no console/page errors: '+errs.join(' | '), errs.length===0);
 await b.close();

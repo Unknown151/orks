@@ -1,0 +1,15 @@
+{
+  "_note": "Combat Patrol force definition. This is a SEPARATE game mode: a fixed force with its own datasheets (in data/combat-patrol/units/) and its own stratagems, which deliberately never mix with the matched-play data in data/units/ and data/stratagems.json. Keys starting with an underscore are ignored by the loader. Awaiting Ork Combat Patrol data.",
+
+  "name": "Orks Combat Patrol",
+  "notes": "",
+
+  "_roster_help": "The fixed force, in the order it should display. Each entry is either a plain unit id, or an object: {\"unit\":\"id\", \"count\":2, \"ledBy\":\"character-id\", \"note\":\"free text\"}. ledBy renders the character and its unit as one merged card. Unit files are loaded from this list automatically — add an explicit \"units\" array only if you need a datasheet that is not in the roster.",
+  "roster": [],
+
+  "_rule_help": "One rule object, or an array of them: {\"name\":\"…\", \"description\":\"HTML\"}.",
+  "rule": [],
+
+  "_stratagems_help": "Combat Patrol stratagems, keyed by id — same schema as data/stratagems.json but with no detachment field, since Combat Patrol has no detachments.",
+  "stratagems": {}
+}

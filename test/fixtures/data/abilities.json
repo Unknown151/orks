@@ -1,205 +1,255 @@
 {
-  "_note": "Every ability/keyword the app can show, keyed by id. Entries flagged needsVerification:true are edition-core rules seeded as scaffolding — diff their wording against your 11th-ed source and drop the flag once checked. Delete this _note key whenever you like; the loader ignores keys starting with an underscore.",
-
-  "lethal-hits": {
-    "name": "Lethal Hits",
-    "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
-    "needsVerification": true,
-    "description": "Each Critical Hit scored with this weapon automatically wounds the target."
-  },
-  "sustained-hits": {
-    "name": "Sustained Hits",
-    "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
-    "needsVerification": true,
-    "description": "Each Critical Hit scored with this weapon scores a number of additional hits on the target, as specified by the ability (e.g. <strong>Sustained Hits 1</strong>)."
-  },
-  "devastating-wounds": {
-    "name": "Devastating Wounds",
-    "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
-    "needsVerification": true,
-    "description": "Each Critical Wound scored with this weapon inflicts mortal wounds instead of the normal damage."
-  },
-  "rapid-fire": {
-    "name": "Rapid Fire",
-    "type": "Weapon Ability",
-    "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "Add the specified value to this weapon's Attacks characteristic when it targets a unit within half range (e.g. <strong>Rapid Fire 1</strong>)."
-  },
-  "assault": {
-    "name": "Assault",
-    "type": "Weapon Ability",
-    "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "This weapon can be shot by a unit that Advanced this turn."
-  },
-  "heavy": {
-    "name": "Heavy",
-    "type": "Weapon Ability",
-    "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "Add 1 to Hit rolls with this weapon if the bearer's unit Remained Stationary this turn."
-  },
-  "pistol": {
-    "name": "Pistol",
-    "type": "Weapon Ability",
-    "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "This weapon can be shot even when the bearer's unit is within Engagement Range of enemy units, but it can then only target one of those enemy units."
-  },
-  "blast": {
-    "name": "Blast",
-    "type": "Weapon Ability",
-    "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "Add 1 to this weapon's Attacks characteristic for every five models in the target unit. This weapon cannot target a unit within Engagement Range of the bearer's unit."
-  },
-  "torrent": {
-    "name": "Torrent",
-    "type": "Weapon Ability",
-    "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "Attacks made with this weapon automatically hit the target."
-  },
-  "precision": {
-    "name": "Precision",
-    "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
-    "needsVerification": true,
-    "description": "If the target is an Attached unit, the attacking model's controlling player can allocate the attack to a Character model in that unit."
-  },
-  "ignores-cover": {
-    "name": "Ignores Cover",
-    "type": "Weapon Ability",
-    "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "The target cannot have the Benefit of Cover against attacks made with this weapon."
-  },
-  "hazardous": {
-    "name": "Hazardous",
-    "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
-    "needsVerification": true,
-    "description": "After a unit has shot or fought with Hazardous weapons, roll one D6 for each such weapon; on a 1 the bearer suffers damage."
-  },
-  "melta": {
-    "name": "Melta",
-    "type": "Weapon Ability",
-    "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "Add the specified value to this weapon's Damage characteristic when it targets a unit within half range (e.g. <strong>Melta 2</strong>)."
-  },
-  "lance": {
-    "name": "Lance",
-    "type": "Weapon Ability",
-    "phases": ["fight"],
-    "needsVerification": true,
-    "description": "Add 1 to Wound rolls with this weapon if the bearer's unit made a Charge move this turn."
-  },
-  "twin-linked": {
-    "name": "Twin-linked",
-    "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
-    "needsVerification": true,
-    "description": "Re-roll the Wound roll for attacks made with this weapon."
-  },
-  "extra-attacks": {
-    "name": "Extra Attacks",
-    "type": "Weapon Ability",
-    "phases": ["fight"],
-    "needsVerification": true,
-    "description": "Attacks with this weapon are made in addition to the attacks made with the bearer's other melee weapon."
-  },
-  "anti": {
-    "name": "Anti-",
-    "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
-    "needsVerification": true,
-    "description": "Wound rolls of the specified value or better against the specified target keyword are Critical Wounds (e.g. <strong>Anti-Vehicle 4+</strong>)."
-  },
-  "indirect-fire": {
-    "name": "Indirect Fire",
-    "type": "Weapon Ability",
-    "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "This weapon can target units that are not visible to the bearer, with penalties to the Hit roll and the target gaining the Benefit of Cover."
-  },
-
-  "leader": {
-    "name": "Leader",
-    "type": "Core Ability",
-    "needsVerification": true,
-    "description": "During the Declare Battle Formations step, this Character can be attached to one of the units it is able to lead, forming an Attached unit."
-  },
-  "deep-strike": {
-    "name": "Deep Strike",
-    "type": "Core Ability",
-    "needsVerification": true,
-    "description": "During Deployment, this unit can be set up in Reserves instead of on the battlefield, and can arrive from Strategic Reserves more than 9\" from enemy models."
-  },
-  "scouts": {
-    "name": "Scouts",
-    "type": "Core Ability",
-    "needsVerification": true,
-    "description": "This unit can make a Normal move of up to the specified distance before the first turn begins (e.g. <strong>Scouts 6\"</strong>)."
-  },
-  "infiltrators": {
-    "name": "Infiltrators",
-    "type": "Core Ability",
-    "needsVerification": true,
-    "description": "During Deployment, this unit can be set up anywhere on the battlefield more than 9\" from the enemy deployment zone and any enemy models."
-  },
-  "stealth": {
-    "name": "Stealth",
-    "type": "Core Ability",
-    "needsVerification": true,
-    "description": "Subtract 1 from Hit rolls for ranged attacks that target this unit."
-  },
-  "lone-operative": {
-    "name": "Lone Operative",
-    "type": "Core Ability",
-    "needsVerification": true,
-    "description": "This unit can only be selected as the target of a ranged attack if the attacking model is within 12\"."
-  },
-  "fights-first": {
-    "name": "Fights First",
-    "type": "Core Ability",
-    "phases": ["fight"],
-    "needsVerification": true,
-    "description": "This unit fights in the Fights First step of the Fight phase."
-  },
-  "feel-no-pain-4": {
-    "name": "Feel No Pain 4+",
-    "type": "Core Ability",
-    "needsVerification": true,
-    "description": "Each time this model suffers damage, roll one D6: on a 4+ that damage is ignored."
-  },
-  "feel-no-pain-5": {
-    "name": "Feel No Pain 5+",
-    "type": "Core Ability",
-    "needsVerification": true,
-    "description": "Each time this model suffers damage, roll one D6: on a 5+ that damage is ignored."
-  },
-  "feel-no-pain-6": {
-    "name": "Feel No Pain 6+",
-    "type": "Core Ability",
-    "needsVerification": true,
-    "description": "Each time this model suffers damage, roll one D6: on a 6+ that damage is ignored."
-  },
-  "deadly-demise": {
-    "name": "Deadly Demise",
-    "type": "Core Ability",
-    "needsVerification": true,
-    "description": "When this model is destroyed, roll one D6: on a 6 each unit within 6\" suffers the specified number of mortal wounds (e.g. <strong>Deadly Demise D3</strong>)."
-  },
-  "firing-deck": {
-    "name": "Firing Deck",
-    "type": "Core Ability",
-    "phases": ["shooting"],
-    "needsVerification": true,
-    "description": "Each time this Transport shoots, it can also fire the ranged weapons of the specified number of models embarked within it (e.g. <strong>Firing Deck 6</strong>)."
-  }
+ "_note": "Every ability/keyword the app can show, keyed by id. Entries flagged needsVerification:true are edition-core rules seeded as scaffolding \u2014 diff their wording against your 11th-ed source and drop the flag once checked. Delete this _note key whenever you like; the loader ignores keys starting with an underscore.",
+ "lethal-hits": {
+  "name": "Lethal Hits",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting",
+   "fight"
+  ],
+  "needsVerification": true,
+  "description": "Each Critical Hit scored with this weapon automatically wounds the target."
+ },
+ "sustained-hits": {
+  "name": "Sustained Hits",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting",
+   "fight"
+  ],
+  "needsVerification": true,
+  "description": "Each Critical Hit scored with this weapon scores a number of additional hits on the target, as specified by the ability (e.g. <strong>Sustained Hits 1</strong>)."
+ },
+ "devastating-wounds": {
+  "name": "Devastating Wounds",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting",
+   "fight"
+  ],
+  "needsVerification": true,
+  "description": "Each Critical Wound scored with this weapon inflicts mortal wounds instead of the normal damage."
+ },
+ "rapid-fire": {
+  "name": "Rapid Fire",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting"
+  ],
+  "needsVerification": true,
+  "description": "Add the specified value to this weapon's Attacks characteristic when it targets a unit within half range (e.g. <strong>Rapid Fire 1</strong>)."
+ },
+ "assault": {
+  "name": "Assault",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting"
+  ],
+  "needsVerification": true,
+  "description": "This weapon can be shot by a unit that Advanced this turn."
+ },
+ "heavy": {
+  "name": "Heavy",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting"
+  ],
+  "needsVerification": true,
+  "description": "Add 1 to Hit rolls with this weapon if the bearer's unit Remained Stationary this turn."
+ },
+ "pistol": {
+  "name": "Pistol",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting"
+  ],
+  "needsVerification": true,
+  "description": "This weapon can be shot even when the bearer's unit is within Engagement Range of enemy units, but it can then only target one of those enemy units."
+ },
+ "blast": {
+  "name": "Blast",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting"
+  ],
+  "needsVerification": true,
+  "description": "Add 1 to this weapon's Attacks characteristic for every five models in the target unit. This weapon cannot target a unit within Engagement Range of the bearer's unit."
+ },
+ "torrent": {
+  "name": "Torrent",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting"
+  ],
+  "needsVerification": true,
+  "description": "Attacks made with this weapon automatically hit the target."
+ },
+ "precision": {
+  "name": "Precision",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting",
+   "fight"
+  ],
+  "needsVerification": true,
+  "description": "If the target is an Attached unit, the attacking model's controlling player can allocate the attack to a Character model in that unit."
+ },
+ "ignores-cover": {
+  "name": "Ignores Cover",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting"
+  ],
+  "needsVerification": true,
+  "description": "The target cannot have the Benefit of Cover against attacks made with this weapon."
+ },
+ "hazardous": {
+  "name": "Hazardous",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting",
+   "fight"
+  ],
+  "needsVerification": true,
+  "description": "After a unit has shot or fought with Hazardous weapons, roll one D6 for each such weapon; on a 1 the bearer suffers damage."
+ },
+ "melta": {
+  "name": "Melta",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting"
+  ],
+  "needsVerification": true,
+  "description": "Add the specified value to this weapon's Damage characteristic when it targets a unit within half range (e.g. <strong>Melta 2</strong>)."
+ },
+ "lance": {
+  "name": "Lance",
+  "type": "Weapon Ability",
+  "phases": [
+   "fight"
+  ],
+  "needsVerification": true,
+  "description": "Add 1 to Wound rolls with this weapon if the bearer's unit made a Charge move this turn."
+ },
+ "twin-linked": {
+  "name": "Twin-linked",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting",
+   "fight"
+  ],
+  "needsVerification": true,
+  "description": "Re-roll the Wound roll for attacks made with this weapon."
+ },
+ "extra-attacks": {
+  "name": "Extra Attacks",
+  "type": "Weapon Ability",
+  "phases": [
+   "fight"
+  ],
+  "needsVerification": true,
+  "description": "Attacks with this weapon are made in addition to the attacks made with the bearer's other melee weapon."
+ },
+ "anti": {
+  "name": "Anti-",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting",
+   "fight"
+  ],
+  "needsVerification": true,
+  "description": "Wound rolls of the specified value or better against the specified target keyword are Critical Wounds (e.g. <strong>Anti-Vehicle 4+</strong>)."
+ },
+ "indirect-fire": {
+  "name": "Indirect Fire",
+  "type": "Weapon Ability",
+  "phases": [
+   "shooting"
+  ],
+  "needsVerification": true,
+  "description": "This weapon can target units that are not visible to the bearer, with penalties to the Hit roll and the target gaining the Benefit of Cover."
+ },
+ "leader": {
+  "name": "Leader",
+  "type": "Core Ability",
+  "needsVerification": true,
+  "description": "During the Declare Battle Formations step, this Character can be attached to one of the units it is able to lead, forming an Attached unit."
+ },
+ "deep-strike": {
+  "name": "Deep Strike",
+  "type": "Core Ability",
+  "needsVerification": true,
+  "description": "During Deployment, this unit can be set up in Reserves instead of on the battlefield, and can arrive from Strategic Reserves more than 9\" from enemy models."
+ },
+ "scouts": {
+  "name": "Scouts",
+  "type": "Core Ability",
+  "needsVerification": true,
+  "description": "This unit can make a Normal move of up to the specified distance before the first turn begins (e.g. <strong>Scouts 6\"</strong>)."
+ },
+ "infiltrators": {
+  "name": "Infiltrators",
+  "type": "Core Ability",
+  "needsVerification": true,
+  "description": "During Deployment, this unit can be set up anywhere on the battlefield more than 9\" from the enemy deployment zone and any enemy models."
+ },
+ "stealth": {
+  "name": "Stealth",
+  "type": "Core Ability",
+  "needsVerification": true,
+  "description": "Subtract 1 from Hit rolls for ranged attacks that target this unit."
+ },
+ "lone-operative": {
+  "name": "Lone Operative",
+  "type": "Core Ability",
+  "needsVerification": true,
+  "description": "This unit can only be selected as the target of a ranged attack if the attacking model is within 12\"."
+ },
+ "fights-first": {
+  "name": "Fights First",
+  "type": "Core Ability",
+  "phases": [
+   "fight"
+  ],
+  "needsVerification": true,
+  "description": "This unit fights in the Fights First step of the Fight phase."
+ },
+ "feel-no-pain-4": {
+  "name": "Feel No Pain 4+",
+  "type": "Core Ability",
+  "needsVerification": true,
+  "description": "Each time this model suffers damage, roll one D6: on a 4+ that damage is ignored."
+ },
+ "feel-no-pain-5": {
+  "name": "Feel No Pain 5+",
+  "type": "Core Ability",
+  "needsVerification": true,
+  "description": "Each time this model suffers damage, roll one D6: on a 5+ that damage is ignored."
+ },
+ "feel-no-pain-6": {
+  "name": "Feel No Pain 6+",
+  "type": "Core Ability",
+  "needsVerification": true,
+  "description": "Each time this model suffers damage, roll one D6: on a 6+ that damage is ignored."
+ },
+ "deadly-demise": {
+  "name": "Deadly Demise",
+  "type": "Core Ability",
+  "needsVerification": true,
+  "description": "When this model is destroyed, roll one D6: on a 6 each unit within 6\" suffers the specified number of mortal wounds (e.g. <strong>Deadly Demise D3</strong>)."
+ },
+ "firing-deck": {
+  "name": "Firing Deck",
+  "type": "Core Ability",
+  "phases": [
+   "shooting"
+  ],
+  "needsVerification": true,
+  "description": "Each time this Transport shoots, it can also fire the ranged weapons of the specified number of models embarked within it (e.g. <strong>Firing Deck 6</strong>)."
+ },
+ "fixture-faction": {
+  "name": "Fixture Faction Ability",
+  "type": "Faction Ability \u2014 Demo",
+  "description": "Body."
+ }
 }

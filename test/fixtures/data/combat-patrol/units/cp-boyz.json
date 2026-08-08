@@ -1,5 +1,53 @@
-{ "id":"cp-boyz", "name":"CP Boyz", "type":["Infantry"], "keywords":["INFANTRY","MOB","ORKS"],
-  "models":10, "modelBreakdown":"1 Nob + 9 Boyz", "fixedWeapons":true,
-  "stats":{"m":"6\"","t":5,"sv":"6+","w":1,"ld":"6+","oc":2},
-  "weapons":{"ranged":[{"name":"Shoota","count":9,"range":"18\"","a":"2","bs":"5+","s":"4","ap":"0","d":"1","abilities":[]}],
-             "melee":[{"name":"Choppa","count":10,"a":"3","ws":"3+","s":"5","ap":"-1","d":"1","abilities":[]}]} }
+{
+ "id": "cp-boyz",
+ "name": "CP Boyz",
+ "type": [
+  "Infantry"
+ ],
+ "keywords": [
+  "INFANTRY",
+  "MOB",
+  "ORKS"
+ ],
+ "models": 10,
+ "modelBreakdown": "1 Nob + 9 Boyz",
+ "fixedWeapons": true,
+ "stats": {
+  "m": "6\"",
+  "t": 5,
+  "sv": "6+",
+  "w": 1,
+  "ld": "6+",
+  "oc": 2
+ },
+ "weapons": {
+  "ranged": [
+   {
+    "name": "Shoota",
+    "count": 9,
+    "range": "18\"",
+    "a": "2",
+    "bs": "5+",
+    "s": "4",
+    "ap": "0",
+    "d": "1",
+    "abilities": []
+   }
+  ],
+  "melee": [
+   {
+    "name": "Choppa",
+    "count": 10,
+    "a": "3",
+    "ws": "3+",
+    "s": "5",
+    "ap": "-1",
+    "d": "1",
+    "abilities": []
+   }
+  ]
+ },
+ "factionAbilities": [
+  "fixture-faction"
+ ]
+}

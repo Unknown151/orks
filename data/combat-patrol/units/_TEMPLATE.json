@@ -29,6 +29,7 @@
   },
 
   "abilities": ["ability-id"],
+  "factionAbilities": ["waaagh"],
   "coreAbilities": ["leader"],
   "wargear": ["always-equipped-item"]
 }

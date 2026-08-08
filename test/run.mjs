@@ -52,7 +52,10 @@ const errs=[];
 p.on('console',m=>{ if(m.type()==='error' && !EXPECTED_404.test(m.location()?.url||'')) errs.push(m.text()); });
 p.on('pageerror',e=>errs.push('PAGEERR '+e.message));
 const ok=[],bad=[];
-const t=(n,c)=> (c?ok:bad).push(n+(c?'':'  <-- FAIL'));
+const t=(n,c)=>{
+  if(typeof c!=='boolean'){ bad.push(`${n}  <-- BROKEN TEST (got ${typeof c}, expected boolean)`); return; }
+  (c?ok:bad).push(n+(c?'':'  <-- FAIL'));
+};
 
 await p.goto(B,{waitUntil:'networkidle'});
 await p.waitForTimeout(300);
@@ -130,7 +133,7 @@ t('4th upgrade copy blocked', await p.evaluate(u=>enhancementBlockReason('extra-
 
 // --- multi-profile weapon summary
 t('multi-profile merged in summary',
-  await p.evaluate(()=>weaponSummaryText(DATA.units['demo-boyz'],armyList[0])));
+  (await p.evaluate(()=>weaponSummaryText(DATA.units['demo-boyz'],armyList[0]))).length>0);
 t('  -> shoota appears once', (await p.evaluate(()=>weaponSummaryText(DATA.units['demo-boyz'],armyList[0]))).match(/Shoota/g).length===1);
 t('  -> no profile suffix', !(await p.evaluate(()=>weaponSummaryText(DATA.units['demo-boyz'],armyList[0]))).includes('Burst'));
 t('count:0 option excluded from summary (?? not ||)',
@@ -224,6 +227,16 @@ t('  ...and the CP unit really does carry the granted keyword',
   await p.evaluate(()=>DATA.cpUnits['cp-boyz'].keywords.includes('MOB')));
 // CP panels
 await p.click('[data-panel="cpRule"]');
+t('faction ability rendered with its own badge',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .pill.fac').length)===1);
+t('faction ability sorts first in its abilities section',
+  await p.evaluate(()=>{
+    const pill=document.querySelector('#view-cp .pill.fac'), sec=pill.closest('.sec');
+    return sec.querySelector('.sec-t').textContent==='Abilities' && sec.querySelector('.pill')===pill;}));
+t('faction ability opens its popup',
+  (await p.evaluate(()=>{document.querySelector('#view-cp .pill.fac').click();
+    return document.querySelector('#mType').textContent;}))==='Faction Ability — Demo');
+await p.click('#mClose');
 t('CP rule panel opens', await p.evaluate(()=>document.querySelector('#cpRule').classList.contains('open')));
 t('CP rule text shown', await p.evaluate(()=>document.querySelector('#cpRule .panel-bd').textContent.includes('Rule body')));
 await p.click('[data-panel="cpStrat"]');

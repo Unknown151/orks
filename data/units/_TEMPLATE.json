@@ -69,6 +69,7 @@
   },
 
   "abilities": ["ability-id"],
+  "factionAbilities": ["waaagh"],
   "coreAbilities": ["leader"],
   "wargear": ["always-equipped-item"],
   "wargearChoices": ["optional-a", "optional-b"],

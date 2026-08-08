@@ -10,6 +10,11 @@
     "name": "Close-quarters",
     "type": "Weapon Ability",
     "phases": ["shooting"],
+    "description": "Units containing one or more models with a <strong>[CLOSE-QUARTERS]</strong> weapon can shoot using <strong>close-quarters shooting</strong> (10.06).<br><br>When using another <strong>shooting type</strong>, for each model in that unit (excluding <strong>MONSTER/VEHICLE</strong> models), you can only select <u>one</u> of the following to make attacks with:<br>• One or more of its <strong>[CLOSE-QUARTERS]</strong> weapons.<br>• One or more of its other ranged weapons."
+  },
+  "waaagh": {
+    "name": "Waaagh!",
+    "type": "Faction Ability — Orks",
     "description": "<em>Rule to be added — wording not supplied yet.</em>"
   },
 

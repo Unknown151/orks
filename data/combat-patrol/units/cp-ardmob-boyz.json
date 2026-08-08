@@ -36,6 +36,7 @@
   },
 
   "abilities": ["grab-dat-scrap"],
+  "factionAbilities": ["waaagh"],
   "coreAbilities": [],
   "wargear": []
 }

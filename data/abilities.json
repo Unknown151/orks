@@ -6,6 +6,11 @@
     "type": "Ability — 'Ardmob Boyz",
     "description": "While this unit is <strong>engaged</strong>, this unit has +1 <strong>OC</strong>."
   },
+  "grot-infestation": {
+    "name": "Grot Infestation (Once per battle per unit)",
+    "type": "Ability — 'Ardmob Gretchin",
+    "description": "When this unit is <strong>destroyed</strong>, you can use this ability. If you do:<br>• Place this unit in <strong>strategic reserves</strong> with all of this unit's <strong>destroyed</strong> models returned to it. This unit is no longer <strong>destroyed</strong>.<br>This unit has <strong>Deep Strike</strong>."
+  },
   "close-quarters": {
     "name": "Close-quarters",
     "type": "Weapon Ability",

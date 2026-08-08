@@ -1,0 +1,35 @@
+{
+  "id": "cp-ardmob-gretchin",
+  "name": "'Ardmob Gretchin",
+  "type": ["Infantry"],
+
+  "_keywords_note": "Keywords were not supplied for this datasheet — left empty rather than guessed. The card simply omits its Keywords row until they arrive.",
+  "keywords": [],
+
+  "models": 10,
+  "modelBreakdown": "10 Gretchin",
+
+  "stats": { "m": "6\"", "t": 2, "sv": "7+", "w": 1, "ld": "8+", "oc": 1 },
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "Every model is equipped with: 1 Blasta; 1 Lobbin' Bombs; 1 Scavenged Shivs.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Blasta", "count": 10, "range": "18\"", "a": "1", "bs": "4+", "s": "3", "ap": "0", "d": "1",
+        "abilities": ["close-quarters"] },
+      { "name": "Lobbin' Bombs", "count": 10, "range": "6\"", "a": "1", "bs": "4+", "s": "4", "ap": "-1", "d": "1",
+        "abilities": ["hazardous"] }
+    ],
+    "melee": [
+      { "name": "Scavenged Shivs", "count": 10, "a": "1", "ws": "5+", "s": "2", "ap": "0", "d": "1", "abilities": [] }
+    ]
+  },
+
+  "abilities": ["grot-infestation"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

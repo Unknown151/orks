@@ -7,7 +7,8 @@
   "_roster_help": "The fixed force, in the order it should display. Each entry is either a plain unit id, or an object: {\"unit\":\"id\", \"count\":2, \"ledBy\":\"character-id\", \"note\":\"free text\"}. ledBy renders the character and its unit as one merged card. Unit files are loaded from this list automatically — add an explicit \"units\" array only if you need a datasheet that is not in the roster.",
   "roster": [
     { "unit": "cp-ardmob-boyz",        "count": 1, "note": "Boss Nob with Kombi-rokkit & Kombi-shoota" },
-    { "unit": "cp-ardmob-boyz-kustom", "count": 1, "note": "Boss Nob with Kustom Shoota" }
+    { "unit": "cp-ardmob-boyz-kustom", "count": 1, "note": "Boss Nob with Kustom Shoota" },
+    { "unit": "cp-ardmob-gretchin",     "count": 1 }
   ],
 
   "_rule_help": "One rule object, or an array of them: {\"name\":\"…\", \"description\":\"HTML\"}.",

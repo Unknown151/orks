@@ -1,5 +1,45 @@
-{ "id":"cp-nob", "name":"CP Nob", "type":["Infantry","Character"], "keywords":["INFANTRY","CHARACTER","ORKS"],
-  "models":1, "fixedWeapons":true, "invulnerableSave":"4+",
-  "stats":{"m":"6\"","t":5,"sv":"4+","w":4,"ld":"6+","oc":1},
-  "weapons":{"ranged":[],"melee":[{"name":"Power Klaw","count":1,"a":"4","ws":"3+","s":"9","ap":"-2","d":"2","abilities":[]}]},
-  "coreAbilities":["leader"] }
+{
+ "id": "cp-nob",
+ "name": "CP Nob",
+ "type": [
+  "Infantry",
+  "Character"
+ ],
+ "keywords": [
+  "INFANTRY",
+  "CHARACTER",
+  "ORKS"
+ ],
+ "models": 1,
+ "fixedWeapons": true,
+ "invulnerableSave": "4+",
+ "stats": {
+  "m": "6\"",
+  "t": 5,
+  "sv": "4+",
+  "w": 4,
+  "ld": "6+",
+  "oc": 1
+ },
+ "weapons": {
+  "ranged": [],
+  "melee": [
+   {
+    "name": "Power Klaw",
+    "count": 1,
+    "a": "4",
+    "ws": "3+",
+    "s": "9",
+    "ap": "-2",
+    "d": "2",
+    "abilities": []
+   }
+  ]
+ },
+ "coreAbilities": [
+  "leader"
+ ],
+ "canLead": [
+  "cp-boyz"
+ ]
+}

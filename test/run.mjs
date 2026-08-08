@@ -337,6 +337,33 @@ t('dock hides when the ability has no call data', await p.evaluate(()=>{
   DATA.abilities.waaagh=keep; renderDock(); return hidden;}));
 await p.waitForTimeout(120);
 
+// --------------------------- LEADER BLOCK ----------------------------
+await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
+const leadSec = () => p.evaluate(()=>{
+  const s=[...document.querySelectorAll('#view-cp .sec')].find(x=>x.querySelector('.sec-t')?.textContent==='Leader');
+  return s ? [...s.querySelectorAll('.pill')].map(x=>x.textContent) : null;});
+t('Leader block lists what the model can attach to',
+  JSON.stringify(await leadSec())==='["CP Boyz","CP Nob"]');
+t('same-named lead targets are listed once', await p.evaluate(()=>{
+  const keep=DATA.cpUnits['cp-nob'].name;
+  DATA.cpUnits['cp-nob'].name=DATA.cpUnits['cp-boyz'].name;     // the real 'Ardmob Boyz case
+  renderCombatPatrol();
+  const s=[...document.querySelectorAll('#view-cp .sec')].find(x=>x.querySelector('.sec-t')?.textContent==='Leader');
+  const n=s.querySelectorAll('.pill').length;
+  DATA.cpUnits['cp-nob'].name=keep; renderCombatPatrol(); return n===1;}));
+t('already-attached leader does not repeat its Leader block', await p.evaluate(()=>{
+  // cp-nob has canLead but is attached via ledBy, so its merged section must omit it
+  const card=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('.leader-band'));
+  const secs=[...card.querySelectorAll('.sec-t')].map(x=>x.textContent);
+  return !secs.includes('Leader');}));
+t('multi-profile weapon shows one group header on a CP card',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .wgrp').length)===1);
+t('both profiles still listed under it',
+  await p.evaluate(()=>[...document.querySelectorAll('#view-cp .wn')]
+    .filter(x=>x.textContent.includes('Big Shoota')).length)===2);
+t('CP summary merges the profiles into one weapon',
+  await p.evaluate(()=>weaponSummaryText(DATA.cpUnits['cp-buggy'],null))==='2× Big Shoota');
+
 // ---------------------------- COLLAPSING -----------------------------
 await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);
 t('every unit card has a chevron',

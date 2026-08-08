@@ -268,7 +268,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.4.3';
+const VERSION = '0.5.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -555,6 +555,8 @@ function enhancementBlockReason(id, inst){
 
 /* ================================ WEAPONS ================================ */
 const weaponCount = (inst, w) => inst?.weaponCounts?.[w.name] ?? (w.count ?? 1);  // ?? not || (guide §9)
+// Units live in two namespaces (matched play / Combat Patrol); look in both.
+const lookupUnit = id => DATA.units[id] || DATA.cpUnits[id] || null;
 
 function allWeaponNames(unit){
   return ['ranged','melee'].flatMap(k => (unit.weapons?.[k] || []).map(w => w.name));
@@ -913,6 +915,15 @@ function unitBody(unit, inst, opts){
     h += `<div class="sec"><div class="sec-t">Abilities</div>${fac.join('')}${core.join('')}${abil.join('')}</div>`;
   if(wg.length) h += `<div class="sec"><div class="sec-t">Wargear</div>${wg.join('')}</div>`;
 
+  // The datasheet's Leader block. Several units can share a name (the two
+  // 'Ardmob Boyz), so list each name once, as the datasheet does.
+  if(unit.canLead?.length && !opts.noLead){
+    const names = [...new Set(unit.canLead.map(id => lookupUnit(id)?.name || id))];
+    h += `<div class="sec"><div class="sec-t">Leader</div>
+      <div class="muted" style="font-size:12.5px;margin-bottom:4px">This model can be attached to the following units:</div>
+      ${names.map(n => `<span class="pill">${esc(n)}</span>`).join('')}</div>`;
+  }
+
   const enh = inst?.enhancementId && DATA.enhancements[inst.enhancementId];
   if(enh){
     h += `<div class="sec"><div class="sec-t">${enh.upgrade?'Upgrade':'Enhancement'}</div>
@@ -979,7 +990,7 @@ function renderArmy(){
         <span class="pts">${pts}${isEscalated(u,ci)?' <span class="esc" title="Escalated cost — copy #'+ci+'">↑</span>':''}</span>
         ${collapseChevron()}
       </div>
-      ${lu ? `<div class="leader-band">Leader — ${esc(lu.name)}</div><div class="unit-bd">${unitBody(lu, l)}</div>
+      ${lu ? `<div class="leader-band">Leader — ${esc(lu.name)}</div><div class="unit-bd">${unitBody(lu, l, {noLead:true})}</div>
               <div class="leader-band merged-sec">Unit — ${esc(u.name)}</div>` : ''}
       <div class="unit-bd">${unitBody(u, i)}</div>
     </div>`;
@@ -1206,7 +1217,7 @@ function cpCard(entry, idx){
     <div class="unit-hd" data-ucol="${ck}"><h3>${esc(u.name)}${entry.count > 1 ? ` <span class="muted">×${entry.count}</span>` : ''}
       <span class="sub">${esc(sub)}</span></h3>${collapseChevron()}</div>
     ${l ? `<div class="leader-band">Leader — ${esc(l.name)}</div>
-           <div class="unit-bd">${unitBody(l, null, {noGrants:true})}</div>
+           <div class="unit-bd">${unitBody(l, null, {noGrants:true, noLead:true})}</div>
            <div class="leader-band merged-sec">Unit — ${esc(u.name)}</div>` : ''}
     <div class="unit-bd">${unitBody(u, null, {noGrants:true})}</div></div>`;
 }

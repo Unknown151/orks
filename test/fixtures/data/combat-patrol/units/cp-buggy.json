@@ -1,3 +1,55 @@
-{ "id":"cp-buggy", "name":"CP Buggy", "type":["Vehicle"], "keywords":["VEHICLE","ORKS"],
-  "models":1, "fixedWeapons":true, "stats":{"m":"12\"","t":8,"sv":"4+","w":8,"ld":"7+","oc":2},
-  "weapons":{"ranged":[{"name":"Big Shoota","count":2,"range":"36\"","a":"3","bs":"5+","s":"5","ap":"0","d":"1","abilities":[]}],"melee":[]} }
+{
+ "id": "cp-buggy",
+ "name": "CP Buggy",
+ "type": [
+  "Vehicle"
+ ],
+ "keywords": [
+  "VEHICLE",
+  "ORKS"
+ ],
+ "models": 1,
+ "fixedWeapons": true,
+ "stats": {
+  "m": "12\"",
+  "t": 8,
+  "sv": "4+",
+  "w": 8,
+  "ld": "7+",
+  "oc": 2
+ },
+ "weapons": {
+  "ranged": [
+   {
+    "name": "Big Shoota - Spray",
+    "count": 2,
+    "range": "36\"",
+    "a": "3",
+    "bs": "5+",
+    "s": "5",
+    "ap": "0",
+    "d": "1",
+    "abilities": [],
+    "weaponGroup": "big-shoota",
+    "weaponGroupLabel": "Select one profile"
+   },
+   {
+    "name": "Big Shoota - Focused",
+    "count": 2,
+    "range": "36\"",
+    "a": "1",
+    "bs": "5+",
+    "s": "7",
+    "ap": "-1",
+    "d": "2",
+    "abilities": [],
+    "weaponGroup": "big-shoota"
+   }
+  ],
+  "melee": []
+ },
+ "canLead": [
+  "cp-boyz",
+  "cp-nob"
+ ]
+}

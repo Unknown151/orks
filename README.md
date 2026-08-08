@@ -163,6 +163,11 @@ Everything is driven by `data/combat-patrol/index.json`:
   matched-play schema minus everything list-building: no points, no costing, no
   wargear choices. Loadouts are static, so every weapon needs a real `count`.
 - The whole file is optional: if it is absent the tab just shows an empty state.
+- A unit with `canLead` renders the datasheet's **Leader** block listing what it can
+  attach to. Names are de-duplicated, so a leader pointing at both 'Ardmob Boyz units
+  shows that name once, as the datasheet does. The block is suppressed on a leader
+  that is already attached via `ledBy`, where it would only repeat what the merged
+  card already shows.
 
 ## Tests
 

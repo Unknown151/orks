@@ -6,6 +6,17 @@
     "type": "Ability — 'Ardmob Boyz",
     "description": "While this unit is <strong>engaged</strong>, this unit has +1 <strong>OC</strong>."
   },
+  "totem-of-mork": {
+    "name": "Totem of Mork (Psychic)",
+    "type": "Ability — 'Ardmob Weirdboy",
+    "phases": ["command"],
+    "description": "At the end of your Command phase, if this unit is controlling an <strong>objective</strong>, that <strong>objective</strong> is <strong>secured</strong>."
+  },
+  "psychic": {
+    "name": "Psychic",
+    "type": "Weapon Ability",
+    "description": "<em>Rule to be added — wording not supplied yet.</em>"
+  },
   "indiscriminate-detonations": {
     "name": "Indiscriminate Detonations",
     "type": "Ability — 'Ardmob Wartrakk",

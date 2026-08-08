@@ -1,0 +1,48 @@
+{
+  "id": "cp-ardmob-weirdboy",
+  "name": "'Ardmob Weirdboy",
+  "type": ["Infantry", "Character"],
+  "keywords": ["'ARDMOB", "CHARACTER", "INFANTRY", "PSYKER"],
+
+  "isLeader": true,
+  "isEpicHero": false,
+
+  "models": 1,
+  "modelBreakdown": "1 'Ardmob Weirdboy",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 4, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Psychic Powers - 'Eadbanger; 1 Waaagh! Staff - Bash. Both are multi-profile weapons — every profile is listed, grouped under its weapon.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Psychic Powers - Da Stomp", "count": 1, "range": "24\"", "a": "D6+2", "bs": "4+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{ "id": "blast", "display": "Blast 1" }, "psychic"],
+        "weaponGroup": "psychic-powers",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Psychic Powers - 'Eadbanger", "count": 1, "range": "24\"", "a": "1", "bs": "4+", "s": "8", "ap": "-3", "d": "2",
+        "abilities": ["precision", "psychic"],
+        "weaponGroup": "psychic-powers" }
+    ],
+    "melee": [
+      { "name": "Waaagh! Staff - Bash", "count": 1, "a": "3", "ws": "3+", "s": "8", "ap": "-1", "d": "2",
+        "abilities": ["psychic"],
+        "weaponGroup": "waaagh-staff",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Waaagh! Staff - Clobber", "count": 1, "a": "4", "ws": "3+", "s": "8", "ap": "-2", "d": "2",
+        "abilities": ["devastating-wounds", "hazardous", "psychic"],
+        "weaponGroup": "waaagh-staff" }
+    ]
+  },
+
+  "abilities": ["totem-of-mork"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": [],
+
+  "_canLead_note": "The datasheet names 'ARDMOB BOYZ, and the force contains two units with that name, so both are listed. The card lists the name once, as the datasheet does.",
+  "canLead": ["cp-ardmob-boyz", "cp-ardmob-boyz-kustom"]
+}

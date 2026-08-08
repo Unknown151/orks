@@ -51,15 +51,5 @@
     }
   },
 
-  "_stratagems_help": "Two sources. `coreStratagems` lists ids from data/stratagems.json that this force may use — core stratagems are edition rules shared with matched play, so they are referenced, not copied. `stratagems` holds any Combat-Patrol-only stratagems, defined inline with the same schema.",
-  "coreStratagems": [
-    "command-re-roll",
-    "epic-challenge",
-    "insane-bravery",
-    "fire-overwatch",
-    "smokescreen",
-    "heroic-intervention",
-    "counter-offensive"
-  ],
-  "stratagems": {}
+  "_stratagems_note": "This force's stratagems are the core ones in data/stratagems.json, shown on the Stratagems tab. The Combat Patrol tab deliberately has no stratagem panel of its own."
 }

@@ -45,8 +45,8 @@ The nav is **Army · Builder · Stratagems · Combat Patrol**. The in-game track
 A **faction call button** is pinned to the bottom of the Combat Patrol tab (see below).
 
 **Combat Patrol** is complete (`data/combat-patrol/`) — 6 units, 33 models, the
-'Ard As Nails detachment, both enhancements and its seven stratagems.
-`data/stratagems.json` holds the 11th-ed core stratagems. Still empty, awaiting
+'Ard As Nails detachment and both enhancements. `data/stratagems.json` holds the
+11th-ed core stratagems, shown on the Stratagems tab. Still empty, awaiting
 matched-play data: `data/detachments.json`, `data/enhancements.json`,
 `data/units/`.
 `data/abilities.json` holds every ability. **Everything the Ork data actually
@@ -168,9 +168,7 @@ Everything is driven by `data/combat-patrol/index.json`:
     "cp-unit-id",                              // plain id, or:
     { "unit": "cp-boyz", "count": 2, "ledBy": "cp-nob", "note": "free text" }
   ],
-  "rule": [ { "name": "…", "description": "HTML" } ],
-  "coreStratagems": ["command-re-roll", …],   // ids from data/stratagems.json
-  "stratagems": { "id": { /* Combat-Patrol-only, same schema */ } }
+  "rule": [ { "name": "…", "description": "HTML" } ]
 }
 ```
 
@@ -218,12 +216,9 @@ the keys are absent.
 
 ### Stratagems
 
-Core stratagems are edition rules shared with matched play, so Combat Patrol
-**references them by id** from `data/stratagems.json` rather than holding its own
-copies — one place to fix a wording, and the force can allow a subset. Anything
-Combat-Patrol-only goes in the force's own `stratagems` object and never leaks onto
-the Stratagems tab. A referenced id that doesn't exist renders a visible note rather
-than vanishing.
+The Combat Patrol tab has **no stratagem panel** — stratagems live on the Stratagems
+tab, which already shows the core ones this force uses. The tab is for the force:
+its detachment, its choices and its datasheets.
 
 A stratagem that can cost more if you take an option carries `cpCostNote` (e.g.
 Heroic Intervention's `"+1 CP for Into the Fray"`), shown as a second badge so the

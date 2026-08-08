@@ -285,7 +285,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.8.1';
+const VERSION = '0.8.2';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -1325,13 +1325,6 @@ function renderCombatPatrol(){
   }
   const entries = cpLayout();
   const models = cpRosterEntries().reduce((n,e) => n + (DATA.cpUnits[e.unit]?.models || 0) * e.count, 0);
-  // Core stratagems are shared edition rules, referenced by id rather than
-  // copied; anything Combat-Patrol-only is defined inline alongside them.
-  const missingCore = (cp.coreStratagems || []).filter(id => !DATA.stratagems[id]);
-  const strats = [
-    ...(cp.coreStratagems || []).filter(id => DATA.stratagems[id]).map(id => ({id, ...DATA.stratagems[id]})),
-    ...Object.entries(cp.stratagems || {}).map(([id,s]) => ({id, ...s}))
-  ];
 
   const rules = [].concat(cp.rule || cp.rules || []).filter(Boolean);
   const det = cp.detachment;
@@ -1383,12 +1376,6 @@ function renderCombatPatrol(){
     ? panel('cpChoice', 'Force choices', choiceSummary, choiceBits.join(''), ui.panels.cpChoice)
     : '';
 
-  const stratPanel = (strats.length || missingCore.length) ? panel('cpStrat', 'Stratagems',
-    `<span class="tag">${strats.length}</span>`,
-    strats.map(stratCard).join('') + missingCore.map(id =>
-      `<div class="empty">Stratagem <code>${esc(id)}</code> is listed for this force but is not in
-       <code>data/stratagems.json</code>.</div>`).join(''),
-    ui.panels.cpStrat) : '';
 
   el.innerHTML = `
     <div class="panel open"><div class="panel-bd">
@@ -1400,7 +1387,7 @@ function renderCombatPatrol(){
       </div>
       ${cp.notes ? `<p class="muted" style="font-size:12.5px;margin:8px 0 0">${cp.notes}</p>` : ''}
     </div></div>
-    ${rulesPanel}${choicePanel}${stratPanel}
+    ${rulesPanel}${choicePanel}
     ${entries.length ? entries.map(cpCard).join('')
       : `<div class="empty">No units in the Combat Patrol roster yet.<br>
          Add them to the <code>roster</code> array in <code>data/combat-patrol/index.json</code>.</div>`}`;

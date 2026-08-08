@@ -19,21 +19,6 @@
    "description": "<strong>Rule body.</strong>"
   }
  ],
- "stratagems": {
-  "cp-strat": {
-   "name": "Patrol Strat",
-   "type": "Combat Patrol Stratagem",
-   "turn": "your",
-   "phases": [
-    "shooting"
-   ],
-   "cpCost": 1,
-   "summary": "s",
-   "when": "w",
-   "target": "t",
-   "effect": "e"
-  }
- },
  "detachment": {
   "name": "Fixture Detachment",
   "dp": 1,
@@ -74,9 +59,5 @@
     "invulnerableSave": "4+"
    }
   }
- },
- "coreStratagems": [
-  "core-a",
-  "no-such-strat"
- ]
+ }
 }

@@ -303,18 +303,13 @@ t('faction ability opens its popup',
 await p.click('#mClose');
 t('CP rule panel opens', await p.evaluate(()=>document.querySelector('#cpRule').classList.contains('open')));
 t('CP rule text shown', await p.evaluate(()=>document.querySelector('#cpRule .panel-bd').textContent.includes('Rule body')));
-await p.click('[data-panel="cpStrat"]');
-t('CP panel shows its own + the referenced core stratagems',
-  await p.evaluate(()=>[...document.querySelectorAll('#cpStrat .strat .n')].map(x=>x.firstChild.textContent).sort().join())==='Core Strat,Patrol Strat');
-t('core stratagem is referenced, not copied into the CP file',
-  await p.evaluate(()=>!DATA.combatPatrol.stratagems['core-a'] && !!DATA.stratagems['core-a']));
-t('a dangling core reference is reported, not silently dropped',
-  await p.evaluate(()=>document.querySelector('#cpStrat').textContent.includes('no-such-strat')));
-t('CP-only stratagem absent from the Stratagems tab',
-  await p.evaluate(()=>!document.querySelector('#view-strats').textContent.includes('Patrol Strat')));
-t('core stratagem IS on the Stratagems tab',
-  await p.evaluate(()=>document.querySelector('#view-strats').textContent.includes('Core Strat')));
-t('builder panel state independent of CP panels',
+t('Combat Patrol has no stratagem panel of its own',
+  await p.evaluate(()=>!document.querySelector('#cpStrat')));
+t('no stratagem cards anywhere on the Combat Patrol tab',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .strat').length)===0);
+t('stratagems live on their own tab',
+  await p.evaluate(()=>document.querySelectorAll('#view-strats .strat').length)>0);
+t('builder panel state independent of the CP rule panel',
   await p.evaluate(()=>document.querySelector('#pDet').classList.contains('open')));
 // in-game tracker still reachable
 await p.click('#btnMenu'); await p.click('#mTracker');
@@ -410,10 +405,10 @@ await p.waitForTimeout(120);
 
 // the optional extra cost must be visible, not rounded away
 t('cpCostNote renders as its own badge', await p.evaluate(()=>{
-  DATA.stratagems['core-a'].cpCostNote='+1 CP for X'; renderStrats(); renderCombatPatrol();
+  DATA.stratagems['core-a'].cpCostNote='+1 CP for X'; renderStrats();
   const n=document.querySelector('#view-strats .cp.alt');
   const ok=!!n && n.textContent==='+1 CP for X';
-  delete DATA.stratagems['core-a'].cpCostNote; renderStrats(); renderCombatPatrol(); return ok;}));
+  delete DATA.stratagems['core-a'].cpCostNote; renderStrats(); return ok;}));
 
 // --------------------------- WEAPON ROWS -----------------------------
 await p.evaluate(()=>{collapsed={};setTab('cp');renderAll();}); await p.waitForTimeout(150);

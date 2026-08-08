@@ -6,6 +6,7 @@
 
   "_detachment_help": "The single detachment this force runs. Unlike matched play there is no budget to spend — the DP cost is shown for reference. `category` keys into the colour map in data/detachments.json.",
   "detachment": {
+    "id": "ard-as-nails",
     "name": "'Ard As Nails",
     "dp": 1,
     "category": "Purge the Foe",

@@ -82,6 +82,45 @@
     "detachment": null
   },
 
+  "krump-em": {
+    "name": "Krump \u2019Em",
+    "type": "\u2019Ardmob Stratagem",
+    "turn": "either",
+    "phases": ["fight"],
+    "cpCost": 1,
+    "summary": "Your unit\u2019s melee attacks have +1 S.",
+    "when": "Fight phase, when a friendly <strong>\u2019ARDMOB</strong> unit is <strong>selected to fight</strong>.",
+    "target": "That <strong>\u2019ARDMOB</strong> unit.",
+    "effect": "Your unit\u2019s melee attacks have +1 <strong>S</strong>.",
+    "detachment": "ard-as-nails"
+  },
+
+  "medi-squigs": {
+    "name": "Medi-Squigs",
+    "type": "\u2019Ardmob Stratagem",
+    "turn": "opponent",
+    "phases": ["shooting"],
+    "cpCost": 1,
+    "summary": "Your unit has a 5+ invulnerable save.",
+    "when": "Your opponent\u2019s Shooting phase, when an enemy unit targets a friendly <strong>\u2019ARDMOB</strong> unit.",
+    "target": "That <strong>\u2019ARDMOB</strong> unit.",
+    "effect": "Your unit has 5+ <strong>InSv</strong>.",
+    "detachment": "ard-as-nails"
+  },
+
+  "get-stuck-in": {
+    "name": "Get Stuck In",
+    "type": "\u2019Ardmob Stratagem",
+    "turn": "opponent",
+    "phases": ["shooting"],
+    "cpCost": 1,
+    "summary": "Surge move up to D6+1\" after being shot at.",
+    "when": "Your opponent\u2019s Shooting phase, when an enemy unit that targeted a friendly <strong>unengaged</strong> <strong>\u2019ARDMOB</strong> unit has shot.",
+    "target": "That <strong>\u2019ARDMOB</strong> unit.",
+    "effect": "Your unit can make a <strong>surge move</strong> of up to D6+1\".",
+    "detachment": "ard-as-nails"
+  },
+
   "counter-offensive": {
     "name": "Counter-offensive",
     "type": "Core Stratagem",

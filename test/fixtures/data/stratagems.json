@@ -1,4 +1,44 @@
-{ "core-a": { "name":"Core Strat", "type":"Core Stratagem", "turn":"either", "phases":["command"], "cpCost":1,
-    "summary":"s", "when":"w", "target":"t", "effect":"e", "detachment":null },
-  "det-a": { "name":"Det Strat", "type":"Big One – Battle Tactic", "turn":"your", "phases":["fight"], "cpCost":2,
-    "summary":"s", "when":"w", "target":"t", "effect":"e", "detachment":"big-one" } }
+{
+ "core-a": {
+  "name": "Core Strat",
+  "type": "Core Stratagem",
+  "turn": "either",
+  "phases": [
+   "command"
+  ],
+  "cpCost": 1,
+  "summary": "s",
+  "when": "w",
+  "target": "t",
+  "effect": "e",
+  "detachment": null
+ },
+ "det-a": {
+  "name": "Det Strat",
+  "type": "Big One \u2013 Battle Tactic",
+  "turn": "your",
+  "phases": [
+   "fight"
+  ],
+  "cpCost": 2,
+  "summary": "s",
+  "when": "w",
+  "target": "t",
+  "effect": "e",
+  "detachment": "big-one"
+ },
+ "cp-det-strat": {
+  "name": "CP Det Strat",
+  "type": "Fixture Detachment Stratagem",
+  "turn": "opponent",
+  "phases": [
+   "shooting"
+  ],
+  "cpCost": 1,
+  "summary": "s",
+  "when": "w",
+  "target": "t",
+  "effect": "e",
+  "detachment": "fixture-det"
+ }
+}

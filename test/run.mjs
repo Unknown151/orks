@@ -145,18 +145,47 @@ t('weaponGroup header shown once', await p.evaluate(()=>document.querySelectorAl
 
 // --- stratagems
 await p.click('nav button[data-tab="strats"]');
-t('both strats shown (big-one active)', await p.evaluate(()=>document.querySelectorAll('#view-strats .strat').length)===2);
-await p.click('.chip[data-phase="command"]');
-t('phase filter narrows to 1', await p.evaluate(()=>document.querySelectorAll('#view-strats .strat').length)===1);
-await p.click('.chip[data-phase="all"]'); await p.click('.chip[data-turn="opponent"]');
-t('turn filter drops your-turn strat', await p.evaluate(()=>document.querySelectorAll('#view-strats .strat').length)===1);
-await p.click('.chip[data-turn="all"]');
+t('phase bar offers All + the five phases', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-strats .phbar button')].map(b=>b.dataset.phase).join())==='all,command,movement,shooting,charge,fight');
+t('all eligible stratagems shown (2 core + 1 detachment)',
+  await p.evaluate(()=>document.querySelectorAll('#view-strats .scard').length)===3);
+t('CP force detachment counts as active without the DP picker',
+  await p.evaluate(()=>!isDetachmentActive('fixture-det') && isContentDetachmentActive(DATA.stratagems['cp-det-strat'])));
+t('grouped by source, Core first', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-strats .egroup')].map(x=>x.firstChild.textContent.trim())[0])==='Core');
+t('detachment group is named, not shown as a raw id', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-strats .egroup')].some(x=>x.textContent.includes('Fixture Detachment'))));
+await p.click('#view-strats .phbar button[data-phase="command"]');
+t('phase tab narrows the grid', await p.evaluate(()=>document.querySelectorAll('#view-strats .scard').length)===1);
+t('selected phase tab is marked', await p.evaluate(()=>
+  document.querySelector('#view-strats .phbar button.on').dataset.phase)==='command');
+await p.click('#view-strats .phbar button[data-phase="shooting"]');
+t('shooting shows the detachment stratagem', await p.evaluate(()=>
+  document.querySelector('#view-strats').textContent.includes('CP Det Strat')));
+t('cards carry cost and turn badges', await p.evaluate(()=>{
+  const c=document.querySelector('#view-strats .scard');
+  return !!c.querySelector('.sb.cost') && !!c.querySelector('[class*="sb t-"]');}));
+t('turn badge colours differ by turn', await p.evaluate(()=>{
+  const g=t=>{const e=document.querySelector('.sb.t-'+t);return e?getComputedStyle(e).color:null;};
+  ui.stratPhase='all'; renderStrats();
+  return g('either')!==g('opponent');}));
+await p.click('#view-strats .scard');
+t('tapping a card opens the full text', await p.evaluate(()=>
+  document.querySelector('#modal').classList.contains('on') &&
+  document.querySelector('#mBody').textContent.includes('WHEN:')));
+await p.click('#mClose');
+await p.click('#view-strats .phbar button[data-phase="all"]');
 
 // --- detachment removal cleanup
 await p.evaluate(()=>toggleDetachment('big-one'));
 t('orphaned enhancement cleared', await p.evaluate(u=>armyList.find(i=>i.uid===u).enhancementId,wb)===null);
 t('upgrade shared with "other" det survives', await p.evaluate(()=>armyList[0].enhancementId)==='extra-armour');
-t('det strat hidden after removal', await p.evaluate(()=>document.querySelectorAll('#view-strats .strat').length)===1);
+t('det strat hidden after its detachment is removed', await p.evaluate(()=>{
+  ui.stratPhase='all'; renderStrats();
+  const names=[...document.querySelectorAll('#view-strats .scard .sn')].map(x=>x.textContent);
+  return !names.includes('Det Strat') && names.includes('Core Strat');}));
+t('the CP detachment stratagem is unaffected by the DP picker', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-strats .scard .sn')].map(x=>x.textContent).includes('CP Det Strat')));
 await p.evaluate(()=>toggleDetachment('big-one'));
 
 // --- share link round trip
@@ -308,7 +337,7 @@ t('Combat Patrol has no stratagem panel of its own',
 t('no stratagem cards anywhere on the Combat Patrol tab',
   await p.evaluate(()=>document.querySelectorAll('#view-cp .strat').length)===0);
 t('stratagems live on their own tab',
-  await p.evaluate(()=>document.querySelectorAll('#view-strats .strat').length)>0);
+  await p.evaluate(()=>document.querySelectorAll('#view-strats .scard').length)>0);
 t('builder panel state independent of the CP rule panel',
   await p.evaluate(()=>document.querySelector('#pDet').classList.contains('open')));
 // in-game tracker still reachable
@@ -405,9 +434,10 @@ await p.waitForTimeout(120);
 
 // the optional extra cost must be visible, not rounded away
 t('cpCostNote renders as its own badge', await p.evaluate(()=>{
-  DATA.stratagems['core-a'].cpCostNote='+1 CP for X'; renderStrats();
-  const n=document.querySelector('#view-strats .cp.alt');
-  const ok=!!n && n.textContent==='+1 CP for X';
+  DATA.stratagems['core-a'].cpCostNote='+1 CP for X'; ui.stratPhase='all'; renderStrats();
+  const n=document.querySelector('#view-strats .sb.alt');
+  // card shows the short form, full note kept in the tooltip and the popup
+  const ok=!!n && n.textContent==='+1 CP' && n.title==='+1 CP for X';
   delete DATA.stratagems['core-a'].cpCostNote; renderStrats(); return ok;}));
 
 // --------------------------- WEAPON ROWS -----------------------------

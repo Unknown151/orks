@@ -101,6 +101,24 @@ Keywords, Leader) deliberately keeps the plain header: the banding only means
 something because it is used sparingly. The colours are theme tokens
 (`--ranged*` / `--melee*`) with light-theme variants.
 
+## The Stratagems tab
+
+A phase bar across the top (All · Command · Movement · Shooting · Charge · Fight)
+and a grid of compact cards below it, grouped by source with Core first. Each card
+shows its CP cost, whose turn it is usable on, and a one-line summary; tapping it
+opens the full WHEN / TARGET / EFFECT / RESTRICTIONS text.
+
+Turn is a coloured badge rather than a filter — green for either, blue for your turn,
+red for your opponent's — so a phase view tells you at a glance what is yours to use
+and what is a response.
+
+`cpCostNote` marks a stratagem that can cost more if you take an option. The card
+shows the short form (`+1 CP`) to stay compact, with the full note in the tooltip and
+the popup, so the cost is never under-reported.
+
+Combat Patrol's detachment counts as active for content gating, so its stratagems
+appear without having to select anything in the Builder's DP picker.
+
 ## Collapsing unit cards
 
 Every unit card — Army, Builder and Combat Patrol — collapses to its header by
@@ -216,13 +234,9 @@ the keys are absent.
 
 ### Stratagems
 
-The Combat Patrol tab has **no stratagem panel** — stratagems live on the Stratagems
-tab, which already shows the core ones this force uses. The tab is for the force:
-its detachment, its choices and its datasheets.
-
-A stratagem that can cost more if you take an option carries `cpCostNote` (e.g.
-Heroic Intervention's `"+1 CP for Into the Fray"`), shown as a second badge so the
-card never under-reports what you might spend.
+The Combat Patrol tab has **no stratagem panel** — stratagems live on their own tab.
+The Combat Patrol tab is for the force: its detachment, its choices and its
+datasheets.
 - A unit with `canLead` renders the datasheet's **Leader** block listing what it can
   attach to. Names are de-duplicated, so a leader pointing at both 'Ardmob Boyz units
   shows that name once, as the datasheet does. The block is suppressed on a leader

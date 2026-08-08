@@ -163,9 +163,26 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .egroup:first-child{margin-top:0}
 
 /* ---------- stratagems ---------- */
-.chips{display:flex;gap:5px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px}
-.chip{background:var(--card2);border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-size:12px;white-space:nowrap}
-.chip.on{background:var(--accent2);border-color:var(--accent)}
+.phbar{display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  border-bottom:1px solid var(--line);margin-bottom:10px}
+.phbar button{flex:1 0 auto;background:transparent;border:0;border-bottom:2px solid transparent;
+  color:var(--dim);padding:8px 9px;font-size:11px;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;white-space:nowrap}
+.phbar button.on{color:var(--accent);border-bottom-color:var(--accent)}
+.scards{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px}
+.scard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 10px;
+  text-align:left;display:flex;flex-direction:column;gap:6px;color:inherit}
+.scard:active{border-color:var(--accent)}
+.scard .sn{font-weight:700;font-size:13.5px;line-height:1.25;color:var(--accent)}
+.scard .sbs{display:flex;flex-wrap:wrap;gap:4px}
+.sb{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+  padding:2px 6px;border-radius:5px;border:1px solid}
+.sb.cost{border-color:var(--ranged-bd);color:var(--ranged);background:var(--ranged-bg)}
+.sb.alt{border-style:dashed;border-color:var(--warn);color:var(--warn)}
+.sb.t-either{border-color:var(--accent);color:var(--accent);background:rgba(127,180,63,.14)}
+.sb.t-your{border-color:var(--ranged-bd);color:var(--ranged);background:var(--ranged-bg)}
+.sb.t-opponent{border-color:var(--melee-bd);color:var(--melee);background:var(--melee-bg)}
+.scard .ss{font-size:12px;line-height:1.4;color:var(--dim)}
 .strat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:8px;overflow:hidden}
 .strat-hd{display:flex;gap:8px;align-items:flex-start;padding:8px 11px;background:var(--card2)}
 .strat-hd .n{flex:1;font-weight:600;font-size:14px}
@@ -285,7 +302,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.8.2';
+const VERSION = '0.9.1';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -315,7 +332,7 @@ let selectedDetachments = [];   // ARRAY of detachment ids (DP spec §2)
 let pointsLimit = 2000;
 let listName = 'Untitled list';
 let game = { cp:0, round:1, vpUs:0, vpThem:0, waaagh:false };
-let ui = { tab:'builder', detOpen:true, enhOpen:false, stratPhase:'all', stratTurn:'all',
+let ui = { tab:'builder', detOpen:true, enhOpen:false, stratPhase:'all',
   // Force choices default open — it is the one panel you set before a game.
   panels:{ cpChoice:true } };
 // Which unit cards are collapsed, keyed by a stable per-card id. Persisted so a
@@ -464,7 +481,14 @@ function isContentDetachmentActive(item){
   if(!item) return false;
   if(!item.detachment) return true;
   const dets = Array.isArray(item.detachment) ? item.detachment : [item.detachment];
-  return dets.some(isDetachmentActive);
+  const cpDet = DATA.combatPatrol?.detachment?.id;
+  return dets.some(id => isDetachmentActive(id) || (cpDet && id === cpDet));
+}
+// Name for a detachment id, whichever namespace defines it.
+function detachmentName(id){
+  if(DATA.detachments[id]) return DATA.detachments[id].name;
+  const cp = DATA.combatPatrol?.detachment;
+  return (cp && cp.id === id) ? cp.name : id;
 }
 function clearOrphanedEnhancements(){
   armyList.forEach(inst => {
@@ -1193,48 +1217,61 @@ function renderBuilder(){
 
 /* ------------------------------- STRATAGEMS ------------------------------- */
 const PHASES = ['command','movement','shooting','charge','fight'];
+const TURN_LABEL = { either:'Either', your:'Your turn', opponent:"Opponent's" };
+
+// Compact card for the grid; the full text opens in a modal.
 function stratCard(s){
-  return `<div class="strat">
-    <div class="strat-hd"><div class="n">${esc(s.name)}<small>${esc(s.type||'')}</small></div>
-      <span class="cp">${s.cpCost ?? 0} CP</span>
-      ${s.cpCostNote ? `<span class="cp alt">${esc(s.cpCostNote)}</span>` : ''}</div>
-    <div class="strat-bd">
-      ${s.summary?`<p class="muted">${esc(s.summary)}</p>`:''}
-      ${s.when?`<p><b>WHEN:</b> ${s.when}</p>`:''}
-      ${s.target?`<p><b>TARGET:</b> ${s.target}</p>`:''}
-      ${s.effect?`<p><b>EFFECT:</b> ${s.effect}</p>`:''}
-      ${s.restrictions?`<p><b>RESTRICTIONS:</b> ${s.restrictions}</p>`:''}
-    </div></div>`;
+  const turn = s.turn || 'either';
+  // "+1 CP for Into the Fray" is too wide for a card badge; show just the cost
+  // and keep the full note for the popup.
+  const short = s.cpCostNote ? (s.cpCostNote.match(/^\+\s*\d+\s*CP/i)?.[0] || s.cpCostNote) : null;
+  return `<button class="scard" data-strat="${esc(s.id)}">
+    <div class="sn">${esc(s.name)}</div>
+    <div class="sbs">
+      <span class="sb cost">${s.cpCost ?? 0} CP</span>
+      ${short ? `<span class="sb alt" title="${esc(s.cpCostNote)}">${esc(short)}</span>` : ''}
+      <span class="sb t-${esc(turn)}">${esc(TURN_LABEL[turn] || turn)}</span>
+    </div>
+    ${s.summary ? `<div class="ss">${esc(s.summary)}</div>` : ''}
+  </button>`;
+}
+function showStratagem(id){
+  const s = DATA.stratagems[id];
+  if(!s) return;
+  const turn = s.turn || 'either';
+  openModal(s.name, s.type || '',
+    `<p class="muted">${s.cpCost ?? 0} CP${s.cpCostNote ? ' · ' + esc(s.cpCostNote) : ''} ·
+       ${esc(TURN_LABEL[turn] || turn)} · ${(s.phases||[]).map(p => p[0].toUpperCase()+p.slice(1)).join(', ')}</p>
+     ${s.when?`<p><b>WHEN:</b> ${s.when}</p>`:''}
+     ${s.target?`<p><b>TARGET:</b> ${s.target}</p>`:''}
+     ${s.effect?`<p><b>EFFECT:</b> ${s.effect}</p>`:''}
+     ${s.restrictions?`<p><b>RESTRICTIONS:</b> ${s.restrictions}</p>`:''}`);
 }
 function renderStrats(){
   const all = Object.entries(DATA.stratagems).map(([id,s]) => ({id, ...s}))
-    .filter(s => !s.detachment || isContentDetachmentActive(s));
-  const shown = all.filter(s =>
-    (ui.stratPhase === 'all' || (s.phases||[]).includes(ui.stratPhase)) &&
-    (ui.stratTurn === 'all' || !s.turn || s.turn === 'either' || s.turn === ui.stratTurn));
+    .filter(s => isContentDetachmentActive(s));
+  const shown = ui.stratPhase === 'all'
+    ? all : all.filter(s => (s.phases || []).includes(ui.stratPhase));
 
+  // Group by source: core first, then each detachment contributing stratagems.
   const groups = {};
   shown.forEach(s => {
     const key = !s.detachment ? 'Core'
-      : (Array.isArray(s.detachment) ? s.detachment : [s.detachment])
-          .filter(isDetachmentActive).map(d => DATA.detachments[d]?.name || d).join(' / ') || 'Core';
+      : (Array.isArray(s.detachment) ? s.detachment : [s.detachment]).map(detachmentName).join(' / ');
     (groups[key] = groups[key] || []).push(s);
   });
+  const order = Object.keys(groups).sort((a,b) => (a === 'Core' ? -1 : b === 'Core' ? 1 : a.localeCompare(b)));
 
   $('#view-strats').innerHTML = `
-    <div class="chips">
-      <button class="chip ${ui.stratPhase==='all'?'on':''}" data-phase="all">All phases</button>
-      ${PHASES.map(p => `<button class="chip ${ui.stratPhase===p?'on':''}" data-phase="${p}">${p[0].toUpperCase()+p.slice(1)}</button>`).join('')}
+    <div class="phbar">
+      <button class="${ui.stratPhase==='all'?'on':''}" data-phase="all">All</button>
+      ${PHASES.map(p => `<button class="${ui.stratPhase===p?'on':''}" data-phase="${p}">${p}</button>`).join('')}
     </div>
-    <div class="chips">
-      ${[['all','Any turn'],['your','Your turn'],['opponent',"Opponent's turn"]].map(([v,l]) =>
-        `<button class="chip ${ui.stratTurn===v?'on':''}" data-turn="${v}">${l}</button>`).join('')}
-    </div>
-    ${Object.keys(groups).length ? Object.entries(groups).map(([g,list]) => `
-      <div class="egroup">${esc(g)}</div>
-      ${list.map(stratCard).join('')}`).join('')
+    ${order.length ? order.map(g => `
+      <div class="egroup">${esc(g)} <span class="muted">· ${groups[g].length}</span></div>
+      <div class="scards">${groups[g].map(stratCard).join('')}</div>`).join('')
     : `<div class="empty">${Object.keys(DATA.stratagems).length
-        ? 'No stratagems match this filter.'
+        ? 'No stratagems in this phase.'
         : 'No stratagems loaded.<br>Add them to <code>data/stratagems.json</code>.'}</div>`}`;
 }
 
@@ -1540,7 +1577,7 @@ document.addEventListener('click', e => {
 
   // stratagem filters
   const ch = el('[data-phase]'); if(ch){ ui.stratPhase = ch.dataset.phase; renderStrats(); return; }
-  const ct = el('[data-turn]');  if(ct){ ui.stratTurn  = ct.dataset.turn;  renderStrats(); return; }
+  const sc = el('[data-strat]'); if(sc){ showStratagem(sc.dataset.strat); return; }
 
   // game trackers
   const g = el('[data-g]');

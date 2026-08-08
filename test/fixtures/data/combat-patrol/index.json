@@ -23,7 +23,8 @@
   "name": "Fixture Detachment",
   "dp": 1,
   "category": "Purge the Foe",
-  "ruleDescription": "<strong>Detachment rule body.</strong>"
+  "ruleDescription": "<strong>Detachment rule body.</strong>",
+  "id": "fixture-det"
  },
  "leaderChoice": {
   "prompt": "Pick one.",

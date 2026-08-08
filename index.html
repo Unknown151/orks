@@ -96,6 +96,8 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .statline{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}
 .stat{flex:1;min-width:44px;text-align:center;background:var(--card2);border:1px solid var(--line);border-radius:7px;padding:3px 2px}
 .stat b{display:block;font-size:9.5px;color:var(--dim);letter-spacing:.5px}
+.stat.mod{border-color:var(--warn)}
+.stat.mod span{color:var(--warn)}
 .stat span{font-size:14px;font-weight:700}
 .prof-n{font-size:11.5px;color:var(--dim);margin:7px 0 3px}
 .inv{display:flex;align-items:center;gap:7px;margin-top:6px;font-size:12.5px}
@@ -268,7 +270,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.5.1';
+const VERSION = '0.6.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -278,7 +280,7 @@ const MAX_UPGRADE_COPIES = 3;
 const LS = {
   army:'orks.army', dets:'orks.detachments', lists:'orks.lists', game:'orks.game',
   theme:'orks.theme', limit:'orks.limit', name:'orks.listName', legacyDet:'orks.detachment',
-  collapsed:'orks.collapsed'
+  collapsed:'orks.collapsed', cpChoice:'orks.cpChoice'
 };
 
 /* ---------------------------------- data --------------------------------- */
@@ -298,10 +300,15 @@ let selectedDetachments = [];   // ARRAY of detachment ids (DP spec §2)
 let pointsLimit = 2000;
 let listName = 'Untitled list';
 let game = { cp:0, round:1, vpUs:0, vpThem:0, waaagh:false };
-let ui = { tab:'builder', detOpen:true, enhOpen:false, stratPhase:'all', stratTurn:'all', panels:{} };
+let ui = { tab:'builder', detOpen:true, enhOpen:false, stratPhase:'all', stratTurn:'all',
+  // Force choices default open — it is the one panel you set before a game.
+  panels:{ cpChoice:true } };
 // Which unit cards are collapsed, keyed by a stable per-card id. Persisted so a
 // tidied-up list stays tidy across a reload mid-game.
 let collapsed = {};
+// Combat Patrol force choices: which enhancement is active, and which leader is
+// attached to which roster entry. Both are per-game picks, so they persist.
+let cpChoice = { enh:null, leader:null, target:null };
 
 /* -------------------------------- helpers -------------------------------- */
 const $ = s => document.querySelector(s);
@@ -388,6 +395,13 @@ async function loadCombatPatrol(){
     if(u.id !== ids[i]) console.warn(`combat patrol unit id "${u.id}" != filename "${ids[i]}"`);
     DATA.cpUnits[u.id] = u;
   });
+}
+// Discard stored choices that this force does not offer (data edited since).
+function validateCpChoice(){
+  const cp = DATA.combatPatrol;
+  if(!cp?.enhancements?.[cpChoice.enh]) cpChoice.enh = null;
+  if(!(cp?.leaderChoice?.leaders || []).includes(cpChoice.leader)){ cpChoice.leader = null; cpChoice.target = null; }
+  if(cpChoice.leader && !cpLeaderTargets(cpChoice.leader).some(e => e.idx === cpChoice.target)) cpChoice.target = null;
 }
 // Roster entries are either a plain unit id or {unit, count, ledBy}.
 function cpRosterEntries(){
@@ -653,6 +667,7 @@ function save(){
     localStorage.setItem(LS.game, JSON.stringify(game));
     localStorage.setItem(LS.limit, String(pointsLimit));
     localStorage.setItem(LS.name, listName);
+    localStorage.setItem(LS.cpChoice, JSON.stringify(cpChoice));
   }catch(e){ console.warn('save failed', e); }
 }
 function loadState(){
@@ -674,6 +689,7 @@ function loadState(){
   if(!isNaN(lim)) pointsLimit = lim;
   listName = localStorage.getItem(LS.name) || listName;
   try{ const c = JSON.parse(localStorage.getItem(LS.collapsed)); if(c && typeof c === 'object') collapsed = c; }catch{}
+  try{ const c = JSON.parse(localStorage.getItem(LS.cpChoice)); if(c && typeof c === 'object') cpChoice = {...cpChoice, ...c}; }catch{}
   const th = localStorage.getItem(LS.theme);
   if(th) document.documentElement.setAttribute('data-theme', th);
 }
@@ -851,10 +867,10 @@ function abilityPill(id, cls, label){
   const name = label || (a ? a.name : id);
   return `<span class="pill tap ${cls||''}" data-ab="${esc(id)}">${esc(name)}</span>`;
 }
-function statBlock(stats){
+function statBlock(stats, mods){
   const keys = [['m','M'],['t','T'],['sv','SV'],['w','W'],['ld','LD'],['oc','OC']];
   return `<div class="statline">${keys.map(([k,l]) =>
-    `<div class="stat"><b>${l}</b><span>${esc(stats?.[k] ?? '–')}</span></div>`).join('')}</div>`;
+    `<div class="stat${mods && mods[k] ? ' mod' : ''}"><b>${l}</b><span>${esc(stats?.[k] ?? '–')}</span></div>`).join('')}</div>`;
 }
 function weaponRows(unit, inst, kind){
   const list = (unit.weapons?.[kind] || []).filter(w => weaponCount(inst, w) > 0);
@@ -887,11 +903,12 @@ function weaponRows(unit, inst, kind){
 function unitBody(unit, inst, opts){
   opts = opts || {};
   let h = '';
+  const mods = unit._statMods;
   if(unit.modelProfiles?.length){
     h += unit.modelProfiles.map(p =>
-      `<div class="prof-n">${esc(p.name)}${p.count?` ×${p.count}`:''}</div>${statBlock(p.stats)}`).join('');
+      `<div class="prof-n">${esc(p.name)}${p.count?` ×${p.count}`:''}</div>${statBlock(p.stats, mods)}`).join('');
   } else if(unit.stats){
-    h += statBlock(unit.stats);
+    h += statBlock(unit.stats, mods);
   }
   if(unit.invulnerableSave){
     h += `<div class="inv">🛡 <b>Invulnerable save ${esc(unit.invulnerableSave)}</b>` +
@@ -1204,6 +1221,59 @@ function renderStrats(){
 /* A separate, introductory game mode: one fixed force, its own datasheets and
    its own stratagems. No list building, no wargear choices, no points, no
    detachments — so this view is read-only by design. */
+// ---- Combat Patrol force choices -------------------------------------------
+const cpEnhancements = () => Object.entries(DATA.combatPatrol?.enhancements || {}).map(([id,e]) => ({id, ...e}));
+const cpActiveEnh = () => {
+  const e = DATA.combatPatrol?.enhancements?.[cpChoice.enh];
+  return e ? { id: cpChoice.enh, ...e } : null;
+};
+const cpLeaders = () => (DATA.combatPatrol?.leaderChoice?.leaders || []);
+// Roster entries the chosen leader is allowed to attach to.
+function cpLeaderTargets(leaderId){
+  const lu = DATA.cpUnits[leaderId];
+  if(!lu) return [];
+  return cpRosterEntries().map((e,i) => ({...e, idx:i}))
+    .filter(e => e.unit !== leaderId && (lu.canLead || []).includes(e.unit));
+}
+// Roster with the chosen leader folded into its target entry and removed from
+// its own slot, so an attached leader is never shown twice.
+function cpLayout(){
+  const entries = cpRosterEntries().map((e,i) => ({...e, idx:i}));
+  const { leader, target } = cpChoice;
+  if(leader == null || target == null) return entries;
+  const tgt = entries.find(e => e.idx === target);
+  if(!tgt || !cpLeaderTargets(leader).some(e => e.idx === target)) return entries;
+  tgt.ledBy = leader;
+  return entries.filter(e => !(e.unit === leader && e.idx !== target));
+}
+// Apply the active enhancement's effects to a unit's displayed profile,
+// recording which stats changed so they can be highlighted.
+function cpDisplayUnit(u){
+  const e = cpActiveEnh();
+  if(!u || !e?.effects || !(e.restrictedTo || []).includes(u.id)) return u;
+  const d = {...u, _statMods:{}};
+  if(e.effects.sv){
+    d._statMods.sv = true;
+    if(d.stats) d.stats = {...d.stats, sv:e.effects.sv};
+    if(d.modelProfiles) d.modelProfiles = d.modelProfiles.map(p => ({...p, stats:{...p.stats, sv:e.effects.sv}}));
+  }
+  if(e.effects.invulnerableSave){
+    d.invulnerableSave = e.effects.invulnerableSave;
+    d.invulnerableSource = null;
+  }
+  return d;
+}
+const cpEnhFor = unitId => {
+  const e = cpActiveEnh();
+  return (e && (e.restrictedTo || []).includes(unitId)) ? e : null;
+};
+function cpEnhBadge(unitId){
+  const e = cpEnhFor(unitId);
+  if(!e) return '';
+  return `<div class="sec"><div class="sec-t">${e.upgrade ? 'Upgrade' : 'Enhancement'}</div>
+    <span class="pill tap star" data-cpenhinfo="${esc(e.id)}">★ ${esc(e.name)}</span></div>`;
+}
+
 function cpCard(entry, idx){
   const ck = 'c:' + idx;
   const u = DATA.cpUnits[entry.unit];
@@ -1212,14 +1282,17 @@ function cpCard(entry, idx){
       <span class="sub">Datasheet missing — expected <code>data/combat-patrol/units/${esc(entry.unit)}.json</code></span></h3></div></div>`;
   }
   const l = entry.ledBy ? DATA.cpUnits[entry.ledBy] : null;
-  const sub = [u.modelBreakdown || (u.models > 1 ? u.models + ' models' : ''), entry.note].filter(Boolean).join(' · ');
+  const du = cpDisplayUnit(u), dl = cpDisplayUnit(l);
+  const star = (cpEnhFor(u.id) || (l && cpEnhFor(l.id))) ? '<span class="star">★</span> ' : '';
+  const sub = [u.modelBreakdown || (u.models > 1 ? u.models + ' models' : ''), entry.note,
+               l ? `led by ${l.name}` : ''].filter(Boolean).join(' · ');
   return `<div class="unit${collapseClass(ck)}">
-    <div class="unit-hd" data-ucol="${ck}"><h3>${esc(u.name)}${entry.count > 1 ? ` <span class="muted">×${entry.count}</span>` : ''}
+    <div class="unit-hd" data-ucol="${ck}"><h3>${star}${esc(u.name)}${entry.count > 1 ? ` <span class="muted">×${entry.count}</span>` : ''}
       <span class="sub">${esc(sub)}</span></h3>${collapseChevron()}</div>
     ${l ? `<div class="leader-band">Leader — ${esc(l.name)}</div>
-           <div class="unit-bd">${unitBody(l, null, {noGrants:true, noLead:true})}</div>
+           <div class="unit-bd">${unitBody(dl, null, {noGrants:true, noLead:true})}${cpEnhBadge(l.id)}</div>
            <div class="leader-band merged-sec">Unit — ${esc(u.name)}</div>` : ''}
-    <div class="unit-bd">${unitBody(u, null, {noGrants:true})}</div></div>`;
+    <div class="unit-bd">${unitBody(du, null, {noGrants:true})}${cpEnhBadge(u.id)}</div></div>`;
 }
 function renderCombatPatrol(){
   const el = $('#view-cp'), cp = DATA.combatPatrol;
@@ -1229,15 +1302,59 @@ function renderCombatPatrol(){
       <code>data/combat-patrol/units/</code>.</div>`;
     return;
   }
-  const entries = cpRosterEntries();
-  const models = entries.reduce((n,e) => n + (DATA.cpUnits[e.unit]?.models || 0) * e.count, 0);
+  const entries = cpLayout();
+  const models = cpRosterEntries().reduce((n,e) => n + (DATA.cpUnits[e.unit]?.models || 0) * e.count, 0);
   const strats = Object.entries(cp.stratagems || {}).map(([id,s]) => ({id, ...s}));
 
   const rules = [].concat(cp.rule || cp.rules || []).filter(Boolean);
-  const rulesPanel = rules.length ? panel('cpRule', 'Combat Patrol rules',
-    esc(rules.map(r => r.name).join(', ')),
-    rules.map(r => `<p><strong>${esc(r.name || '')}</strong><br>${r.description || '<em>Rule to be added.</em>'}</p>`).join(''),
-    ui.panels.cpRule) : '';
+  const det = cp.detachment;
+  const detBody = det ? `<div class="dcard" style="cursor:default">
+      <div class="bar" style="background:${esc(DATA.detCategories[det.category] || 'var(--dim)')}"></div>
+      <div class="in"><div class="n">${esc(det.name)}</div>
+      <div class="m">${det.dp != null ? det.dp + ' DP · ' : ''}${esc(det.category || '')}</div></div></div>
+    <p style="margin:9px 0 0">${det.ruleDescription || '<em>Rule to be added.</em>'}</p>` : '';
+  const rulesBody = detBody + rules.map(r =>
+    `<p><strong>${esc(r.name || '')}</strong><br>${r.description || '<em>Rule to be added.</em>'}</p>`).join('');
+  const rulesPanel = (det || rules.length) ? panel('cpRule', 'Detachment & rules',
+    esc([det?.name, ...rules.map(r => r.name)].filter(Boolean).join(', ')),
+    rulesBody, ui.panels.cpRule) : '';
+
+  // --- force choices: one enhancement, one attached leader
+  const enhs = cpEnhancements(), leaders = cpLeaders();
+  const active = cpActiveEnh();
+  const targets = cpChoice.leader ? cpLeaderTargets(cpChoice.leader) : [];
+  const choiceBits = [];
+  if(enhs.length){
+    const limit = cp.enhancementLimit ?? 1;
+    choiceBits.push(`<div class="ctl"><label>Enhancement</label>
+      <select class="sel grow" id="cpEnhSel">
+        <option value="">— none —</option>
+        ${enhs.map(e => `<option value="${esc(e.id)}" ${cpChoice.enh===e.id?'selected':''}>${esc(e.name)}${e.upgrade?' [Upgrade]':''}</option>`).join('')}
+      </select></div>
+      <div class="muted" style="font-size:11.5px;margin-top:4px">${active
+        ? `Goes on: ${esc(active.restriction || '—')}`
+        : `Pick ${limit === 1 ? 'one' : 'up to ' + limit}. ${esc(enhs.map(e => e.name).join(' or '))}.`}</div>`);
+  }
+  if(leaders.length){
+    choiceBits.push(`<div class="ctl" style="margin-top:10px"><label>Leader</label>
+      <select class="sel grow" id="cpLeadSel">
+        <option value="">— none attached —</option>
+        ${leaders.map(id => `<option value="${esc(id)}" ${cpChoice.leader===id?'selected':''}>${esc(DATA.cpUnits[id]?.name || id)}</option>`).join('')}
+      </select></div>
+      ${cpChoice.leader ? `<div class="ctl"><label>Attach to</label>
+        <select class="sel grow" id="cpTgtSel">
+          <option value="">— not attached —</option>
+          ${targets.map(e => `<option value="${e.idx}" ${cpChoice.target===e.idx?'selected':''}>${esc(DATA.cpUnits[e.unit]?.name || e.unit)}${e.note?' — '+esc(e.note):''}</option>`).join('')}
+        </select></div>` : ''}
+      <div class="muted" style="font-size:11.5px;margin-top:4px">${esc(cp.leaderChoice?.prompt || '')}</div>`);
+  }
+  const choiceSummary = [
+    active ? active.name : null,
+    cpChoice.leader && cpChoice.target != null ? (DATA.cpUnits[cpChoice.leader]?.name + ' attached') : null
+  ].filter(Boolean).join(' · ') || '<span class="muted">nothing selected</span>';
+  const choicePanel = choiceBits.length
+    ? panel('cpChoice', 'Force choices', choiceSummary, choiceBits.join(''), ui.panels.cpChoice)
+    : '';
 
   const stratPanel = strats.length ? panel('cpStrat', 'Combat Patrol stratagems',
     `<span class="tag">${strats.length}</span>`,
@@ -1253,7 +1370,7 @@ function renderCombatPatrol(){
       </div>
       ${cp.notes ? `<p class="muted" style="font-size:12.5px;margin:8px 0 0">${cp.notes}</p>` : ''}
     </div></div>
-    ${rulesPanel}${stratPanel}
+    ${rulesPanel}${choicePanel}${stratPanel}
     ${entries.length ? entries.map(cpCard).join('')
       : `<div class="empty">No units in the Combat Patrol roster yet.<br>
          Add them to the <code>roster</code> array in <code>data/combat-patrol/index.json</code>.</div>`}`;
@@ -1373,6 +1490,14 @@ document.addEventListener('click', e => {
       (x.description || '<em>Rule to be added.</em>'));
     return;
   }
+  const ce = el('[data-cpenhinfo]');
+  if(ce){
+    const x = DATA.combatPatrol?.enhancements?.[ce.dataset.cpenhinfo];
+    if(x) openModal(x.name, x.type || (x.upgrade ? 'Upgrade' : 'Enhancement'),
+      `<p class="muted">Goes on: ${esc(x.restriction || '—')}</p>` + (x.description || '<em>Rule to be added.</em>'));
+    return;
+  }
+
   // collapse / expand a unit card
   const uc = el('[data-ucol]');
   if(uc){ toggleCollapse(uc.dataset.ucol, uc.closest('.unit')); return; }
@@ -1426,6 +1551,16 @@ document.addEventListener('click', e => {
 document.addEventListener('change', e => {
   const t = e.target;
   const find = u => armyList.find(i => i.uid === u);
+
+  if(t.id === 'cpEnhSel'){ cpChoice.enh = t.value || null; save(); renderCombatPatrol(); return; }
+  if(t.id === 'cpLeadSel'){
+    cpChoice.leader = t.value || null;
+    // Default to the only legal target when there is exactly one; otherwise clear.
+    const tg = cpChoice.leader ? cpLeaderTargets(cpChoice.leader) : [];
+    cpChoice.target = tg.length === 1 ? tg[0].idx : null;
+    save(); renderCombatPatrol(); return;
+  }
+  if(t.id === 'cpTgtSel'){ cpChoice.target = t.value === '' ? null : +t.value; save(); renderCombatPatrol(); return; }
 
   if(t.id === 'addSel' && t.value){ addUnit(t.value); return; }
   if(t.id === 'limitIn'){ pointsLimit = parseInt(t.value,10) || 0; save(); renderBuilder(); return; }
@@ -1498,6 +1633,7 @@ function showMenu(){
       If you opened this file directly, serve it over HTTP instead — <code>python3 -m http.server</code> — browsers block <code>fetch</code> on <code>file://</code>.</div>`;
   }
   loadState();
+  validateCpChoice();
   await readShareFromHash();
   renderAll();
 })();

@@ -21,7 +21,7 @@
     "name": "Cleave",
     "type": "Weapon Ability",
     "phases": ["fight"],
-    "description": "<em>Rule to be added — wording not supplied yet.</em>"
+    "description": "This ability always takes the form <strong>[CLEAVE X]</strong>. Each time you gather <strong>attack dice</strong> for a <strong>[CLEAVE]</strong> weapon, if you only selected one target for all of that weapon's attacks, add <strong>X</strong> additional <strong>attack dice</strong> for every five models that were in the target unit in the Select Targets step (rounding down)."
   },
   "smash-em-up": {
     "name": "Smash 'Em Up",

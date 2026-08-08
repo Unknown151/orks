@@ -213,12 +213,76 @@ t('CP force loaded', await p.evaluate(()=>DATA.combatPatrol.name)==='Demo Combat
 t('CP datasheets loaded from roster (incl. ledBy)',
   await p.evaluate(()=>Object.keys(DATA.cpUnits).sort().join())==='cp-boyz,cp-buggy,cp-nob');
 t('CP units kept out of the matched-play pool', await p.evaluate(()=>DATA.units['cp-boyz']===undefined));
-t('roster renders one card per entry', await p.evaluate(()=>document.querySelectorAll('#view-cp .unit').length)===3);
-t('ledBy renders a merged card', await p.evaluate(()=>document.querySelectorAll('#view-cp .leader-band').length)===2);
+t('roster renders one card per entry', await p.evaluate(()=>document.querySelectorAll('#view-cp .unit').length)===4);
 t('roster count shown', await p.evaluate(()=>document.querySelector('#view-cp .unit-hd .muted').textContent.trim())==='×2');
+t('detachment shown with its DP and category', await p.evaluate(()=>{
+  const d=document.querySelector('#cpRule');
+  return d.textContent.includes('Fixture Detachment') && d.textContent.includes('1 DP')
+      && d.textContent.includes('Purge the Foe') && d.textContent.includes('Detachment rule body');}));
 t('missing datasheet flagged, not silent',
   await p.evaluate(()=>document.querySelector('#view-cp').textContent.includes('data/combat-patrol/units/cp-absent.json')));
-t('unit totals line', await p.evaluate(()=>document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('4 units')));
+t('unit totals line', await p.evaluate(()=>document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('5 units')));
+
+// ---- force choices: one enhancement, one attached leader
+await p.evaluate(()=>{cpChoice={enh:null,leader:null,target:null};save();renderCombatPatrol();});
+t('choices start empty', await p.evaluate(()=>document.querySelectorAll('#view-cp .leader-band').length)===0);
+t('enhancement picker offers exactly the force enhancements', await p.evaluate(()=>
+  [...document.querySelectorAll('#cpEnhSel option')].map(o=>o.value).join()===',fix-enh,fix-upg'));
+
+// enhancement -> star on the right card, and its effects applied
+await p.selectOption('#cpEnhSel','fix-upg'); await p.waitForTimeout(150);
+t('enhancement stored', await p.evaluate(()=>cpChoice.enh)==='fix-upg');
+t('star lands on the restricted unit only', await p.evaluate(()=>{
+  const stars=[...document.querySelectorAll('#view-cp .unit')].filter(c=>c.querySelector('.unit-hd .star'));
+  return stars.length===1 && stars[0].querySelector('h3').textContent.includes('CP Buggy');}));
+t('effects change the displayed Sv', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));
+  return [...c.querySelectorAll('.stat')].find(x=>x.querySelector('b').textContent==='SV').querySelector('span').textContent==='3+';}));
+t('changed stat is highlighted', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));
+  return c.querySelector('.stat.mod b').textContent==='SV';}));
+t('effects add the invulnerable save', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));
+  return c.querySelector('.inv').textContent.includes('4+');}));
+t('the underlying datasheet is not mutated', await p.evaluate(()=>DATA.cpUnits['cp-buggy'].stats.sv)==='4+');
+t('enhancement badge opens its popup', await p.evaluate(()=>{
+  document.querySelector('#view-cp [data-cpenhinfo]').click();
+  return document.querySelector('#mBody').textContent.includes('CP BUGGY unit only');}));
+await p.click('#mClose');
+await p.selectOption('#cpEnhSel',''); await p.waitForTimeout(150);
+t('clearing the enhancement restores the datasheet Sv', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));
+  return [...c.querySelectorAll('.stat')].find(x=>x.querySelector('b').textContent==='SV').querySelector('span').textContent==='4+';}));
+
+// leader choice -> merged card, leader removed from its own slot
+await p.selectOption('#cpLeadSel','cp-nob'); await p.waitForTimeout(150);
+t('single legal target auto-selected', await p.evaluate(()=>cpChoice.target)!==null);
+t('attaching merges the cards', await p.evaluate(()=>document.querySelectorAll('#view-cp .leader-band').length)===2);
+t('attached leader loses its own card', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-cp .unit-hd h3')].filter(h=>h.firstChild.textContent.includes('CP Nob')).length)===0);
+t('one card fewer while attached', await p.evaluate(()=>document.querySelectorAll('#view-cp .unit').length)===3);
+t('header says who is leading', await p.evaluate(()=>
+  document.querySelector('#view-cp .unit-hd .sub').textContent.includes('led by CP Nob')));
+// An Attached unit is one unit on the table, so the unit count drops by one
+// while the model count must not move.
+t('attaching counts leader+bodyguard as one unit', await p.evaluate(()=>
+  document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('4 units')));
+t('model total unchanged by attaching', await p.evaluate(()=>
+  document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('22 models')));
+t('an enhancement on the attached leader stars the merged card', await p.evaluate(()=>{
+  cpChoice.enh='fix-enh'; renderCombatPatrol();
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('.leader-band'));
+  const ok=!!c.querySelector('.unit-hd .star') && c.textContent.includes('Fix Enh');
+  cpChoice.enh=null; renderCombatPatrol(); return ok;}));
+// choices survive a reload
+await p.reload({waitUntil:'networkidle'}); await p.waitForTimeout(400);
+await p.evaluate(()=>setTab('cp')); await p.waitForTimeout(150);
+t('leader choice persists across reload', await p.evaluate(()=>cpChoice.leader)==='cp-nob');
+t('merged card restored after reload', await p.evaluate(()=>document.querySelectorAll('#view-cp .leader-band').length)===2);
+t('a choice the data no longer offers is dropped', await p.evaluate(()=>{
+  cpChoice.enh='no-such-enh'; validateCpChoice(); return cpChoice.enh===null;}));
+await p.selectOption('#cpLeadSel',''); await p.waitForTimeout(150);
+t('detaching restores the leader card', await p.evaluate(()=>document.querySelectorAll('#view-cp .unit').length)===4);
 t('  (control: the same keyword DOES grant in matched play)',
   await p.evaluate(()=>document.querySelectorAll('#view-army .pill.grant').length)>0);
 t('detachment grants do NOT leak into CP cards',
@@ -352,10 +416,11 @@ t('same-named lead targets are listed once', await p.evaluate(()=>{
   const n=s.querySelectorAll('.pill').length;
   DATA.cpUnits['cp-nob'].name=keep; renderCombatPatrol(); return n===1;}));
 t('already-attached leader does not repeat its Leader block', await p.evaluate(()=>{
-  // cp-nob has canLead but is attached via ledBy, so its merged section must omit it
+  cpChoice.leader='cp-nob'; cpChoice.target=cpLeaderTargets('cp-nob')[0].idx; renderCombatPatrol();
   const card=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('.leader-band'));
-  const secs=[...card.querySelectorAll('.sec-t')].map(x=>x.textContent);
-  return !secs.includes('Leader');}));
+  const secs=[...card.querySelectorAll('.unit-bd')][0].querySelectorAll('.sec-t');
+  const ok=![...secs].map(x=>x.textContent).includes('Leader');
+  cpChoice.leader=null; cpChoice.target=null; renderCombatPatrol(); return ok;}));
 t('multi-profile weapon shows one group header on a CP card',
   await p.evaluate(()=>document.querySelectorAll('#view-cp .wgrp').length)===1);
 t('both profiles still listed under it',

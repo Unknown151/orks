@@ -4,19 +4,53 @@
   "name": "Orks Combat Patrol",
   "notes": "",
 
-  "_roster_help": "The fixed force, in the order it should display. Each entry is either a plain unit id, or an object: {\"unit\":\"id\", \"count\":2, \"ledBy\":\"character-id\", \"note\":\"free text\"}. ledBy renders the character and its unit as one merged card. Unit files are loaded from this list automatically — add an explicit \"units\" array only if you need a datasheet that is not in the roster.",
+  "_detachment_help": "The single detachment this force runs. Unlike matched play there is no budget to spend — the DP cost is shown for reference. `category` keys into the colour map in data/detachments.json.",
+  "detachment": {
+    "name": "'Ard As Nails",
+    "dp": 1,
+    "category": "Purge the Foe",
+    "ruleDescription": "Attacks that target a friendly <strong>'ARDMOB</strong> unit with the Waaagh! active with a <strong>S</strong> greater than that friendly unit's <strong>T</strong> have -1 to <strong>wound rolls</strong>."
+  },
+
+  "_roster_help": "The fixed force, in the order it should display. Each entry is either a plain unit id, or an object: {\"unit\":\"id\", \"count\":2, \"ledBy\":\"character-id\", \"note\":\"free text\"}. ledBy fixes an attachment; for an attachment the player chooses each game, use leaderChoice below instead. Unit files are loaded from this list automatically — add an explicit \"units\" array only if you need a datasheet that is not in the roster.",
   "roster": [
     { "unit": "cp-ardmob-boyz",        "count": 1, "note": "Boss Nob with Kombi-rokkit & Kombi-shoota" },
     { "unit": "cp-ardmob-boyz-kustom", "count": 1, "note": "Boss Nob with Kustom Shoota" },
-    { "unit": "cp-ardmob-gretchin",     "count": 1 },
-    { "unit": "cp-ardmob-wartrakk",     "count": 1 },
-    { "unit": "cp-ardmob-weirdboy",     "count": 1 },
-    { "unit": "cp-ardmob-warboss",      "count": 1 }
+    { "unit": "cp-ardmob-gretchin",    "count": 1 },
+    { "unit": "cp-ardmob-wartrakk",    "count": 1 },
+    { "unit": "cp-ardmob-weirdboy",    "count": 1 },
+    { "unit": "cp-ardmob-warboss",     "count": 1 }
   ],
 
-  "_rule_help": "One rule object, or an array of them: {\"name\":\"…\", \"description\":\"HTML\"}.",
-  "rule": [],
+  "_leaderChoice_help": "An attachment the player picks each game rather than one the force fixes. Exactly one of `leaders` may be attached, to exactly one of the roster entries it can lead. Omit this key entirely and the choice UI disappears.",
+  "leaderChoice": {
+    "prompt": "Select one Leader to attach to an 'Ardmob Boyz unit.",
+    "leaders": ["cp-ardmob-warboss", "cp-ardmob-weirdboy"]
+  },
 
-  "_stratagems_help": "Combat Patrol stratagems, keyed by id — same schema as data/stratagems.json but with no detachment field, since Combat Patrol has no detachments.",
+  "_enhancements_help": "Combat Patrol enhancements. `limit` is how many may be active at once. `restrictedTo` gates which unit it goes on and is what puts the star on that unit's card. `effects` are applied to the target unit's displayed profile, and the changed values are highlighted.",
+  "enhancementLimit": 1,
+  "enhancements": {
+    "rallying-war-cry": {
+      "name": "Rallying War Cry",
+      "type": "Enhancement",
+      "restriction": "'ARDMOB WARBOSS model only",
+      "restrictedTo": ["cp-ardmob-warboss"],
+      "short": "Return D3+2 destroyed bodyguard models.",
+      "description": "<strong>'ARDMOB WARBOSS</strong> model only. (Once per battle, per unit) In your Command phase, you can use this ability. If you do, return up to <strong>D3+2</strong> <strong>destroyed bodyguard</strong> models to this unit."
+    },
+    "extra-platin": {
+      "name": "Extra Platin'",
+      "type": "Upgrade",
+      "upgrade": true,
+      "restriction": "'ARDMOB WARTRAKK unit only",
+      "restrictedTo": ["cp-ardmob-wartrakk"],
+      "short": "3+ Sv and a 4+ invulnerable save.",
+      "description": "Upgrade: <strong>'ARDMOB WARTRAKK</strong> unit only. This unit has:<br>• 3+ <strong>Sv</strong>.<br>• 4+ <strong>InSv</strong>.",
+      "effects": { "sv": "3+", "invulnerableSave": "4+" }
+    }
+  },
+
+  "_stratagems_help": "Combat Patrol stratagems, keyed by id — same schema as data/stratagems.json but with no detachment field.",
   "stratagems": {}
 }

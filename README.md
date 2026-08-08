@@ -44,10 +44,10 @@ The nav is **Army · Builder · Stratagems · Combat Patrol**. The in-game track
 (CP / battle round / VP / WAAAGH!) moved into the ☰ menu — nothing was removed.
 A **faction call button** is pinned to the bottom of the Combat Patrol tab (see below).
 
-**Combat Patrol** has its full force in (`data/combat-patrol/`) — 6 units, 33 models.
-Still empty, awaiting matched-play data: `data/detachments.json`,
-`data/enhancements.json`, `data/stratagems.json`, `data/units/`. The Combat Patrol
-force rule and its stratagems have not been supplied yet either.
+**Combat Patrol** is complete apart from its stratagems (`data/combat-patrol/`) —
+6 units, 33 models, the 'Ard As Nails detachment, and both enhancements. Still empty,
+awaiting matched-play data: `data/detachments.json`, `data/enhancements.json`,
+`data/stratagems.json`, `data/units/`.
 `data/abilities.json` is seeded with edition-core weapon/core abilities, each flagged
 `needsVerification` until the wording is checked against an 11th-ed source — the app
 shows a ⚠ note in those popups.
@@ -164,6 +164,39 @@ Everything is driven by `data/combat-patrol/index.json`:
   matched-play schema minus everything list-building: no points, no costing, no
   wargear choices. Loadouts are static, so every weapon needs a real `count`.
 - The whole file is optional: if it is absent the tab just shows an empty state.
+
+### Force choices
+
+Combat Patrol is read-only about the *datasheets*, but the force itself has per-game
+picks, driven by two optional keys in `index.json`. Both panels disappear entirely if
+the keys are absent.
+
+```jsonc
+"leaderChoice": {                     // one leader, attached to one unit it can lead
+  "prompt": "Select one Leader to attach to an 'Ardmob Boyz unit.",
+  "leaders": ["cp-ardmob-warboss", "cp-ardmob-weirdboy"]
+},
+"enhancementLimit": 1,                // how many may be active at once
+"enhancements": {
+  "extra-platin": {
+    "restrictedTo": ["cp-ardmob-wartrakk"],   // gates it, and stars that unit's card
+    "effects": { "sv": "3+", "invulnerableSave": "4+" },
+    "description": "…"
+  }
+}
+```
+
+- Attaching a leader **merges the two cards** and removes the leader's own card, so it
+  is never shown twice. The unit total drops by one, because an Attached unit is one
+  unit on the table; the model total does not move.
+- Legal attach targets come from the leader's own `canLead`. If exactly one is legal
+  it is selected automatically; with more than one you choose.
+- `effects` are applied to the **displayed** profile and the changed stats are
+  highlighted, so an upgraded save is visible where you look for it rather than in
+  small print. The underlying datasheet is never mutated — clearing the choice
+  restores it.
+- Choices persist across reloads, and any stored choice the data no longer offers is
+  discarded on load.
 - A unit with `canLead` renders the datasheet's **Leader** block listing what it can
   attach to. Names are de-duplicated, so a leader pointing at both 'Ardmob Boyz units
   shows that name once, as the datasheet does. The block is suppressed on a leader

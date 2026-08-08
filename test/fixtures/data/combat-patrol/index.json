@@ -1,5 +1,78 @@
-{ "name":"Demo Combat Patrol", "notes":"Fixture force.",
-  "roster":[ {"unit":"cp-boyz","count":2,"ledBy":"cp-nob","note":"fixture note"}, "cp-buggy", {"unit":"cp-absent"} ],
-  "rule":[{"name":"Demo Patrol Rule","description":"<strong>Rule body.</strong>"}],
-  "stratagems":{ "cp-strat":{"name":"Patrol Strat","type":"Combat Patrol Stratagem","turn":"your",
-    "phases":["shooting"],"cpCost":1,"summary":"s","when":"w","target":"t","effect":"e"} } }
+{
+ "name": "Demo Combat Patrol",
+ "notes": "Fixture force.",
+ "roster": [
+  {
+   "unit": "cp-boyz",
+   "count": 2,
+   "note": "fixture note"
+  },
+  "cp-buggy",
+  {
+   "unit": "cp-absent"
+  },
+  "cp-nob"
+ ],
+ "rule": [
+  {
+   "name": "Demo Patrol Rule",
+   "description": "<strong>Rule body.</strong>"
+  }
+ ],
+ "stratagems": {
+  "cp-strat": {
+   "name": "Patrol Strat",
+   "type": "Combat Patrol Stratagem",
+   "turn": "your",
+   "phases": [
+    "shooting"
+   ],
+   "cpCost": 1,
+   "summary": "s",
+   "when": "w",
+   "target": "t",
+   "effect": "e"
+  }
+ },
+ "detachment": {
+  "name": "Fixture Detachment",
+  "dp": 1,
+  "category": "Purge the Foe",
+  "ruleDescription": "<strong>Detachment rule body.</strong>"
+ },
+ "leaderChoice": {
+  "prompt": "Pick one.",
+  "leaders": [
+   "cp-nob",
+   "cp-buggy"
+  ]
+ },
+ "enhancementLimit": 1,
+ "enhancements": {
+  "fix-enh": {
+   "name": "Fix Enh",
+   "type": "Enhancement",
+   "restriction": "CP NOB model only",
+   "restrictedTo": [
+    "cp-nob"
+   ],
+   "short": "s",
+   "description": "Body."
+  },
+  "fix-upg": {
+   "name": "Fix Upg",
+   "type": "Upgrade",
+   "upgrade": true,
+   "restriction": "CP BUGGY unit only",
+   "restrictedTo": [
+    "cp-buggy"
+   ],
+   "short": "s",
+   "description": "Body.",
+   "effects": {
+    "sv": "3+",
+    "invulnerableSave": "4+"
+   }
+  }
+ }
+}

@@ -165,6 +165,30 @@ button renders only if the ability named by `FACTION_CALL_ID` exists in
 }
 ```
 
+### The background flourish
+
+An optional `callGif` key on the same ability plays a near-transparent full-screen
+GIF when the button is pressed — fading in and out over three seconds at 20% opacity,
+behind the UI and taking no clicks.
+
+```jsonc
+"callGif": "assets/waaagh.gif"
+```
+
+- It **starts only after the button's own animation has finished** (800 ms), so the
+  GIF's first decode never competes with the shake and flash.
+- The source is **released when the run ends**, so nothing keeps decoding in the
+  background between presses. Re-assigning the same URL on the next press restarts
+  the animation from cache rather than re-downloading it.
+- If the file is **missing or fails to load, nothing happens** — the code gives up
+  after the first failure instead of retrying on every press, and the button behaves
+  exactly as it did before.
+- Skipped entirely under `prefers-reduced-motion`.
+- Delete the key to switch it off.
+
+**The GIF itself is not in the repo** — drop your own at `assets/waaagh.gif`. See
+[`assets/README.md`](assets/README.md).
+
 Delete those `call*` keys and the button disappears; point `FACTION_CALL_ID` at a
 different ability and another faction's call works the same way. The button shares
 its state with the WAAAGH! toggle on the in-game tracker, so the two can't disagree,

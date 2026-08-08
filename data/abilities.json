@@ -55,7 +55,9 @@
     "callLabel": "WAAAGH! CALLED",
     "callWhen": "Start of the Command phase · once per battle",
     "callDuration": "Until the end of the next turn",
-    "callEffect": "Friendly <strong>ORKS</strong> units can <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which they made an <strong>advance move</strong>."
+    "callEffect": "Friendly <strong>ORKS</strong> units can <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which they made an <strong>advance move</strong>.",
+    "_callGif_note": "Optional background flourish played when the button is pressed. Drop the file at this path; if it is missing or fails to load, nothing happens and the button behaves exactly as before. Remove this key to switch the flourish off.",
+    "callGif": "assets/waaagh.gif"
   },
 
   "lethal-hits": {

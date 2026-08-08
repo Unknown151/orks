@@ -46,8 +46,9 @@ await new Promise(r => server.listen(PORT, '127.0.0.1', r));
 
 const B = `http://127.0.0.1:${PORT}/`;
 const b=await chromium.launch(); const p=await b.newPage();
-// cp-absent is fetched on purpose by the "missing datasheet" test — its 404 is expected.
-const EXPECTED_404 = /cp-absent/;
+// Fetched on purpose: the "missing datasheet" and "missing gif" tests both
+// provoke a 404 to prove the app degrades quietly.
+const EXPECTED_404 = /cp-absent|definitely-not-here/;
 const errs=[];
 p.on('console',m=>{ if(m.type()==='error' && !EXPECTED_404.test(m.location()?.url||'')) errs.push(m.text()); });
 p.on('pageerror',e=>errs.push('PAGEERR '+e.message));
@@ -420,6 +421,42 @@ await p.evaluate(()=>setTab('points'));
 await p.click('#btnResetGame'); await p.waitForTimeout(120);
 await p.evaluate(()=>setTab('cp')); await p.waitForTimeout(150);
 t('reset game clears the dock', await p.evaluate(()=>!document.querySelector('#dockBanner').classList.contains('on')));
+
+// ---- background gif flourish
+await p.evaluate(()=>{game.waaagh=false;save();setTab('cp');renderAll();}); await p.waitForTimeout(150);
+t('gif is idle before the button is pressed', await p.evaluate(()=>{
+  const g=document.querySelector('#dockGif');
+  return !g.classList.contains('on') && !g.getAttribute('src');}));
+await p.click('#dockBtn');
+t('gif waits for the button animation to finish', await p.evaluate(()=>
+  document.querySelector('#dockBtn').classList.contains('fire') &&
+  !document.querySelector('#dockGif').classList.contains('on')));
+await p.waitForTimeout(1000);
+t('gif plays once the animation has lapsed', await p.evaluate(()=>
+  document.querySelector('#dockGif').classList.contains('on')));
+t('gif actually decoded (not a broken image)', await p.evaluate(()=>{
+  const g=document.querySelector('#dockGif');
+  return g.complete && g.naturalWidth>0;}));
+t('gif sits behind the button and takes no clicks', await p.evaluate(()=>{
+  const g=getComputedStyle(document.querySelector('#dockGif'));
+  const b=getComputedStyle(document.querySelector('#dockBtn').closest('#dock'));
+  return g.pointerEvents==='none' && parseInt(g.zIndex,10) < parseInt(b.zIndex,10);}));
+t('gif is faint, not opaque', await p.evaluate(()=>{
+  const o=parseFloat(getComputedStyle(document.querySelector('#dockGif')).opacity);
+  return o>0 && o<0.5;}));
+await p.waitForTimeout(3200);
+t('gif stops and releases its source when done', await p.evaluate(()=>{
+  const g=document.querySelector('#dockGif');
+  return !g.classList.contains('on') && !g.getAttribute('src');}));
+t('a missing gif is given up on rather than retried', await p.evaluate(async()=>{
+  const a=DATA.abilities.waaagh, keep=a.callGif;
+  a.callGif='data/definitely-not-here.gif'; gifBroken=false;
+  playCallGif();
+  await new Promise(r=>setTimeout(r,1400));
+  const flagged=gifBroken===true;
+  a.callGif=keep; gifBroken=false;
+  return flagged;}));
+await p.evaluate(()=>{game.waaagh=false;save();renderDock();});
 
 // data-driven: no call* keys => no dock at all
 t('adding a tab to FACTION_CALL_TABS is all it takes', await p.evaluate(()=>{

@@ -260,6 +260,13 @@
   "callWhen": "Start of the Command phase \u00b7 once per battle",
   "callDuration": "Until the end of the next turn",
   "callEffect": "Units can <strong>shoot</strong> and <strong>declare a charge</strong> after an advance.",
-  "callGif": "data/waaagh-test.gif"
+  "callGif": "data/waaagh-test.gif",
+  "callEffects": {
+   "meleeWeapon": {
+    "s": 1,
+    "a": 1
+   },
+   "invulnerableSave": "5+"
+  }
  }
 }

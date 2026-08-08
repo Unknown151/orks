@@ -49,13 +49,20 @@
   "waaagh": {
     "name": "Waaagh!",
     "type": "Faction Ability — Orks",
-    "description": "You can re-roll <strong>advance rolls</strong> made for friendly <strong>ORKS</strong> units.<br><br>Once per battle, at the start of the Command phase, you can call a Waaagh!. If you do, until the end of the next turn, the Waaagh! is called for friendly <strong>ORKS</strong> units. While a Waaagh! is called for a unit, it can <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which it made an <strong>advance move</strong>.",
+    "description": "If your Army Faction is <strong>ORKS</strong>, once per battle, at the start of your Command phase, you can call a Waaagh!. If you do, until the start of your next Command phase, the Waaagh! is active for your army and:<br>• Units from your army with this ability are eligible to declare a charge in a turn in which they <strong>Advanced</strong>.<br>• Add 1 to the <strong>Strength</strong> and <strong>Attacks</strong> characteristics of melee weapons equipped by models from your army with this ability.<br>• Models from your army with this ability have a <strong>5+ invulnerable save</strong>.",
 
-    "_call_note": "These three keys drive the always-on call button at the bottom of the screen. Remove them and the button disappears — it is entirely data-driven.",
+    "_call_note": "These keys drive the always-on call button at the bottom of the screen. Remove them and the button disappears — it is entirely data-driven.",
     "callLabel": "WAAAGH! CALLED",
     "callWhen": "Start of the Command phase · once per battle",
-    "callDuration": "Until the end of the next turn",
-    "callEffect": "Friendly <strong>ORKS</strong> units can <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which they made an <strong>advance move</strong>.",
+    "callDuration": "Until the start of your next Command phase",
+    "callEffect": "• Eligible to <strong>declare a charge</strong> in a turn in which they <strong>Advanced</strong>.<br>• +1 <strong>S</strong> and +1 <strong>A</strong> on melee weapons.<br>• <strong>5+ invulnerable save</strong>.",
+
+    "_callEffects_note": "Applied live to unit cards while the call is active, and only to units whose factionAbilities include this ability. Changed values pulse green. The charge bullet has no stat to change, so it lives in the text only.",
+    "callEffects": {
+      "meleeWeapon": { "s": 1, "a": 1 },
+      "invulnerableSave": "5+"
+    },
+
     "_callGif_note": "Optional background flourish played when the button is pressed. Drop the file at this path; if it is missing or fails to load, nothing happens and the button behaves exactly as before. Remove this key to switch the flourish off.",
     "callGif": "assets/waaagh.gif"
   },

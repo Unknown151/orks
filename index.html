@@ -108,6 +108,19 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .stat b{display:block;font-size:9.5px;color:var(--dim);letter-spacing:.5px}
 .stat.mod{border-color:var(--warn)}
 .stat.mod span{color:var(--warn)}
+/* Changed by the faction call — pulsing green, distinct from the amber used
+   for a change an enhancement made. */
+.stat.mod-call,.wst.mod-call,.inv.mod-call{border-radius:7px;animation:callPulse 1.5s ease-in-out infinite}
+.stat.mod-call span,.wst.mod-call span,.inv.mod-call b{color:var(--accent)}
+.stat.mod-call{border-color:var(--accent)}
+.inv.mod-call{padding:3px 7px;margin-left:-7px}
+@keyframes callPulse{
+  0%,100%{background:rgba(127,180,63,.10);box-shadow:0 0 0 0 rgba(127,180,63,0)}
+  50%    {background:rgba(127,180,63,.28);box-shadow:0 0 0 2px rgba(127,180,63,.30)}
+}
+@media (prefers-reduced-motion: reduce){
+  .stat.mod-call,.wst.mod-call,.inv.mod-call{animation:none;background:rgba(127,180,63,.22)}
+}
 .stat span{font-size:14px;font-weight:700}
 .prof-n{font-size:11.5px;color:var(--dim);margin:7px 0 3px}
 .inv{display:flex;align-items:center;gap:7px;margin-top:6px;font-size:12.5px}
@@ -308,7 +321,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.11.1';
+const VERSION = '0.12.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -932,7 +945,7 @@ function abilityPill(id, cls, label){
 function statBlock(stats, mods){
   const keys = [['m','M'],['t','T'],['sv','SV'],['w','W'],['ld','LD'],['oc','OC']];
   return `<div class="statline">${keys.map(([k,l]) =>
-    `<div class="stat${mods && mods[k] ? ' mod' : ''}"><b>${l}</b><span>${esc(stats?.[k] ?? '–')}</span></div>`).join('')}</div>`;
+    `<div class="stat${mods && mods[k] ? ' ' + mods[k] : ''}"><b>${l}</b><span>${esc(stats?.[k] ?? '–')}</span></div>`).join('')}</div>`;
 }
 // One block per weapon: name, then its stats with their own labels, then its
 // abilities underneath. A shared header row forced the stats into narrow
@@ -961,14 +974,61 @@ function weaponRows(unit, inst, kind){
     html += `<div class="wrow ${kindClass}">
       <div class="wn">${n>1?n+'× ':''}${esc(w.name)}</div>
       <div class="wstats">${cols.map(([k,l]) =>
-        `<div class="wst"><b>${l}</b><span>${esc(w[k] ?? '–')}</span></div>`).join('')}</div>
+        `<div class="wst${w._mods?.[k] ? ' ' + w._mods[k] : ''}"><b>${l}</b><span>${esc(w[k] ?? '–')}</span></div>`).join('')}</div>
       ${all.length ? `<div class="wab">${all.join('')}</div>` : ''}
     </div>`;
   });
   return html + '</div>';
 }
+// ---- live effects of an active faction call ---------------------------------
+const callEffects = () => (game.waaagh && factionCall()?.callEffects) || null;
+const unitHasCall = u => (u?.factionAbilities || []).includes(FACTION_CALL_ID);
+// "+1 A" on a plain number is arithmetic; on something like D6+2 it can only be
+// expressed, not computed.
+const bumpStat = (v, by) => {
+  if(v == null) return v;
+  const t = String(v).trim();
+  return /^\d+$/.test(t) ? String(+t + by) : `${t}+${by}`;
+};
+// Lower is better for an invulnerable save; an existing better one wins.
+function bestInvuln(a, b){
+  const n = x => { const m = /^(\d+)/.exec(String(x ?? '')); return m ? +m[1] : Infinity; };
+  if(!a) return b;
+  if(!b) return a;
+  return n(a) <= n(b) ? a : b;
+}
+// Returns a display copy with the call's effects applied, marking what changed.
+function applyCallEffects(unit){
+  const fx = callEffects();
+  if(!unit || !fx || !unitHasCall(unit)) return unit;
+  const d = { ...unit };
+
+  if(fx.invulnerableSave){
+    const best = bestInvuln(unit.invulnerableSave, fx.invulnerableSave);
+    if(best !== unit.invulnerableSave){
+      d.invulnerableSave = best;
+      d.invulnerableSource = null;
+      d._invulnFromCall = true;
+    }
+  }
+  const mw = fx.meleeWeapon;
+  if(mw && unit.weapons?.melee?.length){
+    d.weapons = { ...unit.weapons, melee: unit.weapons.melee.map(w => {
+      const nw = { ...w, _mods: { ...(w._mods || {}) } };
+      for(const k of Object.keys(mw)){
+        if(nw[k] == null) continue;
+        nw[k] = bumpStat(w[k], mw[k]);
+        nw._mods[k] = 'mod-call';
+      }
+      return nw;
+    }) };
+  }
+  return d;
+}
+
 function unitBody(unit, inst, opts){
   opts = opts || {};
+  unit = applyCallEffects(unit);
   let h = '';
   const mods = unit._statMods;
   if(unit.modelProfiles?.length){
@@ -978,7 +1038,7 @@ function unitBody(unit, inst, opts){
     h += statBlock(unit.stats, mods);
   }
   if(unit.invulnerableSave){
-    h += `<div class="inv">🛡 <b>Invulnerable save ${esc(unit.invulnerableSave)}</b>` +
+    h += `<div class="inv${unit._invulnFromCall ? ' mod-call' : ''}">🛡 <b>Invulnerable save ${esc(unit.invulnerableSave)}</b>` +
          (unit.invulnerableSource ? ` ${abilityPill(unit.invulnerableSource)}` : '') + `</div>`;
   }
   const granted = opts.noGrants ? [] : getDetachmentGrantedAbilities(unit);
@@ -1334,7 +1394,7 @@ function cpDisplayUnit(u){
   if(!u || !e?.effects || !(e.restrictedTo || []).includes(u.id)) return u;
   const d = {...u, _statMods:{}};
   if(e.effects.sv){
-    d._statMods.sv = true;
+    d._statMods.sv = 'mod';
     if(d.stats) d.stats = {...d.stats, sv:e.effects.sv};
     if(d.modelProfiles) d.modelProfiles = d.modelProfiles.map(p => ({...p, stats:{...p.stats, sv:e.effects.sv}}));
   }
@@ -1553,17 +1613,19 @@ function fireDock(){
   if(navigator.vibrate) { try { navigator.vibrate([18, 40, 28]); } catch {} }
   setTimeout(() => { btn.classList.remove('fire'); flash.classList.remove('on'); }, 800);
 }
+// Cards show the call's live effects, so they refresh with it.
+function refreshCall(){ renderDock(); renderPoints(); renderArmy(); renderCombatPatrol(); }
 function callFaction(){
   fireDock();
   playCallGif();
   if(game.waaagh) return;                     // already called — just roar again
   game.waaagh = true;
   save();
-  setTimeout(() => { renderDock(); renderPoints(); }, 260);   // effect first, then the banner
+  setTimeout(refreshCall, 260);               // effect first, then the banner
 }
 function endFactionCall(){
   game.waaagh = false;
-  save(); renderDock(); renderPoints();
+  save(); refreshCall();
 }
 
 /* --------------------------------- POINTS --------------------------------- */
@@ -1662,8 +1724,8 @@ document.addEventListener('click', e => {
   }
   if(el('#dockEnd')){ endFactionCall(); return; }
   if(el('#dockBtn')){ callFaction(); return; }
-  if(el('#btnWaaagh')){ game.waaagh = !game.waaagh; save(); renderPoints(); renderDock(); return; }
-  if(el('#btnResetGame')){ game = {cp:0, round:1, vpUs:0, vpThem:0, waaagh:false}; save(); renderPoints(); renderDock(); return; }
+  if(el('#btnWaaagh')){ game.waaagh = !game.waaagh; save(); refreshCall(); return; }
+  if(el('#btnResetGame')){ game = {cp:0, round:1, vpUs:0, vpThem:0, waaagh:false}; save(); refreshCall(); return; }
 
   // header
   if(el('#btnTheme')){

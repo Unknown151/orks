@@ -165,6 +165,27 @@ button renders only if the ability named by `FACTION_CALL_ID` exists in
 }
 ```
 
+### Live effects on the cards
+
+While the call is active, the effects in `callEffects` are applied to the **displayed**
+profile of every unit whose `factionAbilities` include the ability, and every changed
+value **pulses green** — distinct from the amber used for a change an enhancement made.
+
+```jsonc
+"callEffects": {
+  "meleeWeapon": { "s": 1, "a": 1 },   // added to each melee weapon's stats
+  "invulnerableSave": "5+"             // granted, or improved if the unit's is worse
+}
+```
+
+- An invulnerable save is **improved, never downgraded** — a Wartrakk's printed 6+
+  becomes 5+ and pulses, but with Extra Platin' at 4+ it stays 4+ and does not pulse.
+- A stat the app can't add to (`D6+2`) is **expressed** as `D6+2+1` rather than
+  silently miscalculated.
+- Datasheets are never mutated; ending the call restores the printed values.
+- Effects with no stat to change (being eligible to charge after Advancing) live in
+  the rule text only.
+
 ### The background flourish
 
 An optional `callGif` key on the same ability plays a near-transparent full-screen

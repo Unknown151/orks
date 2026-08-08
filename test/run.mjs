@@ -321,8 +321,8 @@ t('  ...and the CP unit really does carry the granted keyword',
   await p.evaluate(()=>DATA.cpUnits['cp-boyz'].keywords.includes('MOB')));
 // CP panels
 await p.click('[data-panel="cpRule"]');
-t('faction ability rendered with its own badge',
-  await p.evaluate(()=>document.querySelectorAll('#view-cp .pill.fac').length)===1);
+t('faction abilities rendered with their own badge',
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .pill.fac').length)===2);
 t('faction ability sorts first in its abilities section',
   await p.evaluate(()=>{
     const pill=document.querySelector('#view-cp .pill.fac'), sec=pill.closest('.sec');
@@ -421,6 +421,62 @@ await p.evaluate(()=>setTab('points'));
 await p.click('#btnResetGame'); await p.waitForTimeout(120);
 await p.evaluate(()=>setTab('cp')); await p.waitForTimeout(150);
 t('reset game clears the dock', await p.evaluate(()=>!document.querySelector('#dockBanner').classList.contains('on')));
+
+// ---- live effects while the call is active
+await p.evaluate(()=>{game.waaagh=false;save();setTab('cp');renderAll();
+  document.querySelectorAll('#view-cp .unit').forEach(c=>c.classList.remove('collapsed'));});
+await p.waitForTimeout(150);
+const meleeOf = id => p.evaluate(u=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes(u));
+  const row=c.querySelector('.wrow.melee');
+  const get=k=>[...row.querySelectorAll('.wst')].find(w=>w.querySelector('b').textContent===k);
+  return {s:get('S').querySelector('span').textContent, a:get('A').querySelector('span').textContent,
+          sMod:get('S').className, aMod:get('A').className};}, id);
+const invOf = id => p.evaluate(u=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes(u));
+  const e=c.querySelector('.inv');
+  return e ? {text:e.textContent.trim(), cls:e.className} : null;}, id);
+
+const meleeBefore = await meleeOf('CP Boyz');
+t('melee S/A unmodified before the call', meleeBefore.s==='5' && meleeBefore.a==='3' && !meleeBefore.sMod.includes('mod-call'));
+t('no invuln on the fixture boyz before the call', (await invOf('CP Boyz'))===null);
+
+await p.evaluate(()=>{game.waaagh=true;save();refreshCall();
+  document.querySelectorAll('#view-cp .unit').forEach(c=>c.classList.remove('collapsed'));});
+await p.waitForTimeout(150);
+const meleeAfter = await meleeOf('CP Boyz');
+t('call adds +1 to melee Strength', meleeAfter.s==='6');
+t('call adds +1 to melee Attacks', meleeAfter.a==='4');
+t('changed S is marked as call-driven', meleeAfter.sMod.includes('mod-call'));
+t('changed A is marked as call-driven', meleeAfter.aMod.includes('mod-call'));
+t('call grants the invulnerable save', (await invOf('CP Boyz')).text.includes('5+'));
+t('granted invuln is marked as call-driven', (await invOf('CP Boyz')).cls.includes('mod-call'));
+t('call-driven marks pulse (animated), unlike enhancement marks', await p.evaluate(()=>{
+  const el=document.querySelector('#view-cp .wst.mod-call');
+  return getComputedStyle(el).animationName!=='none';}));
+t('ranged weapons are untouched', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Boyz'));
+  return !c.querySelector('.wrow.ranged .wst.mod-call');}));
+t('a unit without the faction ability is untouched', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));
+  return !DATA.cpUnits['cp-buggy'].factionAbilities && !c.querySelector('.mod-call');}));
+t('an existing better invuln is not downgraded', await p.evaluate(()=>{
+  const u={id:'x',factionAbilities:['waaagh'],invulnerableSave:'4+'};
+  return applyCallEffects(u).invulnerableSave==='4+';}));
+t('a worse existing invuln is improved', await p.evaluate(()=>{
+  const u={id:'x',factionAbilities:['waaagh'],invulnerableSave:'6+'};
+  const d=applyCallEffects(u); return d.invulnerableSave==='5+' && d._invulnFromCall===true;}));
+t('a non-numeric Attacks value is expressed, not miscalculated', await p.evaluate(()=>{
+  const u={id:'x',factionAbilities:['waaagh'],weapons:{melee:[{name:'w',a:'D6+2',s:'4'}]}};
+  const d=applyCallEffects(u); return d.weapons.melee[0].a==='D6+2+1' && d.weapons.melee[0].s==='5';}));
+t('the underlying datasheet is never mutated', await p.evaluate(()=>
+  DATA.cpUnits['cp-boyz'].weapons.melee[0].s==='5' && !DATA.cpUnits['cp-boyz'].invulnerableSave));
+await p.evaluate(()=>{game.waaagh=false;save();refreshCall();
+  document.querySelectorAll('#view-cp .unit').forEach(c=>c.classList.remove('collapsed'));});
+await p.waitForTimeout(150);
+t('ending the call restores the printed values', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Boyz'));
+  return !c.querySelector('.mod-call');}));
 
 // ---- background gif flourish
 await p.evaluate(()=>{game.waaagh=false;save();setTab('cp');renderAll();}); await p.waitForTimeout(150);

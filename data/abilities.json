@@ -1,6 +1,18 @@
 {
   "_note": "Every ability/keyword the app can show, keyed by id. Entries flagged needsVerification:true are edition-core rules seeded as scaffolding — diff their wording against your 11th-ed source and drop the flag once checked. Delete this _note key whenever you like; the loader ignores keys starting with an underscore.",
 
+  "grab-dat-scrap": {
+    "name": "Grab Dat Scrap",
+    "type": "Ability — 'Ardmob Boyz",
+    "description": "While this unit is <strong>engaged</strong>, this unit has +1 <strong>OC</strong>."
+  },
+  "close-quarters": {
+    "name": "Close-quarters",
+    "type": "Weapon Ability",
+    "phases": ["shooting"],
+    "description": "<em>Rule to be added — wording not supplied yet.</em>"
+  },
+
   "lethal-hits": {
     "name": "Lethal Hits",
     "type": "Weapon Ability",

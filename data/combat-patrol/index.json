@@ -1,5 +1,5 @@
 {
-  "_note": "Combat Patrol force definition. This is a SEPARATE game mode: a fixed force with its own datasheets (in data/combat-patrol/units/) and its own stratagems, which deliberately never mix with the matched-play data in data/units/ and data/stratagems.json. Keys starting with an underscore are ignored by the loader. Awaiting Ork Combat Patrol data.",
+  "_note": "Combat Patrol force definition. This is a SEPARATE game mode: a fixed force with its own datasheets (in data/combat-patrol/units/) and its own stratagems, which deliberately never mix with the matched-play data in data/units/ and data/stratagems.json. Keys starting with an underscore are ignored by the loader.",
 
   "name": "Orks Combat Patrol",
   "notes": "",

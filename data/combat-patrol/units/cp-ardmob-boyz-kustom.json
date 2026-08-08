@@ -7,7 +7,7 @@
   "models": 10,
   "modelBreakdown": "1 Boss Nob + 9 Boyz",
 
-  "_note": "Second 'Ardmob Boyz unit — same datasheet name and abilities as cp-ardmob-boyz, different Boss Nob loadout (Kustom Shoota instead of the two Kombi weapons). Statlines and keywords were not re-supplied and are carried over from cp-ardmob-boyz.",
+  "_note": "Second 'Ardmob Boyz unit — same datasheet name and abilities as cp-ardmob-boyz, different Boss Nob loadout (Kustom Shoota instead of the two Kombi weapons). Statlines and keywords are carried over from cp-ardmob-boyz. Note the Shoota profile deliberately differs — see the weapon entry.",
 
   "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 1, "ld": "7+", "oc": 2 },
   "modelProfiles": [
@@ -25,7 +25,7 @@
       { "name": "Kustom Shoota", "count": 1, "range": "18\"", "a": "4", "bs": "5+", "s": "4", "ap": "0", "d": "1",
         "abilities": [{ "id": "rapid-fire", "display": "Rapid Fire 2" }] },
       { "name": "Shoota", "count": 9, "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
-        "_abilities_note": "Transcribed as shown: this datasheet lists no weapon ability on Shoota, whereas cp-ardmob-boyz gives the same profile Rapid Fire 1. Flagged for checking against the source.",
+        "_abilities_note": "DELIBERATE — DO NOT 'FIX'. This datasheet's Shoota carries no weapon ability, while cp-ardmob-boyz gives the identical profile Rapid Fire 1. Confirmed against the official app; the two datasheets genuinely differ.",
         "abilities": [] },
       { "name": "Slugga", "count": 10, "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
         "abilities": ["close-quarters"] }

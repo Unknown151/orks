@@ -20,7 +20,8 @@ Opening `index.html` straight off disk won't work — browsers block `fetch` on
 
 ## Status
 
-The **engine is complete and tested**; the **Ork data is not in yet.** Guide §8 build order:
+The **engine is complete and tested.** **Combat Patrol data is landing now**; matched-play
+datasheets have not started yet. Guide §8 build order:
 
 | # | Step | State |
 |---|---|---|
@@ -36,14 +37,16 @@ The **engine is complete and tested**; the **Ork data is not in yet.** Guide §8
 | 10 | Persistence — saved lists, share URL, text export | done |
 | 11 | Advanced wargear — exclusive choices, fixed loadouts | partial — guided wargear panels (§5.5c) land per-unit, as datasheets that need them arrive |
 | 12 | Faction oddities — splitting, resource tracking | not needed yet — add if an Ork datasheet calls for it |
-| + | **Combat Patrol tab** — separate game mode, read-only force view | done, awaiting data |
+| + | **Combat Patrol tab** — separate game mode, read-only force view | done, data landing |
+| + | Collapsible unit cards | done |
 
 The nav is **Army · Builder · Stratagems · Combat Patrol**. The in-game tracker
 (CP / battle round / VP / WAAAGH!) moved into the ☰ menu — nothing was removed.
 A **faction call button** is pinned to the bottom of the Combat Patrol tab (see below).
 
-**Empty data files, waiting on datasheets:** `data/detachments.json`,
-`data/enhancements.json`, `data/stratagems.json`, `data/units/`.
+**Combat Patrol** has three units in (`data/combat-patrol/`). Still empty, awaiting
+matched-play data: `data/detachments.json`, `data/enhancements.json`,
+`data/stratagems.json`, `data/units/`.
 `data/abilities.json` is seeded with edition-core weapon/core abilities, each flagged
 `needsVerification` until the wording is checked against an 11th-ed source — the app
 shows a ⚠ note in those popups.

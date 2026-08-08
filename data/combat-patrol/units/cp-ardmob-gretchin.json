@@ -3,8 +3,7 @@
   "name": "'Ardmob Gretchin",
   "type": ["Infantry"],
 
-  "_keywords_note": "Keywords were not supplied for this datasheet — left empty rather than guessed. The card simply omits its Keywords row until they arrive.",
-  "keywords": [],
+  "keywords": ["'ARDMOB", "GROTS", "INFANTRY"],
 
   "models": 10,
   "modelBreakdown": "10 Gretchin",

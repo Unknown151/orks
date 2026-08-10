@@ -172,6 +172,15 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .ecard .p{font-size:11px;color:var(--accent);font-weight:700}
 .ecard .g{font-size:10.5px;color:var(--dim);margin-top:3px}
 .ecard .s{font-size:11.5px;margin-top:4px;color:var(--dim)}
+/* Combat Patrol enhancement picker: the whole card is the control, and it
+   carries the full rule so you can read it before committing. */
+.ecard.pick{display:block;width:100%;color:inherit;border:1px solid var(--line)}
+.ecard.pick .d{font-size:12px;line-height:1.45;margin-top:5px}
+.ecard.pick.on{border-color:var(--accent);background:var(--accent2)}
+.ecard.pick.on .g{color:#dfeacd}
+.ecard.pick:active{border-color:var(--accent)}
+.ecard.pick .pickhint{font-size:10.5px;color:var(--dim);margin-top:6px;letter-spacing:.4px;text-transform:uppercase}
+.ecard.pick.on .pickhint{color:#dfeacd}
 .egroup{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--dim);margin:10px 0 5px}
 .egroup:first-child{margin-top:0}
 
@@ -321,7 +330,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.12.0';
+const VERSION = '0.13.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -1466,14 +1475,27 @@ function renderCombatPatrol(){
   const choiceBits = [];
   if(enhs.length){
     const limit = cp.enhancementLimit ?? 1;
-    choiceBits.push(`<div class="ctl"><label>Enhancement</label>
-      <select class="sel grow" id="cpEnhSel">
-        <option value="">— none —</option>
-        ${enhs.map(e => `<option value="${esc(e.id)}" ${cpChoice.enh===e.id?'selected':''}>${esc(e.name)}${e.upgrade?' [Upgrade]':''}</option>`).join('')}
-      </select></div>
-      <div class="muted" style="font-size:11.5px;margin-top:4px">${active
-        ? `Goes on: ${esc(active.restriction || '—')}`
-        : `Pick ${limit === 1 ? 'one' : 'up to ' + limit}. ${esc(enhs.map(e => e.name).join(' or '))}.`}</div>`);
+    const plain = h => String(h || '').replace(/<[^>]*>/g, '');
+    choiceBits.push(`
+      <div class="ctl" style="margin-bottom:6px">
+        <label>Enhancement</label>
+        <span class="muted grow" style="font-size:11.5px">
+          ${limit === 1 ? 'Pick one' : 'Pick up to ' + limit}${active ? ' · tap again to clear' : ''}</span>
+      </div>
+      <div class="egrid">${enhs.map(e => {
+        const on = cpChoice.enh === e.id;
+        // The restriction is usually the first line of the rule; don't say it twice.
+        const dupe = e.restriction && plain(e.description).includes(e.restriction);
+        return `<button class="ecard pick ${on?'on':''}" data-cpenhpick="${esc(e.id)}" aria-pressed="${on}">
+          <div class="row" style="gap:5px">
+            <span class="n grow">${esc(e.name)}</span>
+            ${e.upgrade ? '<span class="tag up">Upgrade</span>' : ''}
+          </div>
+          ${(!dupe && e.restriction) ? `<div class="g">Goes on: ${esc(e.restriction)}</div>` : ''}
+          <div class="d">${e.description || '<em>Rule to be added.</em>'}</div>
+          <div class="pickhint">${on ? '✓ Selected' : 'Tap to select'}</div>
+        </button>`;
+      }).join('')}</div>`);
   }
   if(leaders.length){
     choiceBits.push(`<div class="ctl" style="margin-top:10px"><label>Leader</label>
@@ -1679,6 +1701,13 @@ document.addEventListener('click', e => {
       (x.description || '<em>Rule to be added.</em>'));
     return;
   }
+  const cep = el('[data-cpenhpick]');
+  if(cep){
+    const id = cep.dataset.cpenhpick;
+    cpChoice.enh = (cpChoice.enh === id) ? null : id;
+    save(); renderCombatPatrol(); return;
+  }
+
   const ce = el('[data-cpenhinfo]');
   if(ce){
     const x = DATA.combatPatrol?.enhancements?.[ce.dataset.cpenhinfo];
@@ -1741,7 +1770,6 @@ document.addEventListener('change', e => {
   const t = e.target;
   const find = u => armyList.find(i => i.uid === u);
 
-  if(t.id === 'cpEnhSel'){ cpChoice.enh = t.value || null; save(); renderCombatPatrol(); return; }
   if(t.id === 'cpLeadSel'){
     cpChoice.leader = t.value || null;
     // Default to the only legal target when there is exactly one; otherwise clear.

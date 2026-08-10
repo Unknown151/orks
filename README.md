@@ -272,6 +272,11 @@ the keys are absent.
 }
 ```
 
+- The enhancement picker is a **grid of cards, each carrying its full rule**, so you can
+  read what every option does before committing to one — a dropdown only told you the
+  name. Tap a card to select it, tap it again to clear. The restriction is shown as a
+  separate "Goes on" line only when the rule text doesn't already say it, so it is
+  never printed twice.
 - Attaching a leader **merges the two cards** and removes the leader's own card, so it
   is never shown twice. The unit total drops by one, because an Attached unit is one
   unit on the table; the model total does not move.

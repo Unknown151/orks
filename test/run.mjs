@@ -256,11 +256,27 @@ t('unit totals line', await p.evaluate(()=>document.querySelector('#view-cp .tot
 // ---- force choices: one enhancement, one attached leader
 await p.evaluate(()=>{cpChoice={enh:null,leader:null,target:null};save();renderCombatPatrol();});
 t('choices start empty', await p.evaluate(()=>document.querySelectorAll('#view-cp .leader-band').length)===0);
-t('enhancement picker offers exactly the force enhancements', await p.evaluate(()=>
-  [...document.querySelectorAll('#cpEnhSel option')].map(o=>o.value).join()===',fix-enh,fix-upg'));
+t('picker offers exactly the force enhancements', await p.evaluate(()=>
+  [...document.querySelectorAll('[data-cpenhpick]')].map(b=>b.dataset.cpenhpick).join()==='fix-enh,fix-upg'));
+t('every option shows its rule BEFORE selection', await p.evaluate(()=>
+  [...document.querySelectorAll('[data-cpenhpick]')].every(b =>
+    b.querySelector('.d') && b.querySelector('.d').textContent.trim().length > 0)));
+t('nothing is selected yet, so the rules are visible unselected', await p.evaluate(()=>
+  cpChoice.enh===null && document.querySelectorAll('[data-cpenhpick].on').length===0));
+t('each option says what it goes on', await p.evaluate(()=>
+  [...document.querySelectorAll('[data-cpenhpick]')].every(b =>
+    /WARBOSS|BUGGY|NOB/i.test(b.textContent))));
+t('an Upgrade is tagged as one before selection', await p.evaluate(()=>
+  !!document.querySelector('[data-cpenhpick="fix-upg"] .tag.up')));
 
 // enhancement -> star on the right card, and its effects applied
-await p.selectOption('#cpEnhSel','fix-upg'); await p.waitForTimeout(150);
+await p.click('[data-cpenhpick="fix-upg"]'); await p.waitForTimeout(150);
+t('the chosen card is marked selected', await p.evaluate(()=>
+  document.querySelector('[data-cpenhpick="fix-upg"]').classList.contains('on') &&
+  document.querySelector('[data-cpenhpick="fix-upg"]').getAttribute('aria-pressed')==='true'));
+t('the other stays readable and unselected', await p.evaluate(()=>{
+  const o=document.querySelector('[data-cpenhpick="fix-enh"]');
+  return !o.classList.contains('on') && o.querySelector('.d').textContent.trim().length>0;}));
 t('enhancement stored', await p.evaluate(()=>cpChoice.enh)==='fix-upg');
 t('star lands on the restricted unit only', await p.evaluate(()=>{
   const stars=[...document.querySelectorAll('#view-cp .unit')].filter(c=>c.querySelector('.unit-hd .star'));
@@ -279,7 +295,8 @@ t('enhancement badge opens its popup', await p.evaluate(()=>{
   document.querySelector('#view-cp [data-cpenhinfo]').click();
   return document.querySelector('#mBody').textContent.includes('CP BUGGY unit only');}));
 await p.click('#mClose');
-await p.selectOption('#cpEnhSel',''); await p.waitForTimeout(150);
+await p.click('[data-cpenhpick="fix-upg"]'); await p.waitForTimeout(150);
+t('tapping the selected card clears it', await p.evaluate(()=>cpChoice.enh)===null);
 t('clearing the enhancement restores the datasheet Sv', await p.evaluate(()=>{
   const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));
   return [...c.querySelectorAll('.stat')].find(x=>x.querySelector('b').textContent==='SV').querySelector('span').textContent==='4+';}));

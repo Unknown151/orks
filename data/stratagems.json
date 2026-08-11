@@ -132,5 +132,86 @@
     "target": "One friendly unit that is eligible to fight.",
     "effect": "Until the end of the phase, your unit has the Fights First ability and it must be the next unit you select to fight.",
     "detachment": null
+  },
+
+  "_war_horde_note": "War Horde detachment stratagems. The id 'war-horde-ard-as-nails' is deliberately prefixed: the stratagem is called ’Ard As Nails, but 'ard-as-nails' is already the id of the Combat Patrol DETACHMENT in data/combat-patrol/index.json. They are unrelated content and must not be merged.",
+
+  "careen": {
+    "name": "Careen!",
+    "type": "War Horde Stratagem",
+    "_type_note": "The stratagem sub-category (Battle Tactic / Epic Deed / etc.) was not supplied for this one. Fill it in when known.",
+    "turn": "either",
+    "phases": ["command", "movement", "shooting", "charge", "fight"],
+    "cpCost": 1,
+    "summary": "A destroyed vehicle rolls one last move before it blows.",
+    "when": "Any phase, just after an <strong>ORKS VEHICLE</strong> unit from your army with the Deadly Demise ability is destroyed.",
+    "target": "That destroyed <strong>ORKS VEHICLE</strong> unit, if you roll a 6 for its Deadly Demise ability. You can use this Stratagem on that unit even though it was just destroyed.",
+    "effect": "Your unit can make a Normal or Fall Back move before its Deadly Demise ability is resolved, and before any embarked units perform an Emergency Disembarkation. When making this move, your unit can move over enemy units (excluding <strong>MONSTERS</strong> and <strong>VEHICLES</strong>) as if they were not there.",
+    "detachment": "war-horde"
+  },
+
+  "orks-is-never-beaten": {
+    "name": "Orks Is Never Beaten",
+    "type": "War Horde – Epic Deed Stratagem",
+    "turn": "either",
+    "phases": ["fight"],
+    "cpCost": 2,
+    "summary": "Slain models still get to swing before they go.",
+    "when": "Fight phase, just after an enemy unit has selected its targets.",
+    "target": "One <strong>ORKS</strong> unit from your army that was selected as the target of one or more of the attacking unit’s attacks.",
+    "effect": "Until the end of the phase, each time a model in your unit is destroyed, if that model has not fought this phase, do not remove it from play. The destroyed model can fight after the attacking model’s unit has finished making attacks, and is then removed from play.",
+    "detachment": "war-horde"
+  },
+
+  "unbridled-carnage": {
+    "name": "Unbridled Carnage",
+    "type": "War Horde – Battle Tactic Stratagem",
+    "turn": "either",
+    "phases": ["fight"],
+    "cpCost": 1,
+    "summary": "Melee attacks score Critical Hits on an unmodified 5+.",
+    "when": "Fight phase.",
+    "target": "One <strong>ORKS</strong> unit from your army that has not been selected to fight this phase.",
+    "effect": "Until the end of the phase, each time a model in your unit makes a melee attack, an unmodified Hit roll of 5+ scores a Critical Hit.",
+    "detachment": "war-horde"
+  },
+
+  "war-horde-ard-as-nails": {
+    "name": "’Ard As Nails",
+    "type": "War Horde – Battle Tactic Stratagem",
+    "turn": "either",
+    "phases": ["shooting", "fight"],
+    "cpCost": 1,
+    "summary": "−1 to Wound rolls against your unit.",
+    "when": "Your opponent’s Shooting phase or the Fight phase, just after an enemy unit has selected its targets.",
+    "target": "One <strong>ORKS</strong> unit from your army (excluding <strong>GROTS</strong>, <strong>MONSTER</strong> and <strong>VEHICLE</strong> units) that was selected as the target of one or more of the attacking unit’s attacks.",
+    "effect": "Until the end of the phase, each time an attack targets your unit, subtract 1 from the Wound roll.",
+    "detachment": "war-horde"
+  },
+
+  "mob-rule": {
+    "name": "Mob Rule",
+    "type": "War Horde – Battle Tactic Stratagem",
+    "turn": "your",
+    "phases": ["command"],
+    "cpCost": 1,
+    "summary": "A big mob shouts a nearby unit out of Battle-shock.",
+    "when": "End of your Command phase.",
+    "target": "One <strong>MOB</strong> unit from your army that contains 10 or more models and is not Below Half-strength.",
+    "effect": "Select one friendly Battle-shocked <strong>ORKS INFANTRY</strong> unit within 6\" of that <strong>MOB</strong> unit. That <strong>ORKS INFANTRY</strong> unit is no longer Battle-shocked.",
+    "detachment": "war-horde"
+  },
+
+  "ere-we-go": {
+    "name": "’Ere We Go",
+    "type": "War Horde – Battle Tactic Stratagem",
+    "turn": "your",
+    "phases": ["movement"],
+    "cpCost": 1,
+    "summary": "+2 to Advance and Charge rolls.",
+    "when": "Start of your Movement phase.",
+    "target": "One <strong>ORKS INFANTRY</strong> unit from your army.",
+    "effect": "Until the end of the turn, add 2 to Advance and Charge rolls made for your unit.",
+    "detachment": "war-horde"
   }
 }

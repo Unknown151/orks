@@ -11,8 +11,7 @@
     "war-horde": {
       "name": "War Horde",
       "dp": 3,
-      "_category_note": "The disposition/category was not supplied. Fill it in with one of the keys above and the card picks up its colour.",
-      "category": null,
+      "category": "Take and Hold",
       "unique": null,
       "ruleId": "war-horde-get-stuck-in",
       "ruleType": "Detachment Rule \u2014 War Horde",

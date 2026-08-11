@@ -253,6 +253,26 @@ t('missing datasheet flagged, not silent',
   await p.evaluate(()=>document.querySelector('#view-cp').textContent.includes('data/combat-patrol/units/cp-absent.json')));
 t('unit totals line', await p.evaluate(()=>document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('5 units')));
 
+// ---- detachment weapon grants
+t('keyword match sees the Faction Keywords line, not just the shared list',
+  await p.evaluate(()=>unitHasKeyword(DATA.cpUnits['cp-buggy'],'FIXTURE FACTION')
+                    && !DATA.cpUnits['cp-buggy'].keywords.includes('FIXTURE FACTION')));
+t('keyword match sees a profile-only keyword',
+  await p.evaluate(()=>unitHasKeyword(DATA.cpUnits['cp-buggy'],'DRIVER')));
+t('a weapon grant is scoped to its weapon type', await p.evaluate(()=>{
+  const u=DATA.cpUnits['cp-buggy'];
+  return getDetachmentWeaponGrants(u,'melee').length===1 && getDetachmentWeaponGrants(u,'ranged').length===0;}));
+t('a unit without the keyword gets no weapon grant',
+  await p.evaluate(()=>getDetachmentWeaponGrants(DATA.cpUnits['cp-boyz'],'melee').length)===0);
+t('the grant is suppressed on Combat Patrol cards', await p.evaluate(()=>
+  !document.querySelector('#view-cp').innerHTML.includes('Lethal Hits (det)')));
+t('  ...but reaches matched-play weapon rows', await p.evaluate(()=>{
+  DATA.units['demo-boyz'].factionKeywords=['FIXTURE FACTION'];
+  setTab('army'); renderArmy();
+  const hit=document.querySelector('#view-army .wrow.melee .pill.inh');
+  const ok=!!hit && hit.textContent==='Lethal Hits (det)';
+  delete DATA.units['demo-boyz'].factionKeywords; renderArmy(); setTab('cp'); return ok;}));
+
 // ---- scoped keywords
 const buggyCard = () => p.evaluate(()=>{
   const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));

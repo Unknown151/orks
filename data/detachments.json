@@ -7,5 +7,26 @@
     "Reconnaissance": "#2f8f8f",
     "Priority Assets": "#c2922b"
   },
-  "detachments": {}
+  "detachments": {
+    "war-horde": {
+      "name": "War Horde",
+      "dp": 3,
+      "_category_note": "The disposition/category was not supplied. Fill it in with one of the keys above and the card picks up its colour.",
+      "category": null,
+      "unique": null,
+      "ruleId": "war-horde-get-stuck-in",
+      "ruleType": "Detachment Rule \u2014 War Horde",
+      "_rule_note": "This rule is named 'Get Stuck In', the same name as the Combat Patrol stratagem in data/stratagems.json. They are different content in different files and never collide, but do not merge them.",
+      "ruleDescription": "<strong>Get Stuck In:</strong> Melee weapons equipped by <strong>ORKS</strong> models from your army have the <strong>[SUSTAINED HITS 1]</strong> ability.",
+      "_grants_note": "This rule grants a WEAPON ability rather than a unit ability, so it uses grantsWeaponAbilities. Matched units show it as a dashed badge on the relevant weapon rows.",
+      "grantsWeaponAbilities": [
+        {
+          "keyword": "ORKS",
+          "appliesTo": "melee",
+          "abilityId": "sustained-hits",
+          "display": "Sustained Hits 1"
+        }
+      ]
+    }
+  }
 }

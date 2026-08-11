@@ -334,7 +334,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.14.1';
+const VERSION = '0.15.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -536,14 +536,36 @@ function showDetachmentRules(){
     : '<p class="muted">No detachments selected. Pick them on the Builder tab.</p>';
   openModal('Detachment Rules', `${dpSpent()} / ${DATA.dpBudget} DP used`, body);
 }
+// Keywords live in three places now — the shared list, a profile's own list, and
+// the Faction Keywords line. A rule that matches on one must see all of them.
+function unitHasKeyword(unit, kw){
+  if(!kw) return true;
+  if(!unit) return false;
+  return (unit.keywords || []).includes(kw)
+      || (unit.factionKeywords || []).includes(kw)
+      || (unit.modelProfiles || []).some(p => (p.keywords || []).includes(kw));
+}
 // A detachment rule that grants an ability to keyword-matched units (guide §5.8).
 // Table-driven: put `grants:[{keyword,abilityId}]` on the detachment in data.
+// Some detachment rules grant an ability to weapons rather than to the unit —
+// War Horde gives every ORKS melee weapon [SUSTAINED HITS 1].
+function getDetachmentWeaponGrants(unit, kind){
+  const out = [];
+  selectedDetachments.forEach(id => {
+    (DATA.detachments[id]?.grantsWeaponAbilities || []).forEach(g => {
+      if(g.appliesTo && g.appliesTo !== kind) return;
+      if(!unitHasKeyword(unit, g.keyword)) return;
+      out.push(g);
+    });
+  });
+  return out;
+}
 function getDetachmentGrantedAbilities(unit){
   const out = [];
   selectedDetachments.forEach(id => {
     const d = DATA.detachments[id];
     (d?.grants || []).forEach(g => {
-      if(g.keyword && !(unit.keywords||[]).includes(g.keyword)) return;
+      if(!unitHasKeyword(unit, g.keyword)) return;
       out.push({ id:g.abilityId, name: DATA.abilities[g.abilityId]?.name || g.abilityId, from:d.name });
     });
   });
@@ -623,7 +645,7 @@ function eligibleEnhancements(inst){
     if(!isContentDetachmentActive(e)) return false;
     if(!e.upgrade && !isChar) return false;               // Enhancements: CHARACTER only
     if(e.restrictedTo && !e.restrictedTo.includes(u.id)) return false;
-    if(e.restrictedToKeyword && !(u.keywords||[]).includes(e.restrictedToKeyword)) return false;
+    if(e.restrictedToKeyword && !unitHasKeyword(u, e.restrictedToKeyword)) return false;
     if(e.restrictedToWeapon && !names.includes(e.restrictedToWeapon)) return false;
     return true;
   }).map(([id,e]) => ({ id, ...e }));
@@ -967,10 +989,13 @@ function statBlock(stats, mods){
 // One block per weapon: name, then its stats with their own labels, then its
 // abilities underneath. A shared header row forced the stats into narrow
 // right-hand columns and left melee with a dead Range column.
-function weaponRows(unit, inst, kind){
+function weaponRows(unit, inst, kind, opts){
+  opts = opts || {};
   const list = (unit.weapons?.[kind] || []).filter(w => weaponCount(inst, w) > 0);
   if(!list.length) return '';
-  const inherited = inheritedAbilitiesFor(inst, kind);
+  const inherited = inheritedAbilitiesFor(inst, kind).map(id => ({ id }));
+  const granted = opts.noGrants ? [] : getDetachmentWeaponGrants(unit, kind);
+  const fromElsewhere = inherited.concat(granted);
   const ranged = kind === 'ranged';
   const cols = ranged
     ? [['range','Range'],['a','A'],['bs','BS'],['s','S'],['ap','AP'],['d','D']]
@@ -987,7 +1012,7 @@ function weaponRows(unit, inst, kind){
     const n = weaponCount(inst, w);
     const abs = (w.abilities || []).map(a =>
       typeof a === 'string' ? abilityPill(a) : abilityPill(a.id, '', a.display));
-    const all = abs.concat(inherited.map(id => abilityPill(id, 'inh')));
+    const all = abs.concat(fromElsewhere.map(g => abilityPill(g.abilityId || g.id, 'inh', g.display)));
     html += `<div class="wrow ${kindClass}">
       <div class="wn">${n>1?n+'× ':''}${esc(w.name)}</div>
       <div class="wstats">${cols.map(([k,l]) =>
@@ -1080,8 +1105,8 @@ function unitBody(unit, inst, opts){
     h += `<div class="inv">✦ ${granted.map(g => abilityPill(g.id, 'grant', g.name)).join('')}</div>`;
   }
   if(unit.transportCapacity) h += `<div class="inv">🚚 Transport capacity ${esc(unit.transportCapacity)}</div>`;
-  h += weaponRows(unit, inst, 'ranged');
-  h += weaponRows(unit, inst, 'melee');
+  h += weaponRows(unit, inst, 'ranged', opts);
+  h += weaponRows(unit, inst, 'melee', opts);
 
   const fac  = (unit.factionAbilities || []).map(id => abilityPill(id, 'fac'));
   const core = (unit.coreAbilities || []).map(id => abilityPill(id, 'core'));

@@ -1,17 +1,49 @@
 {
-  "_note": "Enhancements and Upgrades, keyed by id. See NEW_ARMY_BUILD_GUIDE.md §4.3 / §5.3. Keys starting with an underscore are ignored by the loader. Awaiting Ork data.",
-  "_schema": {
-    "name": "Enhancement Name",
+  "_note": "Enhancements and Upgrades, keyed by id. See NEW_ARMY_BUILD_GUIDE.md \u00a75.3. Enhancements go on non-Epic-Hero CHARACTER models only; that gate is applied by the app on top of each entry's own restriction.",
+  "follow-me-ladz": {
+    "name": "Follow Me Ladz",
+    "type": "Enhancement (25 pts)",
+    "restriction": "ORKS model only",
+    "restrictedToKeyword": "ORKS",
+    "detachment": "war-horde",
+    "points": 25,
+    "short": "+2\" Move for the unit it leads.",
+    "description": "<strong>ORKS</strong> model only. While the bearer is leading a unit, add 2\" to the <strong>Move</strong> characteristic of models in that unit."
+  },
+  "headwoppas-killchoppa": {
+    "name": "Headwoppa\u2019s Killchoppa",
+    "type": "Enhancement (20 pts)",
+    "restriction": "ORKS model only",
+    "restrictedToKeyword": "ORKS",
+    "detachment": "war-horde",
+    "points": 20,
+    "short": "Bearer's melee weapons gain [DEVASTATING WOUNDS].",
+    "grantsAbilities": [
+      "devastating-wounds"
+    ],
+    "description": "<strong>ORKS</strong> model only. Melee weapons equipped by the bearer (excluding <strong>Extra Attacks</strong> weapons) have the <strong>[DEVASTATING WOUNDS]</strong> ability."
+  },
+  "kunnin-but-brutal": {
+    "name": "Kunnin\u2019 But Brutal",
     "type": "Enhancement (15 pts)",
-    "upgrade": false,
-    "restriction": "ORKS CHARACTER model only",
-    "restrictedTo": ["unit-id"],
-    "restrictedToKeyword": "KEYWORD",
-    "restrictedToWeapon": "Weapon Name",
-    "detachment": "det-id",
+    "restriction": "ORKS model only",
+    "restrictedToKeyword": "ORKS",
+    "detachment": "war-horde",
     "points": 15,
-    "short": "One-line blurb for the overview grid.",
-    "grantsAbilities": ["ability-id"],
-    "description": "Full HTML text."
+    "short": "Led unit can shoot and charge after Falling Back.",
+    "description": "<strong>ORKS</strong> model only. While the bearer is leading a unit, that unit is eligible to <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which it <strong>Fell Back</strong>."
+  },
+  "supa-cybork-body": {
+    "name": "Supa-Cybork Body",
+    "type": "Enhancement (15 pts)",
+    "restriction": "ORKS model only",
+    "restrictedToKeyword": "ORKS",
+    "detachment": "war-horde",
+    "points": 15,
+    "short": "Bearer has Feel No Pain 4+.",
+    "grantsAbilities": [
+      "feel-no-pain-4"
+    ],
+    "description": "<strong>ORKS</strong> model only. The bearer has the <strong>Feel No Pain 4+</strong> ability."
   }
 }

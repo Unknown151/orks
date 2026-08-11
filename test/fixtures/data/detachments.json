@@ -1,11 +1,46 @@
-{ "budget": 3,
-  "categories": {"Take and Hold":"#3a7d44","Purge the Foe":"#9e2f2f"},
-  "detachments": {
-    "big-one": { "name":"Big One", "dp":2, "category":"Take and Hold", "unique":"greentide",
-      "ruleId":"r1", "ruleType":"Detachment Rule — Big One", "ruleDescription":"<strong>Rule text.</strong>",
-      "grants":[{"keyword":"MOB","abilityId":"stealth"}] },
-    "lil-one": { "name":"Lil One", "dp":1, "category":"Take and Hold", "unique":"greentide",
-      "ruleDescription":"<strong>Cut-down version.</strong>" },
-    "other":   { "name":"Other Det", "dp":1, "category":"Purge the Foe", "unique":null,
-      "ruleDescription":"<strong>Third.</strong>" }
-  } }
+{
+ "budget": 3,
+ "categories": {
+  "Take and Hold": "#3a7d44",
+  "Purge the Foe": "#9e2f2f"
+ },
+ "detachments": {
+  "big-one": {
+   "name": "Big One",
+   "dp": 2,
+   "category": "Take and Hold",
+   "unique": "greentide",
+   "ruleId": "r1",
+   "ruleType": "Detachment Rule \u2014 Big One",
+   "ruleDescription": "<strong>Rule text.</strong>",
+   "grants": [
+    {
+     "keyword": "MOB",
+     "abilityId": "stealth"
+    }
+   ],
+   "grantsWeaponAbilities": [
+    {
+     "keyword": "FIXTURE FACTION",
+     "appliesTo": "melee",
+     "abilityId": "lethal-hits",
+     "display": "Lethal Hits (det)"
+    }
+   ]
+  },
+  "lil-one": {
+   "name": "Lil One",
+   "dp": 1,
+   "category": "Take and Hold",
+   "unique": "greentide",
+   "ruleDescription": "<strong>Cut-down version.</strong>"
+  },
+  "other": {
+   "name": "Other Det",
+   "dp": 1,
+   "category": "Purge the Foe",
+   "unique": null,
+   "ruleDescription": "<strong>Third.</strong>"
+  }
+ }
+}

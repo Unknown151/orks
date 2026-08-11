@@ -46,7 +46,9 @@ A **faction call button** is pinned to the bottom of the Combat Patrol tab (see 
 
 **Combat Patrol** is complete (`data/combat-patrol/`) — 6 units, 33 models, the
 'Ard As Nails detachment and both enhancements. **Matched play has started**:
-`data/units/` holds its first datasheet. `data/stratagems.json` holds the
+`data/units/` holds its first datasheet, and `data/detachments.json` /
+`data/enhancements.json` hold the War Horde detachment and its four enhancements.
+Its stratagems are still to come. `data/stratagems.json` holds the
 11th-ed core stratagems, shown on the Stratagems tab. Still empty, awaiting
 matched-play data: `data/detachments.json`, `data/enhancements.json`,
 `data/units/`.
@@ -87,6 +89,27 @@ Two rules that will bite otherwise:
 
 Copy `data/units/_TEMPLATE.json` to start a new datasheet. `data/detachments.json`
 carries the DP budget (default 3) and the category → colour map.
+
+## Detachment grants
+
+A detachment rule that hands something out is table-driven, so a new detachment plugs
+in by editing `data/detachments.json` alone:
+
+```jsonc
+"grants":               [ { "keyword": "MOB",  "abilityId": "stealth" } ],
+"grantsWeaponAbilities":[ { "keyword": "ORKS", "appliesTo": "melee",
+                            "abilityId": "sustained-hits", "display": "Sustained Hits 1" } ]
+```
+
+`grants` adds an ability to the **unit** (a ✦ row under the statline);
+`grantsWeaponAbilities` adds one to its **weapons** — War Horde's Get Stuck In gives
+every ORKS melee weapon [SUSTAINED HITS 1] — shown as a dashed badge on the weapon
+rows, the same signal already used for an ability a leader confers. Both are
+suppressed on Combat Patrol cards, which run their own detachment.
+
+Keyword matching checks **all three scopes**: the shared list, a profile's own list,
+and the Faction Keywords line. Ghazghkull's ORKS lives on the faction line, so a rule
+matching ORKS would silently miss him otherwise.
 
 ## Model profiles
 

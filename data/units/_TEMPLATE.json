@@ -5,7 +5,9 @@
   "name": "Unit Name",
   "type": ["Infantry", "Character"],
   "role": "Character",
-  "keywords": ["INFANTRY", "CHARACTER", "ORKS"],
+  "_keywords_note": "The printed KEYWORDS line can be scoped. `keywords` is what ALL MODELS carry; a modelProfile may add its own `keywords` for a model-specific list. `factionKeywords` is the separate FACTION KEYWORDS line.",
+  "keywords": ["INFANTRY", "CHARACTER"],
+  "factionKeywords": ["ORKS"],
   "isLeader": false,
   "isEpicHero": false,
   "isBattleline": false,
@@ -29,7 +31,7 @@
   "_modelProfiles_note": "A profile may carry its own invulnerableSave (and an optional invulnerableNote for an asterisked footnote) when models in the unit have different ones. Use the unit-level invulnerableSave below when they all share one.",
   "modelProfiles": [
     { "name": "Boss Nob", "count": 1, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 2, "ld": "6+", "oc": 2 },
-      "invulnerableSave": null, "invulnerableNote": null },
+      "invulnerableSave": null, "invulnerableNote": null, "keywords": [] },
     { "name": "Boy", "count": 9, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 1, "ld": "6+", "oc": 2 } }
   ],
 

@@ -99,6 +99,11 @@ unit-level `invulnerableSave`.
 The faction call follows the same structure: where profiles carry their own saves it
 improves each of them independently, so a 4+ is left alone while a 6+ becomes 5+.
 
+**Keywords are scoped the same way.** `keywords` is what ALL MODELS carry; a profile
+may add its own `keywords` for a model-specific list; `factionKeywords` is the
+separate FACTION KEYWORDS line. Each scope renders as a labelled row. A unit with a
+plain flat list — every Combat Patrol datasheet so far — renders unlabelled as before.
+
 ## Weapon sections
 
 Each weapon is its own block: **name, then its stats with their own labels across the

@@ -2,9 +2,9 @@
   "id": "ghazghkull-thraka",
   "name": "Ghazghkull Thraka",
   "type": ["Infantry", "Character", "Epic Hero"],
-  "keywords": ["INFANTRY", "CHARACTER", "EPIC HERO", "ORKS"],
-
-  "_keywords_note": "Keywords were not visible in the supplied datasheet image; these are inferred from the Unit Composition line (EPIC HERO) and the Leader/Faction blocks. Replace with the printed list when you have it.",
+  "_keywords_note": "Transcribed from the printed KEYWORDS line, which is scoped: ALL MODELS carry the list below, while the Ghazghkull Thraka model additionally carries WARBOSS and GHAZGHKULL THRAKA (see modelProfiles). The separate FACTION KEYWORDS line was not in the supplied image — ORKS below is inferred and should be confirmed.",
+  "keywords": ["INFANTRY", "CHARACTER", "EPIC HERO"],
+  "factionKeywords": ["ORKS"],
 
   "isLeader": true,
   "isEpicHero": true,
@@ -18,7 +18,8 @@
   "modelProfiles": [
     { "name": "Ghazghkull Thraka", "count": 1,
       "stats": { "m": "5\"", "t": 6, "sv": "2+", "w": 10, "ld": "6+", "oc": 4 },
-      "invulnerableSave": "4+" },
+      "invulnerableSave": "4+",
+      "keywords": ["WARBOSS", "GHAZGHKULL THRAKA"] },
     { "name": "Makari", "count": 1,
       "stats": { "m": "5\"", "t": 6, "sv": "7+", "w": 1, "ld": "8+", "oc": 1 },
       "invulnerableSave": "2+",

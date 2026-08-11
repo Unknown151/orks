@@ -253,6 +253,22 @@ t('missing datasheet flagged, not silent',
   await p.evaluate(()=>document.querySelector('#view-cp').textContent.includes('data/combat-patrol/units/cp-absent.json')));
 t('unit totals line', await p.evaluate(()=>document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('5 units')));
 
+// ---- scoped keywords
+const buggyCard = () => p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));
+  const sec=[...c.querySelectorAll('.sec')].find(x=>x.querySelector('.sec-t')?.textContent==='Keywords');
+  return [...sec.querySelectorAll('.kwrow')].map(r=>
+    r.querySelector('.kwlab').textContent + ': ' + [...r.querySelectorAll('.pill.kw')].map(k=>k.textContent).join(','));});
+t('keywords are scoped by row', JSON.stringify(await buggyCard())===JSON.stringify([
+  'All models: VEHICLE,ORKS', 'Driver: DRIVER,FIXTURE HERO', 'Faction keywords: FIXTURE FACTION']));
+t('a profile with no keywords gets no row', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));
+  return !c.textContent.includes('Gunner:');}));
+t('a unit with a flat keyword list renders unlabelled as before', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Boyz'));
+  const sec=[...c.querySelectorAll('.sec')].find(x=>x.querySelector('.sec-t')?.textContent==='Keywords');
+  return sec.querySelectorAll('.kwrow').length===0 && sec.querySelectorAll('.pill.kw').length>0;}));
+
 // ---- per-model-profile invulnerable saves
 t('each profile shows its own invulnerable save', await p.evaluate(()=>{
   const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));

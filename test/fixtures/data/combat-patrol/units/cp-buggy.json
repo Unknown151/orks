@@ -64,7 +64,11 @@
     "ld": "7+",
     "oc": 2
    },
-   "invulnerableSave": "4+"
+   "invulnerableSave": "4+",
+   "keywords": [
+    "DRIVER",
+    "FIXTURE HERO"
+   ]
   },
   {
    "name": "Gunner",
@@ -80,5 +84,8 @@
    "invulnerableSave": "6+",
    "invulnerableNote": "Fixture footnote about this save."
   }
+ ],
+ "factionKeywords": [
+  "FIXTURE FACTION"
  ]
 }

@@ -66,6 +66,10 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .pill.core{border-color:var(--accent2);color:var(--accent)}
 .pill.inh{border-style:dashed;border-color:var(--warn);color:var(--warn)}
 .pill.kw{font-size:10.5px;letter-spacing:.5px;color:var(--dim);text-transform:uppercase}
+/* Keywords can be scoped: some apply to all models, others to one profile. */
+.kwrow{margin-top:7px}
+.kwrow:first-child{margin-top:0}
+.kwlab{display:block;font-size:9.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--dim);margin-bottom:3px}
 .pill.grant{border-color:var(--good);color:var(--good)}
 .pill.fac{border-color:var(--warn);color:var(--warn)}
 .tag{display:inline-block;font-size:10px;text-transform:uppercase;letter-spacing:.6px;padding:1px 6px;border-radius:4px;background:var(--accent2);color:#fff}
@@ -330,7 +334,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.14.0';
+const VERSION = '0.14.1';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -1104,9 +1108,24 @@ function unitBody(unit, inst, opts){
       <span class="pill tap" data-enh="${esc(inst.enhancementId)}">★ ${esc(enh.name)} (${enh.points||0} pts)</span>
       ${(enh.grantsAbilities||[]).map(id => abilityPill(id,'grant')).join('')}</div>`;
   }
-  if(unit.keywords?.length){
-    h += `<div class="sec"><div class="sec-t">Keywords</div>${unit.keywords.map(k =>
-      `<span class="pill kw">${esc(k)}</span>`).join('')}</div>`;
+  // Keywords may be scoped: a shared list plus per-profile ones, and the
+  // separate Faction Keywords line. A unit with only a flat list renders as before.
+  const kwPills = list => list.map(k => `<span class="pill kw">${esc(k)}</span>`).join('');
+  const perModelKw = (unit.modelProfiles || []).filter(p => p.keywords?.length);
+  if(unit.keywords?.length || perModelKw.length || unit.factionKeywords?.length){
+    h += `<div class="sec"><div class="sec-t">Keywords</div>`;
+    if(unit.keywords?.length){
+      h += perModelKw.length
+        ? `<div class="kwrow"><span class="kwlab">All models</span>${kwPills(unit.keywords)}</div>`
+        : kwPills(unit.keywords);
+    }
+    perModelKw.forEach(p => {
+      h += `<div class="kwrow"><span class="kwlab">${esc(p.name)}</span>${kwPills(p.keywords)}</div>`;
+    });
+    if(unit.factionKeywords?.length){
+      h += `<div class="kwrow"><span class="kwlab">Faction keywords</span>${kwPills(unit.factionKeywords)}</div>`;
+    }
+    h += `</div>`;
   }
   return h;
 }

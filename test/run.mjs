@@ -253,6 +253,29 @@ t('missing datasheet flagged, not silent',
   await p.evaluate(()=>document.querySelector('#view-cp').textContent.includes('data/combat-patrol/units/cp-absent.json')));
 t('unit totals line', await p.evaluate(()=>document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('5 units')));
 
+// ---- per-model-profile invulnerable saves
+t('each profile shows its own invulnerable save', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));
+  return [...c.querySelectorAll('.inv')].map(e=>e.textContent.match(/\d\+/)[0]).join()==='4+,6+';}));
+t('a profile-level footnote is rendered', await p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('h3').textContent.includes('CP Buggy'));
+  return c.textContent.includes('Fixture footnote about this save');}));
+t('the call improves only the profiles that are worse', await p.evaluate(()=>{
+  const keep=game.waaagh; game.waaagh=true;   // effects only apply while called
+  const u={id:'x',factionAbilities:['waaagh'],modelProfiles:[
+    {name:'a',count:1,stats:{},invulnerableSave:'4+'},
+    {name:'b',count:1,stats:{},invulnerableSave:'6+'},
+    {name:'c',count:1,stats:{}}]};
+  const d=applyCallEffects(u); game.waaagh=keep;
+  return d.modelProfiles.map(p=>p.invulnerableSave+(p._invulnFromCall?'*':'')).join()==='4+,5+*,5+*';}));
+t('a unit-level save still works when no profile carries one', await p.evaluate(()=>{
+  const keep=game.waaagh; game.waaagh=true;
+  const u={id:'x',factionAbilities:['waaagh'],invulnerableSave:'6+',modelProfiles:[{name:'a',count:1,stats:{}}]};
+  const r=applyCallEffects(u).invulnerableSave; game.waaagh=keep;
+  return r==='5+';}));
+t('a leader can name units whose datasheets are missing', await p.evaluate(()=>
+  unitDisplayName('breaka-boyz')==='Breaka Boyz' && unitDisplayName('cp-boyz')==='CP Boyz'));
+
 // ---- force choices: one enhancement, one attached leader
 await p.evaluate(()=>{cpChoice={enh:null,leader:null,target:null};save();renderCombatPatrol();});
 t('choices start empty', await p.evaluate(()=>document.querySelectorAll('#view-cp .leader-band').length)===0);
@@ -315,7 +338,7 @@ t('header says who is leading', await p.evaluate(()=>
 t('attaching counts leader+bodyguard as one unit', await p.evaluate(()=>
   document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('4 units')));
 t('model total unchanged by attaching', await p.evaluate(()=>
-  document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('22 models')));
+  document.querySelector('#view-cp .totals').textContent.replace(/\s+/g,' ').includes('23 models')));
 t('an enhancement on the attached leader stars the merged card', await p.evaluate(()=>{
   cpChoice.enh='fix-enh'; renderCombatPatrol();
   const c=[...document.querySelectorAll('#view-cp .unit')].find(x=>x.querySelector('.leader-band'));

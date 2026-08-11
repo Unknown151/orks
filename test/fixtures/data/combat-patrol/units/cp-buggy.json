@@ -8,7 +8,7 @@
   "VEHICLE",
   "ORKS"
  ],
- "models": 1,
+ "models": 2,
  "fixedWeapons": true,
  "stats": {
   "m": "12\"",
@@ -51,5 +51,34 @@
  "canLead": [
   "cp-boyz",
   "cp-nob"
+ ],
+ "modelProfiles": [
+  {
+   "name": "Driver",
+   "count": 1,
+   "stats": {
+    "m": "12\"",
+    "t": 8,
+    "sv": "4+",
+    "w": 8,
+    "ld": "7+",
+    "oc": 2
+   },
+   "invulnerableSave": "4+"
+  },
+  {
+   "name": "Gunner",
+   "count": 1,
+   "stats": {
+    "m": "12\"",
+    "t": 8,
+    "sv": "5+",
+    "w": 4,
+    "ld": "7+",
+    "oc": 1
+   },
+   "invulnerableSave": "6+",
+   "invulnerableNote": "Fixture footnote about this save."
+  }
  ]
 }

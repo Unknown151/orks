@@ -1,6 +1,23 @@
 {
   "_note": "Every ability/keyword the app can show, keyed by id. Entries flagged needsVerification:true are edition-core rules seeded as scaffolding — diff their wording against your 11th-ed source and drop the flag once checked. Delete this _note key whenever you like; the loader ignores keys starting with an underscore.",
 
+  "prophet-of-da-great-waaagh": {
+    "name": "Prophet of Da Great Waaagh!",
+    "type": "Ability — Ghazghkull Thraka",
+    "phases": ["fight"],
+    "description": "While this unit is leading a unit, each time a model in that unit makes a melee attack, add 1 to the <strong>Hit roll</strong> and add 1 to the <strong>Wound roll</strong> and if the <strong>Waaagh!</strong> is active for your army, a <strong>Critical Hit</strong> is scored on a successful unmodified Hit roll of 5+."
+  },
+  "ghazghkulls-waaagh-banner": {
+    "name": "Ghazghkull\u2019s Waaagh! Banner (Aura)",
+    "type": "Ability — Ghazghkull Thraka",
+    "phases": ["fight"],
+    "description": "While a friendly <strong>ORKS</strong> unit is within 12\" of Makari, if the <strong>Waaagh!</strong> is active for your army, melee weapons equipped by models in that unit have the <strong>[LETHAL HITS]</strong> ability."
+  },
+  "supreme-commander": {
+    "name": "Supreme Commander",
+    "type": "Ability — Ghazghkull Thraka",
+    "description": "If this unit is in your army, its Ghazghkull Thraka model must be your <strong>Warlord</strong>."
+  },
   "grab-dat-scrap": {
     "name": "Grab Dat Scrap",
     "type": "Ability — 'Ardmob Boyz",

@@ -330,7 +330,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.13.0';
+const VERSION = '0.14.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -639,6 +639,10 @@ function enhancementBlockReason(id, inst){
 const weaponCount = (inst, w) => inst?.weaponCounts?.[w.name] ?? (w.count ?? 1);  // ?? not || (guide §9)
 // Units live in two namespaces (matched play / Combat Patrol); look in both.
 const lookupUnit = id => DATA.units[id] || DATA.cpUnits[id] || null;
+// A datasheet can name units that have not been added yet; show a readable name
+// rather than a raw id, and pick up the real one as soon as the file lands.
+const unitDisplayName = id =>
+  lookupUnit(id)?.name || String(id).replace(/-/g,' ').replace(/\b\w/g, c => c.toUpperCase());
 
 function allWeaponNames(unit){
   return ['ranged','melee'].flatMap(k => (unit.weapons?.[k] || []).map(w => w.name));
@@ -1013,11 +1017,20 @@ function applyCallEffects(unit){
   const d = { ...unit };
 
   if(fx.invulnerableSave){
-    const best = bestInvuln(unit.invulnerableSave, fx.invulnerableSave);
-    if(best !== unit.invulnerableSave){
-      d.invulnerableSave = best;
-      d.invulnerableSource = null;
-      d._invulnFromCall = true;
+    // Where profiles carry their own saves, improve each of them; otherwise the
+    // unit has a single save to improve.
+    if((unit.modelProfiles || []).some(p => p.invulnerableSave)){
+      d.modelProfiles = unit.modelProfiles.map(p => {
+        const best = bestInvuln(p.invulnerableSave, fx.invulnerableSave);
+        return best === p.invulnerableSave ? p : { ...p, invulnerableSave: best, _invulnFromCall: true };
+      });
+    } else {
+      const best = bestInvuln(unit.invulnerableSave, fx.invulnerableSave);
+      if(best !== unit.invulnerableSave){
+        d.invulnerableSave = best;
+        d.invulnerableSource = null;
+        d._invulnFromCall = true;
+      }
     }
   }
   const mw = fx.meleeWeapon;
@@ -1041,8 +1054,16 @@ function unitBody(unit, inst, opts){
   let h = '';
   const mods = unit._statMods;
   if(unit.modelProfiles?.length){
-    h += unit.modelProfiles.map(p =>
-      `<div class="prof-n">${esc(p.name)}${p.count?` ×${p.count}`:''}</div>${statBlock(p.stats, mods)}`).join('');
+    // A profile can carry its own invulnerable save — two models in one unit can
+    // have different ones, so it cannot live on the unit.
+    h += unit.modelProfiles.map(p => {
+      let b = `<div class="prof-n">${esc(p.name)}${p.count?` ×${p.count}`:''}</div>${statBlock(p.stats, mods)}`;
+      if(p.invulnerableSave){
+        b += `<div class="inv${p._invulnFromCall ? ' mod-call' : ''}">🛡 <b>Invulnerable save ${esc(p.invulnerableSave)}</b></div>`;
+        if(p.invulnerableNote) b += `<div class="split-note">${p.invulnerableNote}</div>`;
+      }
+      return b;
+    }).join('');
   } else if(unit.stats){
     h += statBlock(unit.stats, mods);
   }
@@ -1071,7 +1092,7 @@ function unitBody(unit, inst, opts){
   // The datasheet's Leader block. Several units can share a name (the two
   // 'Ardmob Boyz), so list each name once, as the datasheet does.
   if(unit.canLead?.length && !opts.noLead){
-    const names = [...new Set(unit.canLead.map(id => lookupUnit(id)?.name || id))];
+    const names = [...new Set(unit.canLead.map(unitDisplayName))];
     h += `<div class="sec"><div class="sec-t">Leader</div>
       <div class="muted" style="font-size:12.5px;margin-bottom:4px">This model can be attached to the following units:</div>
       ${names.map(n => `<span class="pill">${esc(n)}</span>`).join('')}</div>`;

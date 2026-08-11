@@ -1,4 +1,4 @@
 {
   "_note": "Manifest of unit files to load. A browser can't list a directory over HTTP, so every datasheet added to data/units/ must be listed here by id (== filename without .json). Files whose name starts with _ are documentation and must NOT be listed.",
-  "units": []
+  "units": ["ghazghkull-thraka"]
 }

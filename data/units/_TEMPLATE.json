@@ -26,8 +26,10 @@
   },
 
   "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 1, "ld": "6+", "oc": 2 },
+  "_modelProfiles_note": "A profile may carry its own invulnerableSave (and an optional invulnerableNote for an asterisked footnote) when models in the unit have different ones. Use the unit-level invulnerableSave below when they all share one.",
   "modelProfiles": [
-    { "name": "Boss Nob", "count": 1, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 2, "ld": "6+", "oc": 2 } },
+    { "name": "Boss Nob", "count": 1, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 2, "ld": "6+", "oc": 2 },
+      "invulnerableSave": null, "invulnerableNote": null },
     { "name": "Boy", "count": 9, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 1, "ld": "6+", "oc": 2 } }
   ],
 

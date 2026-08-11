@@ -45,7 +45,8 @@ The nav is **Army · Builder · Stratagems · Combat Patrol**. The in-game track
 A **faction call button** is pinned to the bottom of the Combat Patrol tab (see below).
 
 **Combat Patrol** is complete (`data/combat-patrol/`) — 6 units, 33 models, the
-'Ard As Nails detachment and both enhancements. `data/stratagems.json` holds the
+'Ard As Nails detachment and both enhancements. **Matched play has started**:
+`data/units/` holds its first datasheet. `data/stratagems.json` holds the
 11th-ed core stratagems, shown on the Stratagems tab. Still empty, awaiting
 matched-play data: `data/detachments.json`, `data/enhancements.json`,
 `data/units/`.
@@ -86,6 +87,17 @@ Two rules that will bite otherwise:
 
 Copy `data/units/_TEMPLATE.json` to start a new datasheet. `data/detachments.json`
 carries the DP budget (default 3) and the category → colour map.
+
+## Model profiles
+
+A unit with two or more statlines lists them under `modelProfiles`. A profile may
+carry its **own `invulnerableSave`** — Ghazghkull Thraka is 4+ while Makari is 2+, so
+the save cannot live on the unit — plus an optional `invulnerableNote` for an
+asterisked footnote. Units where every model shares one save keep using the
+unit-level `invulnerableSave`.
+
+The faction call follows the same structure: where profiles carry their own saves it
+improves each of them independently, so a 4+ is left alone while a 6+ becomes 5+.
 
 ## Weapon sections
 

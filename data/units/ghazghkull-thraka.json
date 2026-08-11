@@ -1,0 +1,58 @@
+{
+  "id": "ghazghkull-thraka",
+  "name": "Ghazghkull Thraka",
+  "type": ["Infantry", "Character", "Epic Hero"],
+  "keywords": ["INFANTRY", "CHARACTER", "EPIC HERO", "ORKS"],
+
+  "_keywords_note": "Keywords were not visible in the supplied datasheet image; these are inferred from the Unit Composition line (EPIC HERO) and the Leader/Faction blocks. Replace with the printed list when you have it.",
+
+  "isLeader": true,
+  "isEpicHero": true,
+
+  "points": 235,
+  "models": 2,
+  "modelBreakdown": "1 Ghazghkull Thraka + 1 Makari",
+
+  "_stats_note": "Two model profiles with DIFFERENT invulnerable saves, so each save sits on its profile rather than on the unit.",
+  "stats": { "m": "5\"", "t": 6, "sv": "2+", "w": 10, "ld": "6+", "oc": 4 },
+  "modelProfiles": [
+    { "name": "Ghazghkull Thraka", "count": 1,
+      "stats": { "m": "5\"", "t": 6, "sv": "2+", "w": 10, "ld": "6+", "oc": 4 },
+      "invulnerableSave": "4+" },
+    { "name": "Makari", "count": 1,
+      "stats": { "m": "5\"", "t": 6, "sv": "7+", "w": 1, "ld": "8+", "oc": 1 },
+      "invulnerableSave": "2+",
+      "invulnerableNote": "While a friendly Makari model is on the battlefield, you cannot re-roll save rolls for this unit." }
+  ],
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "Ghazghkull Thraka is equipped with: Mork's Roar; Gork's Klaw. Makari is equipped with: Makari's stabba.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Mork's Roar", "count": 1, "range": "36\"", "a": "12", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{ "id": "rapid-fire", "display": "Rapid Fire 4" }] }
+    ],
+    "melee": [
+      { "name": "Gork's Klaw - strike", "count": 1, "a": "6", "ws": "2+", "s": "14", "ap": "-3", "d": "4",
+        "abilities": [],
+        "weaponGroup": "gorks-klaw",
+        "weaponGroupLabel": "Choose one profile" },
+      { "name": "Gork's Klaw - sweep", "count": 1, "a": "12", "ws": "2+", "s": "8", "ap": "-2", "d": "2",
+        "abilities": [],
+        "weaponGroup": "gorks-klaw" },
+      { "name": "Makari's stabba", "count": 1, "a": "1", "ws": "4+", "s": "3", "ap": "0", "d": "1",
+        "abilities": ["devastating-wounds"] }
+    ]
+  },
+
+  "abilities": ["prophet-of-da-great-waaagh", "ghazghkulls-waaagh-banner", "supreme-commander"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["leader"],
+  "wargear": [],
+
+  "_canLead_note": "Datasheets for these units have not been added yet. The card shows a readable name until each file lands, then picks up its real name automatically.",
+  "canLead": ["boyz", "breaka-boyz", "meganobz", "nobz"]
+}

@@ -61,6 +61,7 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .grow{flex:1}
 .pill{display:inline-block;background:var(--card2);border:1px solid var(--line);border-radius:99px;padding:2px 9px;font-size:12px;margin:2px 3px 2px 0}
+.cdot{display:inline-block;width:9px;height:9px;border-radius:99px;margin-right:6px;vertical-align:baseline}
 .pill.tap{cursor:pointer}
 .pill.tap:active{background:var(--accent2)}
 .pill.core{border-color:var(--accent2);color:var(--accent)}
@@ -289,6 +290,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
   <div class="hd-top">
     <div class="hd-title">WAAAGH! <span>Army Builder</span></div>
     <button class="hd-btn" id="btnDp" title="Detachment Points">DP <span id="dpChip">0/3</span></button>
+    <button class="hd-btn" id="btnDetInfo" title="Detachment rule">📜</button>
     <button class="hd-btn" id="btnMenu" title="Lists &amp; sharing">☰</button>
     <button class="hd-btn" id="btnTheme" title="Toggle theme">◐</button>
   </div>
@@ -334,7 +336,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.16.0';
+const VERSION = '0.17.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -532,7 +534,7 @@ function clearOrphanedEnhancements(){
 function showDetachmentRules(){
   const active = selectedDetachments.map(id => DATA.detachments[id]).filter(Boolean);
   const body = active.length
-    ? active.map(d => `<p><strong>${esc(d.name)}</strong> <span class="muted">(${d.dp} DP · ${esc(d.category||'—')})</span><br>${d.ruleDescription || '<em>Rule to be added.</em>'}</p>`).join('')
+    ? active.map(d => `<p><span class="cdot" style="background:${esc(DATA.detCategories[d.category] || 'var(--dim)')}"></span><strong>${esc(d.name)}</strong> <span class="muted">(${d.dp} DP · ${esc(d.category||'—')})</span><br>${d.ruleDescription || '<em>Rule to be added.</em>'}</p>`).join('')
     : '<p class="muted">No detachments selected. Pick them on the Builder tab.</p>';
   openModal('Detachment Rules', `${dpSpent()} / ${DATA.dpBudget} DP used`, body);
 }
@@ -936,8 +938,13 @@ function renderAll(){
 }
 
 // DP is a matched-play concept — hide the control outside those tabs (guide §6).
+// The rule scroll rides along on Army too: a detachment rule that grants nothing
+// (Da Hunt Is On) leaves no badge on any card, so this is the only way to read it.
 function syncHeader(){
-  $('#btnDp').style.display = (ui.tab === 'builder' || ui.tab === 'strats') ? '' : 'none';
+  const matched = ui.tab === 'builder' || ui.tab === 'strats';
+  $('#btnDp').style.display = matched ? '' : 'none';
+  $('#btnDetInfo').style.display =
+    (matched || ui.tab === 'army') && selectedDetachments.length ? '' : 'none';
 }
 function setTab(name){
   ui.tab = name;
@@ -980,6 +987,11 @@ function abilityPill(id, cls, label){
   const a = DATA.abilities[id];
   const name = label || (a ? a.name : id);
   return `<span class="pill tap ${cls||''}" data-ab="${esc(id)}">${esc(name)}</span>`;
+}
+// A granted ability is either a plain id, or {id, display} when the datasheet
+// wording carries something the ability name doesn't — e.g. Scouts 9".
+function grantPill(g){
+  return typeof g === 'string' ? abilityPill(g, 'grant') : abilityPill(g.id, 'grant', g.display);
 }
 function statBlock(stats, mods){
   const keys = [['m','M'],['t','T'],['sv','SV'],['w','W'],['ld','LD'],['oc','OC']];
@@ -1131,7 +1143,7 @@ function unitBody(unit, inst, opts){
   if(enh){
     h += `<div class="sec"><div class="sec-t">${enh.upgrade?'Upgrade':'Enhancement'}</div>
       <span class="pill tap" data-enh="${esc(inst.enhancementId)}">★ ${esc(enh.name)} (${enh.points||0} pts)</span>
-      ${(enh.grantsAbilities||[]).map(id => abilityPill(id,'grant')).join('')}</div>`;
+      ${(enh.grantsAbilities||[]).map(grantPill).join('')}</div>`;
   }
   // Keywords may be scoped: a shared list plus per-profile ones, and the
   // separate Faction Keywords line. A unit with only a flat list renders as before.
@@ -1788,7 +1800,7 @@ document.addEventListener('click', e => {
   // detachments
   const dc = el('[data-det]');
   if(dc){ toggleDetachment(dc.dataset.det); return; }
-  if(el('#btnRules')){ showDetachmentRules(); return; }
+  if(el('#btnRules') || el('#btnDetInfo')){ showDetachmentRules(); return; }
   if(el('#btnDp')){ ui.detOpen = true; renderBuilder(); showDetachmentRules(); return; }
 
   // builder controls

@@ -26,6 +26,17 @@
           "display": "Sustained Hits 1"
         }
       ]
+    },
+    "da-big-hunt": {
+      "name": "Da Big Hunt",
+      "dp": 2,
+      "category": "Purge the Foe",
+      "_unique_note": "No unique/exclusivity group was stated for this detachment, so it is left null like War Horde. Set it if one turns out to apply.",
+      "unique": null,
+      "ruleId": "da-big-hunt-da-hunt-is-on",
+      "ruleType": "Detachment Rule — Da Big Hunt",
+      "_grants_note": "Da Hunt Is On is STATEFUL: every benefit is conditional on the Prey unit you nominate each Command phase. There is nothing unconditional to hand out, so this detachment deliberately has no `grants` / `grantsWeaponAbilities` and puts no badges on unit cards. Read the rule from the scroll icon in the header. Do not invent a grant to make it look busier.",
+      "ruleDescription": "<strong>Da Hunt Is On:</strong> At the start of your Command phase, select one <strong>MONSTER</strong>, <strong>VEHICLE</strong> or <strong>CHARACTER</strong> unit from your opponent’s army. Until the start of your next Command phase, that enemy unit is your <strong>Prey</strong>:<br>• When a friendly <strong>BEAST SNAGGA</strong> unit declares a charge, if your <strong>Prey</strong> is within 12\" of that unit, you can use this part of this ability. If you do: that <strong>BEAST SNAGGA</strong> unit can re-roll that charge roll; and that <strong>BEAST SNAGGA</strong> unit must end that charge move engaged with your <strong>Prey</strong>.<br>• Each time a <strong>BEAST SNAGGA</strong> model from your army makes an attack that targets your <strong>Prey</strong>, improve the Armour Penetration characteristic of that attack by 1."
     }
   }
 }

@@ -45,5 +45,54 @@
       "feel-no-pain-4"
     ],
     "description": "<strong>ORKS</strong> model only. The bearer has the <strong>Feel No Pain 4+</strong> ability."
+  },
+
+  "_da_big_hunt_note": "Da Big Hunt enhancements. Their restrictions key off BEAST SNAGGA and BEASTBOSS ON SQUIGOSAUR; no datasheet in data/units/ carries either keyword yet, so these stay unselectable until those units are added. That is expected, not a bug.",
+
+  "glory-hog": {
+    "name": "Glory Hog",
+    "type": "Enhancement (30 pts)",
+    "restriction": "BEASTBOSS ON SQUIGOSAUR model only",
+    "restrictedToKeyword": "BEASTBOSS ON SQUIGOSAUR",
+    "detachment": "da-big-hunt",
+    "points": 30,
+    "short": "Bearer’s unit has Scouts 9\".",
+    "grantsAbilities": [
+      { "id": "scouts", "display": "Scouts 9\"" }
+    ],
+    "description": "<strong>BEASTBOSS ON SQUIGOSAUR</strong> model only. Models in the bearer’s unit have the <strong>Scouts 9\"</strong> ability."
+  },
+
+  "proper-killy": {
+    "name": "Proper Killy",
+    "type": "Enhancement (15 pts)",
+    "restriction": "BEAST SNAGGA model only",
+    "restrictedToKeyword": "BEAST SNAGGA",
+    "detachment": "da-big-hunt",
+    "points": 15,
+    "short": "+1 Damage on the bearer’s melee weapons.",
+    "description": "<strong>BEAST SNAGGA</strong> model only. Add 1 to the <strong>Damage</strong> characteristic of melee weapons equipped by the bearer."
+  },
+
+  "skrag-every-stash": {
+    "name": "Skrag Every Stash!",
+    "type": "Enhancement (25 pts)",
+    "restriction": "BEAST SNAGGA model only",
+    "restrictedToKeyword": "BEAST SNAGGA",
+    "detachment": "da-big-hunt",
+    "points": 25,
+    "short": "Hold an objective the bearer reached without leaving models on it.",
+    "description": "<strong>BEAST SNAGGA</strong> model only. At the end of your Command phase, if the bearer is within range of an objective marker you control, that objective marker remains under your control, even if you have no models within range of it, until your opponent controls it at the start or end of any turn."
+  },
+
+  "surly-as-a-squiggoth": {
+    "name": "Surly as a Squiggoth",
+    "type": "Enhancement (20 pts)",
+    "restriction": "BEASTBOSS ON SQUIGOSAUR model only",
+    "restrictedToKeyword": "BEASTBOSS ON SQUIGOSAUR",
+    "detachment": "da-big-hunt",
+    "points": 20,
+    "short": "−1 to Wound against the led unit when S beats T.",
+    "description": "<strong>BEASTBOSS ON SQUIGOSAUR</strong> model only. While the bearer is leading a unit, each time an attack targets that unit, if the <strong>Strength</strong> characteristic of that attack is greater than the <strong>Toughness</strong> characteristic of that unit, subtract 1 from the Wound roll."
   }
 }

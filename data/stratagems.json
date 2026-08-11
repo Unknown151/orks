@@ -213,5 +213,85 @@
     "target": "One <strong>ORKS INFANTRY</strong> unit from your army.",
     "effect": "Until the end of the turn, add 2 to Advance and Charge rolls made for your unit.",
     "detachment": "war-horde"
+  },
+
+  "_da_big_hunt_note": "Da Big Hunt detachment stratagems. Several refer to your Prey, which is nominated by the Da Hunt Is On detachment rule — the app does not track it, so the wording carries the condition.",
+
+  "drag-it-down": {
+    "name": "Drag It Down",
+    "type": "Da Big Hunt – Battle Tactic Stratagem",
+    "turn": "either",
+    "phases": ["fight"],
+    "cpCost": 1,
+    "summary": "[SUSTAINED HITS 1] in melee, and Criticals on 5+ against your Prey.",
+    "when": "Fight phase.",
+    "target": "One <strong>BEAST SNAGGA</strong> unit from your army that has not been selected to fight this phase.",
+    "effect": "Until the end of the phase, melee weapons equipped by models in your unit have the <strong>[SUSTAINED HITS 1]</strong> ability. In addition, each time a model in your unit makes a melee attack that targets your <strong>Prey</strong>, a Critical Hit is scored on an unmodified Hit roll of 5+, instead of only a 6.",
+    "detachment": "da-big-hunt"
+  },
+
+  "unstoppable-momentum": {
+    "name": "Unstoppable Momentum",
+    "type": "Da Big Hunt – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": ["charge"],
+    "cpCost": 1,
+    "summary": "Mortal wounds on the charge, with three extra dice against your Prey.",
+    "when": "Your Charge phase, just after a <strong>BEAST SNAGGA MOUNTED</strong> unit from your army ends a Charge move.",
+    "target": "That <strong>BEAST SNAGGA</strong> unit.",
+    "effect": "Select one enemy unit within Engagement Range of your unit and roll one D6 for each model in your unit: for each 4+, that enemy unit suffers 1 mortal wound (to a maximum of 6 mortal wounds). If that enemy unit is your <strong>Prey</strong>, roll three additional D6.",
+    "detachment": "da-big-hunt"
+  },
+
+  "dat-ones-even-bigga": {
+    "name": "Dat One’s Even Bigga!",
+    "type": "Da Big Hunt – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": ["charge"],
+    "cpCost": 1,
+    "summary": "Charge after Advancing or Falling Back, and re-roll the charge.",
+    "when": "Your Charge phase.",
+    "target": "One <strong>BEAST SNAGGA</strong> unit from your army.",
+    "effect": "Until the end of the phase, your unit is eligible to charge in a turn in which it Advanced or Fell Back. In addition, you can re-roll charge rolls made for your unit. If you do, your unit must end that charge move engaged with your <strong>Prey</strong>.",
+    "detachment": "da-big-hunt"
+  },
+
+  "where-dya-fink-youre-going": {
+    "name": "Where D’ya Fink You’re Going?",
+    "type": "Da Big Hunt – Strategic Ploy Stratagem",
+    "turn": "opponent",
+    "phases": ["movement"],
+    "cpCost": 1,
+    "summary": "Chase down a unit that just Fell Back with a 6\" move.",
+    "when": "Your opponent’s Movement phase, just after an enemy unit ends a Fall Back move.",
+    "target": "One <strong>BEAST SNAGGA INFANTRY</strong> or <strong>BEAST SNAGGA MOUNTED</strong> unit from your army that was within Engagement Range of that enemy unit at the start of the phase.",
+    "effect": "If your unit is not within Engagement Range of one or more enemy units, it can make a Normal move of up to 6\".",
+    "detachment": "da-big-hunt"
+  },
+
+  "stalkin-taktiks": {
+    "name": "Stalkin’ Taktiks",
+    "type": "Da Big Hunt – Battle Tactic Stratagem",
+    "turn": "opponent",
+    "phases": ["shooting"],
+    "cpCost": 1,
+    "summary": "Benefit of Cover, plus Stealth for INFANTRY.",
+    "when": "Your opponent’s Shooting phase, just after an enemy unit has selected its targets.",
+    "target": "One <strong>BEAST SNAGGA INFANTRY</strong> or <strong>BEAST SNAGGA MOUNTED</strong> unit from your army that was selected as the target of one or more of the attacking unit’s attacks.",
+    "effect": "Until the end of the phase, each time a ranged attack targets your unit, models in your unit have the Benefit of Cover against that attack. In addition, if your unit has the <strong>INFANTRY</strong> keyword, until the end of the phase, models in your unit have the <strong>Stealth</strong> ability.",
+    "detachment": "da-big-hunt"
+  },
+
+  "instinctive-hunters": {
+    "name": "Instinctive Hunters",
+    "type": "Da Big Hunt – Strategic Ploy Stratagem",
+    "turn": "opponent",
+    "phases": ["fight"],
+    "cpCost": 1,
+    "summary": "Pull a disengaged unit back into Strategic Reserves.",
+    "when": "End of your opponent’s Fight phase.",
+    "target": "One <strong>BEAST SNAGGA</strong> unit from your army that is not within Engagement Range of one or more enemy unit.",
+    "effect": "Remove your unit from the battlefield and place it into Strategic Reserves.",
+    "detachment": "da-big-hunt"
   }
 }

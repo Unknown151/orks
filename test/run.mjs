@@ -124,6 +124,26 @@ await p.evaluate(u=>{armyList.find(i=>i.uid===u).enhancementId='shiny-bit';rende
 t('enhancement adds points', await p.evaluate(u=>instancePoints(armyList.find(i=>i.uid===u)),wb)===100);
 t('★ on builder header', await p.evaluate(()=>document.querySelectorAll('#view-builder .star').length)===1);
 t('2nd copy of an Enhancement blocked', await p.evaluate(()=>enhancementBlockReason('shiny-bit',armyList[0]))==='taken');
+// grantsAbilities entries are either a plain id, or {id,display} when the
+// datasheet wording carries something the ability's own name doesn't (Scouts 9").
+// The warboss is attached, so its Enhancement renders inside the merged card.
+const grantPills=()=>p.evaluate(()=>{
+  const c=[...document.querySelectorAll('#view-army .unit')].find(x=>x.querySelector('.leader-band'));
+  return [...c.querySelectorAll('.pill.grant')].map(x=>({txt:x.textContent, ab:x.dataset.ab}));
+});
+t('string grant renders the ability name',
+  (await grantPills()).some(x=>x.txt==='Lethal Hits' && x.ab==='lethal-hits'));
+await p.evaluate(()=>{
+  DATA.enhancements['shiny-bit'].grantsAbilities=[{id:'lethal-hits',display:'Lethal Hits 9"'}];
+  renderAll();
+});
+t('object grant renders its display text instead',
+  (await grantPills()).some(x=>x.txt==='Lethal Hits 9"'));
+t('object grant still resolves to its ability id',
+  (await grantPills()).some(x=>x.txt==='Lethal Hits 9"' && x.ab==='lethal-hits'));
+t('object grant does not leave the plain name behind',
+  !(await grantPills()).some(x=>x.txt==='Lethal Hits'));
+await p.evaluate(()=>{DATA.enhancements['shiny-bit'].grantsAbilities=['lethal-hits'];renderAll();});
 // upgrades: 3 copies allowed, only 1st counts toward cap
 await p.evaluate(()=>{armyList[0].enhancementId='extra-armour';armyList[1].enhancementId='extra-armour';armyList[2].enhancementId='extra-armour';renderAll();});
 t('3 upgrade copies allowed', await p.evaluate(()=>armyList.filter(i=>i.enhancementId==='extra-armour').length)===3);
@@ -239,6 +259,38 @@ t('nav has Combat Patrol, not Points',
 await p.click('nav button[data-tab="cp"]');
 t('CP view is the visible one', await p.evaluate(()=>document.querySelector('#view-cp').classList.contains('on')));
 t('DP control hidden on CP tab', await p.evaluate(()=>getComputedStyle(document.querySelector('#btnDp')).display)==='none');
+// The rule scroll is the only way to read a detachment rule that grants nothing,
+// so it must survive on Army — but stay out of Combat Patrol, which has its own.
+const scrollShown=()=>p.evaluate(()=>getComputedStyle(document.querySelector('#btnDetInfo')).display!=='none');
+t('rule scroll hidden on CP tab', (await scrollShown())===false);
+await p.evaluate(()=>setTab('army'));
+t('rule scroll shown on Army with a detachment', (await scrollShown())===true);
+await p.evaluate(()=>setTab('builder'));
+t('rule scroll shown on Builder', (await scrollShown())===true);
+// Dropping every detachment also orphans the Enhancements hung off them, so
+// stash and restore the list — later tests still expect those points.
+const dets=await p.evaluate(()=>selectedDetachments.slice());
+const enhs=await p.evaluate(()=>armyList.map(i=>i.enhancementId));
+await p.evaluate(()=>{selectedDetachments.slice().forEach(id=>toggleDetachment(id));});
+t('rule scroll hidden when no detachment is selected', (await scrollShown())===false);
+await p.evaluate(([d,e])=>{
+  d.forEach(id=>toggleDetachment(id));
+  armyList.forEach((i,n)=>i.enhancementId=e[n]);
+  renderAll();
+},[dets,enhs]);
+t('rule scroll returns with the detachment', (await scrollShown())===true);
+t('detachments restored', await p.evaluate(d=>selectedDetachments.slice().sort().join()===d.slice().sort().join(),dets));
+t('enhancements restored', await p.evaluate(e=>armyList.map(i=>i.enhancementId).join()===e.join(),enhs));
+await p.click('#btnDetInfo');
+t('rule scroll opens the Detachment Rules modal',
+  await p.evaluate(()=>document.querySelector('#modal').classList.contains('on')
+    && document.querySelector('#mTitle').textContent==='Detachment Rules'));
+t('modal carries the active rule text',
+  await p.evaluate(()=>document.querySelector('#mBody').textContent.includes('Rule text.')));
+t('modal shows a disposition colour dot',
+  await p.evaluate(()=>document.querySelectorAll('#mBody .cdot').length)===dets.length);
+await p.click('#mClose');
+await p.evaluate(()=>setTab('cp'));
 t('CP force loaded', await p.evaluate(()=>DATA.combatPatrol.name)==='Demo Combat Patrol');
 t('CP datasheets loaded from roster (incl. ledBy)',
   await p.evaluate(()=>Object.keys(DATA.cpUnits).sort().join())==='cp-boyz,cp-buggy,cp-nob');

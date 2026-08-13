@@ -1,11 +1,16 @@
 {
   "_note": "Core + detachment stratagems, keyed by id. See NEW_ARMY_BUILD_GUIDE.md §4.4. detachment:null means a Core stratagem, available in every list. Keys starting with an underscore are ignored by the loader.",
-
   "command-re-roll": {
     "name": "Command Re-roll",
     "type": "Core Stratagem",
     "turn": "either",
-    "phases": ["command", "movement", "shooting", "charge", "fight"],
+    "phases": [
+      "command",
+      "movement",
+      "shooting",
+      "charge",
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "Re-roll one dice you just rolled.",
     "when": "Any phase, just after you make one of the following rolls for a friendly unit or model: an Advance roll, a Charge roll, a Damage roll, a Hazard roll, a Hit roll, a Save roll, a Wound roll, or a roll to determine the number of attacks generated with a weapon.",
@@ -13,12 +18,13 @@
     "effect": "You re-roll that roll. If you are rolling more than one dice together, select one of those dice to re-roll (excluding charge rolls, which you must re-roll in full).",
     "detachment": null
   },
-
   "epic-challenge": {
     "name": "Epic Challenge",
     "type": "Core Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "A Character's melee weapons gain [PRECISION].",
     "when": "Fight phase, just after a friendly <strong>CHARACTER</strong> unit is selected to fight.",
@@ -26,12 +32,13 @@
     "effect": "Select one <strong>CHARACTER</strong> model in your unit. Until the end of the phase, that model's melee weapons have the <strong>[PRECISION]</strong> ability.",
     "detachment": null
   },
-
   "insane-bravery": {
     "name": "Insane Bravery",
     "type": "Core Stratagem",
     "turn": "your",
-    "phases": ["command"],
+    "phases": [
+      "command"
+    ],
     "cpCost": 1,
     "summary": "Auto-pass one Battle-shock test.",
     "when": "Battle-shock step of your Command phase, just before you make a Battle-shock roll for a friendly unit.",
@@ -40,12 +47,13 @@
     "restrictions": "You cannot use this Stratagem more than once per battle.",
     "detachment": null
   },
-
   "fire-overwatch": {
     "name": "Fire Overwatch",
     "type": "Core Stratagem",
     "turn": "opponent",
-    "phases": ["movement"],
+    "phases": [
+      "movement"
+    ],
     "cpCost": 1,
     "summary": "Snap shoot at the end of your opponent's Movement phase.",
     "when": "End of your opponent's Movement phase.",
@@ -54,12 +62,13 @@
     "restrictions": "After shooting, until the end of the phase your unit is not eligible to start an Action.",
     "detachment": null
   },
-
   "smokescreen": {
     "name": "Smokescreen",
     "type": "Core Stratagem",
     "turn": "opponent",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "A SMOKE unit and what it screens gain the Benefit of Cover.",
     "when": "Start of your opponent's Shooting phase.",
@@ -67,12 +76,13 @@
     "effect": "Until the end of the phase, each time an attack targets either your <strong>SMOKE</strong> unit, or a unit that is not fully visible to the attacking model because of one or more models in your <strong>SMOKE</strong> unit, the target has the Benefit of Cover against that attack.",
     "detachment": null
   },
-
   "heroic-intervention": {
     "name": "Heroic Intervention",
     "type": "Core Stratagem",
     "turn": "opponent",
-    "phases": ["charge"],
+    "phases": [
+      "charge"
+    ],
     "cpCost": 1,
     "cpCostNote": "+1 CP for Into the Fray",
     "summary": "Charge at the end of your opponent's Charge phase.",
@@ -81,51 +91,55 @@
     "effect": "Resolve a charge with your unit. Before making the charge roll, select one of the following modes:<br>• <strong>Leap to Defend</strong> — when selecting charge targets, you can only select enemy units that made a charge move this phase and are within the Maximum charge distance.<br>• <strong>Into the Fray (+1CP)</strong> — when making the charge roll, if the result is greater than 6 (after modifiers), change it to 6; and when selecting charge targets, you can select any enemy units within 6\" of your unit and within the Maximum charge distance.",
     "detachment": null
   },
-
   "krump-em": {
-    "name": "Krump \u2019Em",
-    "type": "\u2019Ardmob Stratagem",
+    "name": "Krump ’Em",
+    "type": "’Ardmob Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 1,
-    "summary": "Your unit\u2019s melee attacks have +1 S.",
-    "when": "Fight phase, when a friendly <strong>\u2019ARDMOB</strong> unit is <strong>selected to fight</strong>.",
-    "target": "That <strong>\u2019ARDMOB</strong> unit.",
-    "effect": "Your unit\u2019s melee attacks have +1 <strong>S</strong>.",
+    "summary": "Your unit’s melee attacks have +1 S.",
+    "when": "Fight phase, when a friendly <strong>’ARDMOB</strong> unit is <strong>selected to fight</strong>.",
+    "target": "That <strong>’ARDMOB</strong> unit.",
+    "effect": "Your unit’s melee attacks have +1 <strong>S</strong>.",
     "detachment": "ard-as-nails"
   },
-
   "medi-squigs": {
     "name": "Medi-Squigs",
-    "type": "\u2019Ardmob Stratagem",
+    "type": "’Ardmob Stratagem",
     "turn": "opponent",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "Your unit has a 5+ invulnerable save.",
-    "when": "Your opponent\u2019s Shooting phase, when an enemy unit targets a friendly <strong>\u2019ARDMOB</strong> unit.",
-    "target": "That <strong>\u2019ARDMOB</strong> unit.",
+    "when": "Your opponent’s Shooting phase, when an enemy unit targets a friendly <strong>’ARDMOB</strong> unit.",
+    "target": "That <strong>’ARDMOB</strong> unit.",
     "effect": "Your unit has 5+ <strong>InSv</strong>.",
     "detachment": "ard-as-nails"
   },
-
   "get-stuck-in": {
     "name": "Get Stuck In",
-    "type": "\u2019Ardmob Stratagem",
+    "type": "’Ardmob Stratagem",
     "turn": "opponent",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "Surge move up to D6+1\" after being shot at.",
-    "when": "Your opponent\u2019s Shooting phase, when an enemy unit that targeted a friendly <strong>unengaged</strong> <strong>\u2019ARDMOB</strong> unit has shot.",
-    "target": "That <strong>\u2019ARDMOB</strong> unit.",
+    "when": "Your opponent’s Shooting phase, when an enemy unit that targeted a friendly <strong>unengaged</strong> <strong>’ARDMOB</strong> unit has shot.",
+    "target": "That <strong>’ARDMOB</strong> unit.",
     "effect": "Your unit can make a <strong>surge move</strong> of up to D6+1\".",
     "detachment": "ard-as-nails"
   },
-
   "counter-offensive": {
     "name": "Counter-offensive",
     "type": "Core Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 2,
     "summary": "Fight out of sequence, with Fights First.",
     "when": "Fight phase, just after an enemy unit has resolved its attacks.",
@@ -133,14 +147,18 @@
     "effect": "Until the end of the phase, your unit has the Fights First ability and it must be the next unit you select to fight.",
     "detachment": null
   },
-
   "_war_horde_note": "War Horde detachment stratagems. The id 'war-horde-ard-as-nails' is deliberately prefixed: the stratagem is called ’Ard As Nails, but 'ard-as-nails' is already the id of the Combat Patrol DETACHMENT in data/combat-patrol/index.json. They are unrelated content and must not be merged.",
-
   "careen": {
     "name": "Careen!",
-    "type": "War Horde \u2013 Epic Deed Stratagem",
+    "type": "War Horde – Epic Deed Stratagem",
     "turn": "either",
-    "phases": ["command", "movement", "shooting", "charge", "fight"],
+    "phases": [
+      "command",
+      "movement",
+      "shooting",
+      "charge",
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "A destroyed vehicle rolls one last move before it blows.",
     "when": "Any phase, just after an <strong>ORKS VEHICLE</strong> unit from your army with the Deadly Demise ability is destroyed.",
@@ -148,12 +166,13 @@
     "effect": "Your unit can make a Normal or Fall Back move before its Deadly Demise ability is resolved, and before any embarked units perform an Emergency Disembarkation. When making this move, your unit can move over enemy units (excluding <strong>MONSTERS</strong> and <strong>VEHICLES</strong>) as if they were not there.",
     "detachment": "war-horde"
   },
-
   "orks-is-never-beaten": {
     "name": "Orks Is Never Beaten",
     "type": "War Horde – Epic Deed Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 2,
     "summary": "Slain models still get to swing before they go.",
     "when": "Fight phase, just after an enemy unit has selected its targets.",
@@ -161,12 +180,13 @@
     "effect": "Until the end of the phase, each time a model in your unit is destroyed, if that model has not fought this phase, do not remove it from play. The destroyed model can fight after the attacking model’s unit has finished making attacks, and is then removed from play.",
     "detachment": "war-horde"
   },
-
   "unbridled-carnage": {
     "name": "Unbridled Carnage",
     "type": "War Horde – Battle Tactic Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "Melee attacks score Critical Hits on an unmodified 5+.",
     "when": "Fight phase.",
@@ -174,12 +194,14 @@
     "effect": "Until the end of the phase, each time a model in your unit makes a melee attack, an unmodified Hit roll of 5+ scores a Critical Hit.",
     "detachment": "war-horde"
   },
-
   "war-horde-ard-as-nails": {
     "name": "’Ard As Nails",
     "type": "War Horde – Battle Tactic Stratagem",
     "turn": "either",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "−1 to Wound rolls against your unit.",
     "when": "Your opponent’s Shooting phase or the Fight phase, just after an enemy unit has selected its targets.",
@@ -187,12 +209,13 @@
     "effect": "Until the end of the phase, each time an attack targets your unit, subtract 1 from the Wound roll.",
     "detachment": "war-horde"
   },
-
   "mob-rule": {
     "name": "Mob Rule",
     "type": "War Horde – Battle Tactic Stratagem",
     "turn": "your",
-    "phases": ["command"],
+    "phases": [
+      "command"
+    ],
     "cpCost": 1,
     "summary": "A big mob shouts a nearby unit out of Battle-shock.",
     "when": "End of your Command phase.",
@@ -200,12 +223,13 @@
     "effect": "Select one friendly Battle-shocked <strong>ORKS INFANTRY</strong> unit within 6\" of that <strong>MOB</strong> unit. That <strong>ORKS INFANTRY</strong> unit is no longer Battle-shocked.",
     "detachment": "war-horde"
   },
-
   "ere-we-go": {
     "name": "’Ere We Go",
     "type": "War Horde – Battle Tactic Stratagem",
     "turn": "your",
-    "phases": ["movement"],
+    "phases": [
+      "movement"
+    ],
     "cpCost": 1,
     "summary": "+2 to Advance and Charge rolls.",
     "when": "Start of your Movement phase.",
@@ -213,14 +237,14 @@
     "effect": "Until the end of the turn, add 2 to Advance and Charge rolls made for your unit.",
     "detachment": "war-horde"
   },
-
   "_da_big_hunt_note": "Da Big Hunt detachment stratagems. Several refer to your Prey, which is nominated by the Da Hunt Is On detachment rule — the app does not track it, so the wording carries the condition.",
-
   "drag-it-down": {
     "name": "Drag It Down",
     "type": "Da Big Hunt – Battle Tactic Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "[SUSTAINED HITS 1] in melee, and Criticals on 5+ against your Prey.",
     "when": "Fight phase.",
@@ -228,12 +252,13 @@
     "effect": "Until the end of the phase, melee weapons equipped by models in your unit have the <strong>[SUSTAINED HITS 1]</strong> ability. In addition, each time a model in your unit makes a melee attack that targets your <strong>Prey</strong>, a Critical Hit is scored on an unmodified Hit roll of 5+, instead of only a 6.",
     "detachment": "da-big-hunt"
   },
-
   "unstoppable-momentum": {
     "name": "Unstoppable Momentum",
     "type": "Da Big Hunt – Strategic Ploy Stratagem",
     "turn": "your",
-    "phases": ["charge"],
+    "phases": [
+      "charge"
+    ],
     "cpCost": 1,
     "summary": "Mortal wounds on the charge, with three extra dice against your Prey.",
     "when": "Your Charge phase, just after a <strong>BEAST SNAGGA MOUNTED</strong> unit from your army ends a Charge move.",
@@ -241,12 +266,13 @@
     "effect": "Select one enemy unit within Engagement Range of your unit and roll one D6 for each model in your unit: for each 4+, that enemy unit suffers 1 mortal wound (to a maximum of 6 mortal wounds). If that enemy unit is your <strong>Prey</strong>, roll three additional D6.",
     "detachment": "da-big-hunt"
   },
-
   "dat-ones-even-bigga": {
     "name": "Dat One’s Even Bigga!",
     "type": "Da Big Hunt – Strategic Ploy Stratagem",
     "turn": "your",
-    "phases": ["charge"],
+    "phases": [
+      "charge"
+    ],
     "cpCost": 1,
     "summary": "Charge after Advancing or Falling Back, and re-roll the charge.",
     "when": "Your Charge phase.",
@@ -254,12 +280,13 @@
     "effect": "Until the end of the phase, your unit is eligible to charge in a turn in which it Advanced or Fell Back. In addition, you can re-roll charge rolls made for your unit. If you do, your unit must end that charge move engaged with your <strong>Prey</strong>.",
     "detachment": "da-big-hunt"
   },
-
   "where-dya-fink-youre-going": {
     "name": "Where D’ya Fink You’re Going?",
     "type": "Da Big Hunt – Strategic Ploy Stratagem",
     "turn": "opponent",
-    "phases": ["movement"],
+    "phases": [
+      "movement"
+    ],
     "cpCost": 1,
     "summary": "Chase down a unit that just Fell Back with a 6\" move.",
     "when": "Your opponent’s Movement phase, just after an enemy unit ends a Fall Back move.",
@@ -267,12 +294,13 @@
     "effect": "If your unit is not within Engagement Range of one or more enemy units, it can make a Normal move of up to 6\".",
     "detachment": "da-big-hunt"
   },
-
   "stalkin-taktiks": {
     "name": "Stalkin’ Taktiks",
     "type": "Da Big Hunt – Battle Tactic Stratagem",
     "turn": "opponent",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "Benefit of Cover, plus Stealth for INFANTRY.",
     "when": "Your opponent’s Shooting phase, just after an enemy unit has selected its targets.",
@@ -280,12 +308,13 @@
     "effect": "Until the end of the phase, each time a ranged attack targets your unit, models in your unit have the Benefit of Cover against that attack. In addition, if your unit has the <strong>INFANTRY</strong> keyword, until the end of the phase, models in your unit have the <strong>Stealth</strong> ability.",
     "detachment": "da-big-hunt"
   },
-
   "instinctive-hunters": {
     "name": "Instinctive Hunters",
     "type": "Da Big Hunt – Strategic Ploy Stratagem",
     "turn": "opponent",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "Pull a disengaged unit back into Strategic Reserves.",
     "when": "End of your opponent’s Fight phase.",
@@ -293,14 +322,15 @@
     "effect": "Remove your unit from the battlefield and place it into Strategic Reserves.",
     "detachment": "da-big-hunt"
   },
-
   "_kult_of_speed_note": "Kult of Speed detachment stratagems. Dakkastorm and Blitza Fire exclude each other on the same unit in the same phase; that is carried in each one's `restrictions` field.",
-
   "speediest-freeks": {
     "name": "Speediest Freeks",
     "type": "Kult of Speed – Strategic Ploy Stratagem",
     "turn": "either",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "5+ invulnerable save, or 4+ for a T8-or-less vehicle.",
     "when": "Your opponent’s Shooting phase or the Fight phase, just after an enemy unit has selected its targets.",
@@ -308,12 +338,13 @@
     "effect": "Until the end of the phase, models in your unit have a 5+ invulnerable save. If your unit is a <strong>VEHICLE</strong> unit with an unmodified <strong>Toughness</strong> characteristic of 8 or less, until the end of the phase, models in your unit have a 4+ invulnerable save instead.",
     "detachment": "kult-of-speed"
   },
-
   "squig-flingin": {
     "name": "Squig Flingin’",
     "type": "Kult of Speed – Strategic Ploy Stratagem",
     "turn": "your",
-    "phases": ["movement"],
+    "phases": [
+      "movement"
+    ],
     "cpCost": 1,
     "summary": "Force a Battle-shock test at −1 after moving.",
     "when": "Your Movement phase, just after a <strong>SPEED FREEKS</strong> or <strong>TRUKK</strong> unit from your army ends a Normal, Advance or Fall Back move.",
@@ -321,12 +352,13 @@
     "effect": "Select one enemy unit within 9\" of your unit. That enemy unit must take a Battle-shock test and, when doing so, subtract 1 from the result.",
     "detachment": "kult-of-speed"
   },
-
   "dakkastorm": {
     "name": "Dakkastorm",
     "type": "Kult of Speed – Battle Tactic Stratagem",
     "turn": "your",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "[SUSTAINED HITS 1] shooting, or 2 inside 9\".",
     "when": "Your Shooting phase.",
@@ -335,12 +367,13 @@
     "restrictions": "A unit cannot be targeted by this and the Blitza Fire Stratagem in the same phase.",
     "detachment": "kult-of-speed"
   },
-
   "blitza-fire": {
     "name": "Blitza Fire",
     "type": "Kult of Speed – Battle Tactic Stratagem",
     "turn": "your",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "[LETHAL HITS], and Criticals on 5+ inside 9\".",
     "when": "Your Shooting phase.",
@@ -349,12 +382,13 @@
     "restrictions": "A unit cannot be targeted by this and the Dakkastorm Stratagem in the same phase.",
     "detachment": "kult-of-speed"
   },
-
   "full-throttle": {
     "name": "Full Throttle!",
     "type": "Kult of Speed – Battle Tactic Stratagem",
     "turn": "your",
-    "phases": ["charge"],
+    "phases": [
+      "charge"
+    ],
     "cpCost": 1,
     "summary": "+1 to Wound in melee after charging.",
     "when": "Your Charge phase, just after a <strong>SPEED FREEKS</strong> unit from your army ends a Charge move.",
@@ -362,12 +396,13 @@
     "effect": "Until the end of the turn, each time a model in your unit makes a melee attack, add 1 to the Wound roll.",
     "detachment": "kult-of-speed"
   },
-
   "more-gitz-over-ere": {
     "name": "More Gitz Over ’Ere!",
     "type": "Kult of Speed – Strategic Ploy Stratagem",
     "turn": "opponent",
-    "phases": ["movement"],
+    "phases": [
+      "movement"
+    ],
     "cpCost": 1,
     "summary": "6\" Normal move when an enemy moves nearby.",
     "when": "Your opponent’s Movement phase, just after an enemy unit ends a Normal, Advance or Fall Back move.",
@@ -375,14 +410,14 @@
     "effect": "Your unit can make a Normal move of up to 6\".",
     "detachment": "kult-of-speed"
   },
-
   "_dread_mob_note": "Dread Mob detachment stratagems. Three of them carry a 'push it' option that adds [HAZARDOUS] on top of a bigger effect; that choice is part of the effect wording, not a separate stratagem.",
-
   "klankin-klaws": {
     "name": "Klankin’ Klaws",
     "type": "Dread Mob – Battle Tactic Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "+2 S in melee, or push it for +1 D and [HAZARDOUS].",
     "when": "Fight phase.",
@@ -390,12 +425,13 @@
     "effect": "Each time you use this Stratagem, you can choose to <strong>push it</strong>. Until the end of the phase, add 2 to the <strong>Strength</strong> characteristic of melee weapons equipped by models in your unit and, if you chose to push it, until the end of the phase, add 1 to the <strong>Damage</strong> characteristic of those weapons and they have the <strong>[HAZARDOUS]</strong> ability as well.",
     "detachment": "dread-mob"
   },
-
   "superfuelled-boiler": {
     "name": "Superfuelled Boiler",
     "type": "Dread Mob – Strategic Ploy Stratagem",
     "turn": "your",
-    "phases": ["movement"],
+    "phases": [
+      "movement"
+    ],
     "cpCost": 1,
     "summary": "Re-roll Advance, and ranged weapons gain [ASSAULT].",
     "when": "Your Movement phase, just after an <strong>ORKS WALKER</strong> unit from your army has been selected to Advance.",
@@ -403,12 +439,13 @@
     "effect": "Until the end of the turn, you can re-roll Advance rolls made for your unit and ranged weapons equipped by models in your unit have the <strong>[ASSAULT]</strong> ability.",
     "detachment": "dread-mob"
   },
-
   "bigger-shells-for-bigger-gitz": {
     "name": "Bigger Shells For Bigger Gitz",
     "type": "Dread Mob – Battle Tactic Stratagem",
     "turn": "your",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "+1 to Wound vs MONSTER and VEHICLE, or push it for +1 D.",
     "when": "Your Shooting phase.",
@@ -416,12 +453,13 @@
     "effect": "Each time you use this Stratagem, you can choose to <strong>push it</strong>. Until the end of the phase, each time a model in your unit makes an attack that targets a <strong>MONSTER</strong> or <strong>VEHICLE</strong>, add 1 to the Wound roll. If you chose to push it, add 1 to the <strong>Damage</strong> characteristic of that attack and, until the end of the phase, ranged weapons equipped by models in your unit have the <strong>[HAZARDOUS]</strong> ability as well.",
     "detachment": "dread-mob"
   },
-
   "dakka-dakka-dakka": {
     "name": "Dakka! Dakka! Dakka!",
     "type": "Dread Mob – Battle Tactic Stratagem",
     "turn": "your",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "Re-roll Hit rolls of 1, or push it to re-roll any Hit roll.",
     "when": "Your Shooting phase.",
@@ -429,12 +467,13 @@
     "effect": "Each time you use this Stratagem, you can choose to <strong>push it</strong>. Until the end of the phase, each time a model in your unit makes an attack, re-roll a Hit roll of 1. If you chose to push it, you can re-roll the Hit roll instead and, until the end of the phase, ranged weapons equipped by models in your unit have the <strong>[HAZARDOUS]</strong> ability as well.",
     "detachment": "dread-mob"
   },
-
   "conniving-runts": {
     "name": "Conniving Runts",
     "type": "Dread Mob – Strategic Ploy Stratagem",
     "turn": "opponent",
-    "phases": ["movement"],
+    "phases": [
+      "movement"
+    ],
     "cpCost": 1,
     "summary": "4+ for D3+1 mortal wounds, then a Normal move.",
     "when": "Your opponent’s Movement phase, just after an enemy unit ends a Normal, Advance or Fall Back move.",
@@ -442,12 +481,13 @@
     "effect": "Roll one D6: on a 4+, that enemy unit suffers D3+1 mortal wounds. Your unit can then make a Normal move.",
     "detachment": "dread-mob"
   },
-
   "extra-gubbinz": {
     "name": "Extra Gubbinz",
     "type": "Dread Mob – Battle Tactic Stratagem",
     "turn": "opponent",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "−1 to the Damage of every attack allocated to your unit.",
     "when": "Your opponent’s Shooting phase, just after an enemy unit has selected its targets.",
@@ -455,14 +495,14 @@
     "effect": "Until the end of the phase, each time an attack is allocated to a model in your unit, subtract 1 from the <strong>Damage</strong> characteristic of that attack.",
     "detachment": "dread-mob"
   },
-
   "_green_tide_note": "Green Tide detachment stratagems. Most scale on whether the target unit contains 10 or more models; Braggin' Rights instead makes two units COUNT as 10+ regardless of their real size.",
-
   "competitive-streak": {
     "name": "Competitive Streak",
     "type": "Green Tide – Battle Tactic Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "Re-roll Wound rolls of 1, or all of them at 10+ models.",
     "when": "Fight phase.",
@@ -470,12 +510,13 @@
     "effect": "Until the end of the phase, each time a model in your unit makes an attack, re-roll a Wound roll of 1. If your unit contains 10 or more models, re-roll the Wound roll instead.",
     "detachment": "green-tide"
   },
-
   "bulldozer-brutality": {
     "name": "Bulldozer Brutality",
     "type": "Green Tide – Battle Tactic Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "Models within 3\" of the enemy are eligible to fight.",
     "when": "Fight phase.",
@@ -483,12 +524,13 @@
     "effect": "Until the end of the phase, each time your unit is selected to fight, when determining which models in your unit are eligible to fight, any models in your unit that are within 3\" of one or more enemy models are eligible to fight. When resolving those attacks, such models can target one of those enemy units that is within 3\" of them and within Engagement Range of their unit.",
     "detachment": "green-tide"
   },
-
   "braggin-rights": {
     "name": "Braggin’ Rights",
     "type": "Green Tide – Strategic Ploy Stratagem",
     "turn": "your",
-    "phases": ["command"],
+    "phases": [
+      "command"
+    ],
     "cpCost": 1,
     "summary": "Two nearby units both count as containing 10 or more models.",
     "when": "Your Command phase.",
@@ -496,12 +538,13 @@
     "effect": "Until the start of your next Command phase, while those two units are within 6\" of each other, they both count as containing 10 or more models for the purposes of your Detachment rule, any Enhancements models from your army have and any Stratagems you use.",
     "detachment": "green-tide"
   },
-
   "come-on-ladz": {
     "name": "Come On Ladz!",
     "type": "Green Tide – Strategic Ploy Stratagem",
     "turn": "your",
-    "phases": ["command"],
+    "phases": [
+      "command"
+    ],
     "cpCost": 1,
     "summary": "Return up to D3+2 destroyed models.",
     "when": "Your Command phase.",
@@ -509,12 +552,13 @@
     "effect": "Return up to D3+2 destroyed models to your unit (excluding <strong>CHARACTER</strong> models).",
     "detachment": "green-tide"
   },
-
   "tide-of-muscle": {
     "name": "Tide of Muscle",
     "type": "Green Tide – Epic Deed Stratagem",
     "turn": "your",
-    "phases": ["charge"],
+    "phases": [
+      "charge"
+    ],
     "cpCost": 1,
     "summary": "+1 to Charge rolls, and re-roll them at 10+ models.",
     "when": "Your Charge phase.",
@@ -522,12 +566,13 @@
     "effect": "Until the end of the phase, each time your unit declares a charge, add 1 to the Charge roll and, if your unit contains 10 or more models, you can re-roll the Charge roll.",
     "detachment": "green-tide"
   },
-
   "go-get-em": {
     "name": "Go Get ’Em!",
     "type": "Green Tide – Strategic Ploy Stratagem",
     "turn": "opponent",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "Surge move up to D6\" after being shot at.",
     "when": "Your opponent’s Shooting phase, when an enemy unit that targeted a friendly unengaged <strong>BOYZ</strong> unit this phase has shot.",
@@ -535,15 +580,16 @@
     "effect": "Your unit can make a <strong>surge move</strong> of up to D6\".",
     "detachment": "green-tide"
   },
-
   "_bully_boyz_note": "Bully Boyz detachment stratagems. Every one of the six has a stronger mode while a Waaagh! is active for the target unit; that condition is carried in the effect wording, not tracked by the app.",
-
   "armed-to-da-teef": {
     "name": "Armed to da Teef",
     "_name_note": "Ran together as 'ARMED TO DATEEF' in the supplied text; split back into words, wording otherwise untouched.",
     "type": "Bully Boyz – Battle Tactic Stratagem",
     "turn": "either",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "Re-roll Hit rolls of 1, or all of them under a Waaagh!.",
     "when": "Your Shooting phase or the Fight phase.",
@@ -551,12 +597,14 @@
     "effect": "Until the end of the phase, each time a model in your unit makes an attack, re-roll a Hit roll of 1. If a <strong>Waaagh!</strong> is active for your unit, you can re-roll the Hit roll instead.",
     "detachment": "bully-boyz"
   },
-
   "too-arrogant-to-die": {
     "name": "Too Arrogant To Die",
     "type": "Bully Boyz – Strategic Ploy Stratagem",
     "turn": "either",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "5+ to let a slain model shoot or fight before it goes.",
     "when": "Your opponent’s Shooting phase or the Fight phase, just after an enemy unit has selected its targets.",
@@ -564,12 +612,13 @@
     "effect": "Until the end of the phase, each time a model in your unit is destroyed, if that model has not shot or fought this phase, roll one D6, adding 2 to the result if a <strong>Waaagh!</strong> is active for your unit. On a 5+, do not remove the destroyed model from play; it can shoot or fight after the attacking unit has finished making its attacks, and is then removed from play.",
     "detachment": "bully-boyz"
   },
-
   "always-lookin-fer-a-fight": {
     "name": "Always Lookin’ Fer a Fight",
     "type": "Bully Boyz – Strategic Ploy Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "D3+3\" Consolidation moves, or 6\" under a Waaagh!.",
     "when": "Fight phase, just after an enemy unit is destroyed.",
@@ -577,12 +626,13 @@
     "effect": "Until the end of the phase, each time your unit makes a Consolidation move, it can move up to D3+3\" instead of up to 3\". If a <strong>Waaagh!</strong> is active for your unit, it can move up to 6\" instead.",
     "detachment": "bully-boyz"
   },
-
   "krushin-impact": {
     "name": "Krushin’ Impact",
     "type": "Bully Boyz – Epic Deed Stratagem",
     "turn": "your",
-    "phases": ["charge"],
+    "phases": [
+      "charge"
+    ],
     "cpCost": 1,
     "summary": "Mortal wounds on a 5+ per model, or a 4+ under a Waaagh!.",
     "when": "Your Charge phase, just after a <strong>NOBZ</strong> or <strong>MEGANOBZ</strong> unit from your army ends a Charge move.",
@@ -590,13 +640,14 @@
     "effect": "Select one enemy unit within Engagement Range of your unit, then roll one D6 for each model in your unit that is within Engagement Range of that enemy unit: for each 5+, that enemy unit suffers 1 mortal wound (to a maximum of 6 mortal wounds). If a <strong>Waaagh!</strong> is active for your unit, that enemy unit suffers 1 mortal wound for each 4+ instead.",
     "detachment": "bully-boyz"
   },
-
   "cut-em-down": {
     "name": "Cut ’Em Down",
     "_name_note": "Ran together as \"CUT'EM DOWN\" in the supplied text; spacing restored, wording untouched.",
     "type": "Bully Boyz – Battle Tactic Stratagem",
     "turn": "opponent",
-    "phases": ["movement"],
+    "phases": [
+      "movement"
+    ],
     "cpCost": 1,
     "summary": "Force Desperate Escape tests, at −1 under a Waaagh!.",
     "when": "Your opponent’s Movement phase, just after an enemy unit is selected to Fall Back.",
@@ -604,12 +655,13 @@
     "effect": "When that enemy unit Falls Back, all models in that enemy unit must take a Desperate Escape test. When doing so, if a <strong>Waaagh!</strong> is active for your unit, subtract 1 from each of those tests.",
     "detachment": "bully-boyz"
   },
-
   "hulking-brutes": {
     "name": "Hulking Brutes",
     "type": "Bully Boyz – Battle Tactic Stratagem",
     "turn": "opponent",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "Worsen the AP of every attack against your unit by 1.",
     "when": "Your opponent’s Shooting phase, just after an enemy unit has selected its targets.",
@@ -617,14 +669,14 @@
     "effect": "Until the attacking unit has finished making its attacks, each time an attack targets your unit, worsen the Armour Penetration characteristic of that attack by 1.",
     "detachment": "bully-boyz"
   },
-
   "_freebooter_krew_note": "Freebooter Krew detachment stratagems. Several reference the loot objective nominated by the Here Be Loot detachment rule; the app does not track it, so the wording carries the condition.",
-
   "bash-and-grab": {
     "name": "Bash and Grab",
     "type": "Freebooter Krew – Battle Tactic Stratagem",
     "turn": "either",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "cpCost": 1,
     "summary": "Re-roll Wound rolls against a unit on the loot objective.",
     "when": "The Fight phase.",
@@ -632,12 +684,13 @@
     "effect": "Until the end of the phase, each time a model in your unit makes an attack that targets an enemy unit within range of the <strong>loot objective</strong>, you can re-roll the Wound roll.",
     "detachment": "freebooter-krew"
   },
-
   "grab-and-bash": {
     "name": "Grab and Bash",
     "type": "Freebooter Krew – Strategic Ploy Stratagem",
     "turn": "your",
-    "phases": ["command"],
+    "phases": [
+      "command"
+    ],
     "cpCost": 1,
     "summary": "Turn the Waaagh! on for one unit, even if already called.",
     "when": "Your Command phase.",
@@ -645,12 +698,13 @@
     "effect": "Until the start of your next Command phase, the <strong>Waaagh!</strong> is active for your unit, even if you have already called a <strong>Waaagh!</strong> this battle.<br><br><em>Designer’s Note: This means that any abilities that are in effect while the Waaagh! is active for your army will be in effect for your unit.</em>",
     "detachment": "freebooter-krew"
   },
-
   "boardin-rush": {
     "name": "Boardin’ Rush",
     "type": "Freebooter Krew – Battle Tactic Stratagem",
     "turn": "your",
-    "phases": ["movement"],
+    "phases": [
+      "movement"
+    ],
     "cpCost": 1,
     "summary": "Advance without rolling — a flat +6\" Move instead.",
     "when": "Your Movement phase.",
@@ -658,12 +712,13 @@
     "effect": "Until the end of the phase, each time your unit Advances, do not make an Advance roll. Instead, until the end of the phase, add 6\" to the <strong>Move</strong> characteristic of models in your unit.",
     "detachment": "freebooter-krew"
   },
-
   "deck-fraggers": {
     "name": "Deck Fraggers",
     "type": "Freebooter Krew – Strategic Ploy Stratagem",
     "turn": "your",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "Ranged weapons gain [BLAST] against INFANTRY.",
     "when": "Your Shooting phase.",
@@ -671,12 +726,13 @@
     "effect": "Until the end of the phase, each time a model in your unit targets an <strong>INFANTRY</strong> unit with a ranged weapon, that weapon has the <strong>[BLAST]</strong> ability.",
     "detachment": "freebooter-krew"
   },
-
   "rolling-loot-heap": {
     "name": "Rolling Loot-heap",
     "type": "Freebooter Krew – Strategic Ploy Stratagem",
     "turn": "your",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "cpCost": 1,
     "summary": "Flash Gitz ranged weapons gain [ANTI-VEHICLE 4+].",
     "when": "Your Shooting phase.",
@@ -684,12 +740,13 @@
     "effect": "Until the end of the phase, ranged weapons equipped by models in your unit have the <strong>[ANTI-VEHICLE 4+]</strong> ability.",
     "detachment": "freebooter-krew"
   },
-
   "krump-and-run": {
     "name": "Krump and Run",
     "type": "Freebooter Krew – Strategic Ploy Stratagem",
     "turn": "opponent",
-    "phases": ["movement"],
+    "phases": [
+      "movement"
+    ],
     "cpCost": 1,
     "summary": "6\" Normal move when an engaged enemy Falls Back.",
     "when": "Your opponent’s Movement phase, just after an enemy unit Falls Back.",
@@ -697,5 +754,348 @@
     "target": "One <strong>ORKS</strong> unit from your army that was within Engagement Range of that enemy unit at the start of the phase and is not within range of one or more enemy units.",
     "effect": "Your unit can make a Normal move of up to 6\".",
     "detachment": "freebooter-krew"
+  },
+  "_speedwaaagh_note": "Speedwaaagh! detachment stratagems.",
+  "on-da-move": {
+    "name": "On Da Move",
+    "type": "Speedwaaagh! – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": [
+      "movement"
+    ],
+    "cpCost": 1,
+    "summary": "Shoot and charge after Falling Back or Advancing.",
+    "when": "Your Movement phase.",
+    "target": "One <strong>ORKS</strong> unit from your army that has not been selected to move this phase.",
+    "effect": "Until the end of the turn, your unit is eligible to <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which it <strong>Fell Back</strong> or <strong>Advanced</strong> (unless it used its turbo this turn).",
+    "detachment": "speedwaaagh"
+  },
+  "mobile-dakkastorm": {
+    "name": "Mobile Dakkastorm",
+    "type": "Speedwaaagh! – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "+2 Strength for the whole army against one marked unit.",
+    "when": "Your Shooting phase, just after a <strong>SPEED FREEKS</strong> or <strong>TRUKK</strong> unit from your army has shot.",
+    "target": "That <strong>SPEED FREEKS</strong> or <strong>TRUKK</strong> unit.",
+    "effect": "Select one enemy unit hit by one or more of those attacks (excluding attacks made with <strong>Indirect Fire</strong> weapons). Until the end of the phase, each time a model in a <strong>SPEED FREEKS</strong> or <strong>TRUKK</strong> unit from your army makes an attack that targets that unit, improve the <strong>Strength</strong> characteristic of that attack by 2.",
+    "detachment": "speedwaaagh"
+  },
+  "speshul-ammo": {
+    "name": "Speshul Ammo",
+    "type": "Speedwaaagh! – Wargear Stratagem",
+    "turn": "your",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "[ANTI-MONSTER 4+] and [ANTI-VEHICLE 4+] on ranged weapons.",
+    "when": "Your Shooting phase.",
+    "target": "One <strong>ORKS</strong> unit from your army that has not been selected to shoot this phase.",
+    "effect": "Until the end of the phase, ranged weapons equipped by models in your unit (excluding <strong>Torrent</strong> weapons) have the <strong>[ANTI-MONSTER 4+]</strong> and <strong>[ANTI-VEHICLE 4+]</strong> abilities.",
+    "detachment": "speedwaaagh"
+  },
+  "ded-killy-construction": {
+    "name": "Ded Killy Construction",
+    "type": "Speedwaaagh! – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": [
+      "fight"
+    ],
+    "cpCost": 1,
+    "summary": "Melee weapons gain [LANCE], and +1 Damage after charging.",
+    "when": "Your Fight phase.",
+    "target": "One <strong>SPEED FREEKS</strong> or <strong>TRUKK</strong> unit from your army that has not been selected to fight this phase.",
+    "effect": "Until the end of the phase, melee weapons equipped by models in your unit have the <strong>[LANCE]</strong> ability and, if your unit made a Charge move this turn, until the end of the phase, add 1 to the <strong>Damage</strong> characteristic of those weapons.",
+    "detachment": "speedwaaagh"
+  },
+  "dust-trails": {
+    "name": "Dust Trails",
+    "type": "Speedwaaagh! – Strategic Ploy Stratagem",
+    "turn": "opponent",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "Your unit has the Benefit of Cover.",
+    "when": "Your opponent’s Shooting phase, just after an enemy unit has selected its targets.",
+    "target": "One <strong>ORKS</strong> unit from your army that was selected as the target of one or more of the attacking unit’s attacks.",
+    "effect": "Until the end of the phase, your unit has the Benefit of Cover.",
+    "detachment": "speedwaaagh"
+  },
+  "evasive-manoova": {
+    "name": "Evasive Manoova",
+    "type": "Speedwaaagh! – Strategic Ploy Stratagem",
+    "turn": "opponent",
+    "phases": [
+      "fight"
+    ],
+    "cpCost": 1,
+    "summary": "Pull a disengaged unit back into Strategic Reserves.",
+    "when": "End of your opponent’s Fight phase.",
+    "target": "One <strong>SPEED FREEKS</strong> or <strong>TRUKK</strong> unit from your army that is not within Engagement Range of one or more enemy units.",
+    "effect": "Remove your unit from the battlefield and place it into Strategic Reserves.",
+    "detachment": "speedwaaagh"
+  },
+  "_blitz_brigade_note": "Blitz Brigade detachment stratagems.",
+  "mount-up-ladz": {
+    "name": "Mount Up, Ladz",
+    "type": "Blitz Brigade – Strategic Ploy Stratagem",
+    "turn": "either",
+    "phases": [
+      "fight"
+    ],
+    "cpCost": 1,
+    "summary": "Re-embark a disengaged unit at the end of the Fight phase.",
+    "when": "End of the Fight phase.",
+    "target": "One <strong>ORKS INFANTRY</strong> unit from your army that is not within Engagement Range of one or more enemy units, and one friendly <strong>TRANSPORT</strong> it is able to embark within.",
+    "effect": "If your <strong>ORKS INFANTRY</strong> unit is wholly within 6\" of that <strong>TRANSPORT</strong>, it can embark within it.",
+    "detachment": "blitz-brigade"
+  },
+  "mekanised-brutality": {
+    "name": "Mekanised Brutality",
+    "type": "Blitz Brigade – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": [
+      "movement"
+    ],
+    "cpCost": 1,
+    "summary": "Units disembarking after a Normal move can still charge.",
+    "when": "Your Movement phase.",
+    "target": "One <strong>BATTLEWAGON</strong>, <strong>KILL RIG</strong> or <strong>HUNTA RIG</strong> unit from your army that has not been selected to move this phase.",
+    "effect": "Until the end of the turn, each time a unit disembarks from your unit after your unit makes a Normal move, that disembarked unit is still eligible to <strong>declare a charge</strong> this turn.",
+    "detachment": "blitz-brigade"
+  },
+  "run-em-down": {
+    "name": "Run ’Em Down",
+    "type": "Blitz Brigade – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": [
+      "movement"
+    ],
+    "cpCost": 1,
+    "summary": "Up to three vehicles can charge after Advancing.",
+    "when": "Your Movement phase.",
+    "target": "One <strong>BATTLEWAGON</strong>, <strong>KILL RIG</strong> or <strong>HUNTA RIG</strong> unit from your army that has not been selected to move this phase.",
+    "effect": "Select up to two other friendly <strong>ORKS VEHICLE</strong> or <strong>ORKS MONSTER</strong> units within 6\" of your unit. Until the end of the turn, your unit and each unit you selected are eligible to <strong>declare a charge</strong> in a turn in which they <strong>Advanced</strong>.",
+    "detachment": "blitz-brigade"
+  },
+  "armoured-duellists": {
+    "name": "Armoured Duellists",
+    "type": "Blitz Brigade – Battle Tactic Stratagem",
+    "turn": "your",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "+1 to Hit and +1 to Wound against MONSTER and VEHICLE.",
+    "when": "Your Shooting phase.",
+    "target": "One <strong>ORKS VEHICLE</strong> unit from your army that has not been selected to shoot this phase.",
+    "effect": "Until the end of the phase, each time your unit makes an attack that targets a <strong>MONSTER</strong> or <strong>VEHICLE</strong> unit, add 1 to the Hit roll and add 1 to the Wound roll.",
+    "detachment": "blitz-brigade"
+  },
+  "impervious": {
+    "name": "Impervious",
+    "type": "Blitz Brigade – Strategic Ploy Stratagem",
+    "turn": "opponent",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "−1 to Wound when the attack’s S beats your T.",
+    "when": "Your opponent’s Shooting phase, just after an enemy unit has selected its targets.",
+    "target": "One <strong>BATTLEWAGON</strong>, <strong>KILL RIG</strong> or <strong>HUNTA RIG</strong> unit from your army that was selected as the target of one or more of the attacking unit’s attacks.",
+    "effect": "Until the end of the phase, each time an attack targets your unit, if the <strong>Strength</strong> characteristic of that attack is greater than the <strong>Toughness</strong> characteristic of your unit, subtract 1 from the Wound roll.",
+    "detachment": "blitz-brigade"
+  },
+  "yooz-in-trouble-now": {
+    "name": "Yooz In Trouble Now",
+    "type": "Blitz Brigade – Strategic Ploy Stratagem",
+    "turn": "opponent",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "Disembark and surge D6\" after the transport is hit.",
+    "when": "Your opponent’s Shooting phase, just after an enemy unit has shot.",
+    "target": "One <strong>BATTLEWAGON</strong>, <strong>HUNTA RIG</strong> or <strong>KILL RIG</strong> model from your army that was hit by one or more of the attacking unit’s attacks.",
+    "effect": "One <strong>ORKS INFANTRY</strong> unit embarked within your model makes a disembark move, then makes a <strong>surge move</strong> of up to D6\".",
+    "detachment": "blitz-brigade"
+  },
+  "_more_dakka_note": "More Dakka! detachment stratagems. The source labels all three simply 'More Dakka! Stratagem', with no Battle Tactic / Strategic Ploy sub-category; recorded as given.",
+  "long-uncontrolled-bursts": {
+    "name": "Long, Uncontrolled Bursts",
+    "type": "More Dakka! Stratagem",
+    "turn": "your",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "Your unit’s ranged attacks have [IGNORES COVER].",
+    "when": "Your Shooting phase, when a friendly <strong>ORKS INFANTRY</strong> unit is selected to shoot.",
+    "target": "That <strong>ORKS INFANTRY</strong> unit.",
+    "effect": "Your unit’s ranged attacks have <strong>[IGNORES COVER]</strong>.",
+    "detachment": "more-dakka"
+  },
+  "speshul-shells": {
+    "name": "Speshul Shells",
+    "type": "More Dakka! Stratagem",
+    "turn": "your",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "+1 AP on ranged attacks inside 9\".",
+    "when": "Your Shooting phase, when a friendly <strong>ORKS INFANTRY</strong> unit is selected to shoot.",
+    "target": "That <strong>ORKS INFANTRY</strong> unit.",
+    "effect": "Your unit’s ranged attacks that target a unit within 9\" have +1 <strong>AP</strong>.",
+    "detachment": "more-dakka"
+  },
+  "call-dat-dakka": {
+    "name": "Call Dat Dakka?",
+    "type": "More Dakka! Stratagem",
+    "turn": "opponent",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "Snap shoot back at whoever just shot you.",
+    "when": "Your opponent’s Shooting phase, when an enemy unit that targeted a friendly <strong>ORKS INFANTRY</strong> unit has shot.",
+    "target": "That <strong>ORKS INFANTRY</strong> unit.",
+    "effect": "Your unit shoots using <strong>snap shooting</strong>, but while doing so your unit can only target that enemy unit.",
+    "detachment": "more-dakka"
+  },
+  "_rollin_deff_note": "Rollin' Deff detachment stratagems. The source labels all three simply 'Rollin' Deff Stratagem', with no sub-category.",
+  "brutal-broadside": {
+    "name": "Brutal Broadside",
+    "type": "Rollin’ Deff Stratagem",
+    "turn": "your",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "[RAPID FIRE X], where X is the attack’s Attacks characteristic.",
+    "when": "Your Shooting phase, when a friendly <strong>BATTLEWAGON</strong> unit is selected to shoot.",
+    "target": "That <strong>BATTLEWAGON</strong> unit.",
+    "effect": "Your unit’s ranged attacks (excluding attacks made by weapons selected with <strong>Firing Deck</strong>) have <strong>[RAPID FIRE X]</strong>, where X is that attack’s <strong>A</strong>.",
+    "detachment": "rollin-deff"
+  },
+  "impending-crunch": {
+    "name": "Impending Crunch",
+    "type": "Rollin’ Deff Stratagem",
+    "turn": "your",
+    "phases": [
+      "charge"
+    ],
+    "cpCost": 1,
+    "summary": "Engaged enemies take a Battle-shock test at −1.",
+    "when": "Your Charge phase, when a friendly <strong>WAGON</strong> unit ends a Charge move.",
+    "target": "That <strong>WAGON</strong> unit.",
+    "effect": "Each enemy unit engaged with your unit makes a Battle-shock roll, with −1 to that Battle-shock roll.",
+    "detachment": "rollin-deff"
+  },
+  "devastating-drift": {
+    "name": "Devastating Drift",
+    "type": "Rollin’ Deff Stratagem",
+    "turn": "your",
+    "phases": [
+      "fight"
+    ],
+    "cpCost": 1,
+    "summary": "Melee attacks have [CLEAVE 1] after a charge.",
+    "when": "Your Fight phase, when a friendly <strong>WAGON</strong> unit that made a Charge move this turn is selected to fight.",
+    "target": "That <strong>WAGON</strong> unit.",
+    "effect": "Your unit’s melee attacks have <strong>[CLEAVE 1]</strong>.",
+    "detachment": "rollin-deff"
+  },
+  "_taktikal_brigade_note": "Taktikal Brigade detachment stratagems. The source labels all three simply 'Taktikal Brigade Stratagem', with no sub-category.",
+  "taktikal-retreat": {
+    "name": "Taktikal Retreat",
+    "type": "Taktikal Brigade Stratagem",
+    "turn": "your",
+    "phases": [
+      "movement"
+    ],
+    "cpCost": 1,
+    "summary": "Fall Back and still declare a charge.",
+    "when": "Your Movement phase, when a friendly <strong>KOMMANDOS</strong> or <strong>STORMBOYZ</strong> unit is selected to make a Fall Back move.",
+    "target": "That <strong>KOMMANDOS</strong> or <strong>STORMBOYZ</strong> unit.",
+    "effect": "That move does not prevent your unit from being eligible to <strong>declare a charge</strong>.",
+    "detachment": "taktikal-brigade"
+  },
+  "on-to-da-next": {
+    "name": "On To Da Next",
+    "type": "Taktikal Brigade Stratagem",
+    "turn": "opponent",
+    "phases": [
+      "movement"
+    ],
+    "cpCost": 1,
+    "summary": "6\" Normal move for a unit that just disengaged.",
+    "when": "End of your opponent’s Movement phase.",
+    "target": "One friendly unengaged <strong>BOYZ</strong>, <strong>KOMMANDOS</strong> or <strong>STORMBOYZ</strong> unit that was engaged at the start of the phase.",
+    "effect": "Your unit can make a Normal move of up to 6\".",
+    "detachment": "taktikal-brigade"
+  },
+  "ded-sneaky": {
+    "name": "Ded Sneaky",
+    "type": "Taktikal Brigade Stratagem",
+    "turn": "opponent",
+    "phases": [
+      "fight"
+    ],
+    "cpCost": 1,
+    "summary": "Place a disengaged unit into Strategic Reserves.",
+    "when": "End of your opponent’s Fight phase.",
+    "target": "One friendly unengaged <strong>KOMMANDOS</strong> or <strong>STORMBOYZ</strong> unit.",
+    "effect": "Place your unit in Strategic Reserves.",
+    "detachment": "taktikal-brigade"
+  },
+  "_equatorial_hordes_note": "Equatorial Hordes detachment stratagems. The source labels all three simply 'Equatorial Hordes Stratagem', with no sub-category.",
+  "concealed-krumpin": {
+    "name": "Concealed Krumpin’",
+    "type": "Equatorial Hordes Stratagem",
+    "turn": "either",
+    "phases": [
+      "shooting",
+      "fight"
+    ],
+    "cpCost": 1,
+    "summary": "Your unit’s attacks have [LETHAL HITS].",
+    "when": "Your Shooting phase or the Fight phase, when a friendly hidden <strong>MOB</strong> unit is selected to attack.",
+    "target": "That <strong>MOB</strong> unit.",
+    "effect": "Your unit’s attacks have <strong>[LETHAL HITS]</strong>.",
+    "detachment": "equatorial-hordes"
+  },
+  "stragglerz": {
+    "name": "Stragglerz",
+    "type": "Equatorial Hordes Stratagem",
+    "turn": "your",
+    "phases": [
+      "command"
+    ],
+    "cpCost": 1,
+    "summary": "Your unit heals 2D3 wounds.",
+    "when": "Your Command phase.",
+    "target": "One friendly <strong>MOB</strong> or <strong>KOMMANDOS</strong> unit.",
+    "effect": "Your unit heals 2D3 wounds.",
+    "detachment": "equatorial-hordes"
+  },
+  "deyre-over-ere": {
+    "name": "Dey’re Over ’Ere",
+    "type": "Equatorial Hordes Stratagem",
+    "turn": "your",
+    "phases": [
+      "shooting"
+    ],
+    "cpCost": 1,
+    "summary": "+3\" detection range against a visible nearby enemy.",
+    "when": "Start of your Shooting phase.",
+    "target": "One friendly <strong>MOB</strong> or <strong>KOMMANDOS</strong> unit.",
+    "effect": "While a visible enemy unit is within 6\" of your unit, that unit has +3\" detection range.",
+    "detachment": "equatorial-hordes"
   }
 }

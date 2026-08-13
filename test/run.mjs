@@ -125,6 +125,63 @@ t('array is AND, not OR',
   await p.evaluate(()=>unitHasKeyword(DATA.units['demo-buggy'],['ORKS','NOPE']))===false);
 t('empty array matches everything, like no restriction',
   await p.evaluate(()=>unitHasKeyword(DATA.units['demo-buggy'],[]))===true);
+// --- detachment-granted keywords (Rollin' Deff gives WAGON to BATTLEWAGON etc.)
+t('unit does not have the granted keyword before the grant exists',
+  await p.evaluate(()=>unitHasKeyword(DATA.units['demo-buggy'],'WAGON'))===false);
+t('granted keyword matches once the detachment is active', await p.evaluate(()=>{
+  DATA.detachments['big-one'].grantsKeywords=[{anyKeyword:['VEHICLE','NOPE'],add:'WAGON'}];
+  return unitHasKeyword(DATA.units['demo-buggy'],'WAGON');
+}));
+t('granted keyword does not leak to non-matching units',
+  await p.evaluate(()=>unitHasKeyword(DATA.units['demo-boyz'],'WAGON'))===false);
+t('a granted keyword cannot feed another grant (no recursion)', await p.evaluate(()=>{
+  DATA.detachments['big-one'].grantsKeywords.push({keyword:'WAGON',add:'CHAINED'});
+  const out = unitHasKeyword(DATA.units['demo-buggy'],'CHAINED');   // must be false, not a stack overflow
+  DATA.detachments['big-one'].grantsKeywords.pop();
+  return out===false;
+}));
+t('an Upgrade restricted to the granted keyword becomes selectable', await p.evaluate(()=>{
+  const e=DATA.enhancements['extra-armour']; const was=e.restrictedToKeyword;
+  e.restrictedToKeyword='WAGON';
+  const ok=eligibleEnhancements(armyList.find(i=>i.unitId==='demo-buggy')).map(x=>x.id).includes('extra-armour');
+  e.restrictedToKeyword=was; return ok;
+}));
+t('granted keyword shows on the card, labelled as from the detachment', await p.evaluate(()=>{
+  renderAll();
+  return [...document.querySelectorAll('#view-army .kwrow')]
+    .some(r=>r.textContent.includes('From detachment') && r.textContent.includes('WAGON'));
+}));
+t('granted keyword disappears with its detachment', await p.evaluate(()=>{
+  delete DATA.detachments['big-one'].grantsKeywords; renderAll();
+  return !unitHasKeyword(DATA.units['demo-buggy'],'WAGON')
+      && !document.querySelector('#view-army').textContent.includes('From detachment');
+}));
+
+// --- excludesKeyword ("INFANTRY WARBOSS only, excluding MEGA ARMOUR models")
+t('exclusion removes an otherwise eligible unit', await p.evaluate(()=>{
+  const e=DATA.enhancements['shiny-bit'];
+  const before=eligibleEnhancements(armyList.find(i=>i.unitId==='demo-warboss')).map(x=>x.id).includes('shiny-bit');
+  e.excludesKeyword='CHARACTER';
+  const after=eligibleEnhancements(armyList.find(i=>i.unitId==='demo-warboss')).map(x=>x.id).includes('shiny-bit');
+  delete e.excludesKeyword;
+  return before===true && after===false;
+}));
+t('exclusion leaves units without that keyword alone', await p.evaluate(()=>{
+  const e=DATA.enhancements['extra-armour'];
+  e.excludesKeyword='CHARACTER';
+  const boyz=eligibleEnhancements(armyList.find(i=>i.unitId==='demo-boyz')).map(x=>x.id).includes('extra-armour');
+  const wb  =eligibleEnhancements(armyList.find(i=>i.unitId==='demo-warboss')).map(x=>x.id).includes('extra-armour');
+  delete e.excludesKeyword;
+  return boyz===true && wb===false;
+}));
+t('exclusion accepts a list', await p.evaluate(()=>{
+  const e=DATA.enhancements['extra-armour'];
+  e.excludesKeyword=['NOPE','MOB'];
+  const boyz=eligibleEnhancements(armyList.find(i=>i.unitId==='demo-boyz')).map(x=>x.id).includes('extra-armour');
+  delete e.excludesKeyword;
+  return boyz===false;
+}));
+
 // ...and the OR counterpart: "BIG MEK or PAINBOY model only".
 t('any-keyword matches on the first', await p.evaluate(()=>unitHasAnyKeyword(DATA.units['demo-buggy'],['VEHICLE','NOPE']))===true);
 t('any-keyword matches on the last', await p.evaluate(()=>unitHasAnyKeyword(DATA.units['demo-buggy'],['NOPE','VEHICLE']))===true);

@@ -336,7 +336,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.22.0';
+const VERSION = '0.23.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -546,9 +546,31 @@ function unitHasKeyword(unit, kw){
   if(!kw || (Array.isArray(kw) && !kw.length)) return true;
   if(!unit) return false;
   if(Array.isArray(kw)) return kw.every(k => unitHasKeyword(unit, k));
+  return intrinsicKeyword(unit, kw) || getDetachmentGrantedKeywords(unit).includes(kw);
+}
+// The keywords actually printed on the datasheet, before any detachment adds to
+// them. Grants are matched against THIS only, so a granted keyword can never
+// feed another grant and the two functions below cannot recurse.
+function intrinsicKeyword(unit, kw){
   return (unit.keywords || []).includes(kw)
       || (unit.factionKeywords || []).includes(kw)
       || (unit.modelProfiles || []).some(p => (p.keywords || []).includes(kw));
+}
+// Some detachment rules hand a unit an extra keyword — Rollin' Deff gives WAGON
+// to BATTLEWAGON/HUNTA RIG/KILL RIG, and its Upgrades are "WAGON unit only".
+// `keyword` needs every entry, `anyKeyword` needs one of them.
+function getDetachmentGrantedKeywords(unit){
+  if(!unit) return [];
+  const out = [];
+  selectedDetachments.forEach(id => {
+    (DATA.detachments[id]?.grantsKeywords || []).forEach(g => {
+      const hit = g.anyKeyword
+        ? [].concat(g.anyKeyword).some(k => intrinsicKeyword(unit, k))
+        : [].concat(g.keyword || []).every(k => intrinsicKeyword(unit, k));
+      if(hit && !out.includes(g.add)) out.push(g.add);
+    });
+  });
+  return out;
 }
 // The OR counterpart. Datasheets restrict both ways — "ORKS INFANTRY model
 // only" needs every keyword, "BIG MEK or PAINBOY model only" needs any one.
@@ -659,6 +681,7 @@ function eligibleEnhancements(inst){
     if(e.restrictedTo && !e.restrictedTo.includes(u.id)) return false;
     if(e.restrictedToKeyword && !unitHasKeyword(u, e.restrictedToKeyword)) return false;
     if(e.restrictedToAnyKeyword && !unitHasAnyKeyword(u, e.restrictedToAnyKeyword)) return false;
+    if(e.excludesKeyword && unitHasAnyKeyword(u, e.excludesKeyword)) return false;
     if(e.restrictedToWeapon && !names.includes(e.restrictedToWeapon)) return false;
     return true;
   }).map(([id,e]) => ({ id, ...e }));
@@ -1160,7 +1183,8 @@ function unitBody(unit, inst, opts){
   // separate Faction Keywords line. A unit with only a flat list renders as before.
   const kwPills = list => list.map(k => `<span class="pill kw">${esc(k)}</span>`).join('');
   const perModelKw = (unit.modelProfiles || []).filter(p => p.keywords?.length);
-  if(unit.keywords?.length || perModelKw.length || unit.factionKeywords?.length){
+  const grantedKw = opts.noGrants ? [] : getDetachmentGrantedKeywords(unit);
+  if(unit.keywords?.length || perModelKw.length || unit.factionKeywords?.length || grantedKw.length){
     h += `<div class="sec"><div class="sec-t">Keywords</div>`;
     if(unit.keywords?.length){
       h += perModelKw.length
@@ -1172,6 +1196,10 @@ function unitBody(unit, inst, opts){
     });
     if(unit.factionKeywords?.length){
       h += `<div class="kwrow"><span class="kwlab">Faction keywords</span>${kwPills(unit.factionKeywords)}</div>`;
+    }
+    if(grantedKw.length){
+      h += `<div class="kwrow"><span class="kwlab">From detachment</span>${
+        grantedKw.map(k => `<span class="pill kw grant">${esc(k)}</span>`).join('')}</div>`;
     }
     h += `</div>`;
   }

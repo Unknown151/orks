@@ -14,7 +14,7 @@
       "category": "Take and Hold",
       "unique": null,
       "ruleId": "war-horde-get-stuck-in",
-      "ruleType": "Detachment Rule \u2014 War Horde",
+      "ruleType": "Detachment Rule — War Horde",
       "_rule_note": "This rule is named 'Get Stuck In', the same name as the Combat Patrol stratagem in data/stratagems.json. They are different content in different files and never collide, but do not merge them.",
       "ruleDescription": "<strong>Get Stuck In:</strong> Melee weapons equipped by <strong>ORKS</strong> models from your army have the <strong>[SUSTAINED HITS 1]</strong> ability.",
       "_grants_note": "This rule grants a WEAPON ability rather than a unit ability, so it uses grantsWeaponAbilities. Matched units show it as a dashed badge on the relevant weapon rows.",
@@ -62,8 +62,14 @@
       "ruleId": "dread-mob-try-dat-button",
       "ruleType": "Detachment Rule — Dread Mob",
       "_grants_note": "Try Dat Button! is rolled fresh each time a unit is selected to shoot or fight, so nothing is granted unconditionally and there are no `grants` here. Same reasoning as Da Big Hunt. The Button Effect table is printed for the player to roll against and read — the app deliberately does not roll it, track it, or apply it.",
-      "_keywords_note": "The rule also grants BATTLELINE to GRETCHIN units. The app has no Battleline mechanic for that to feed, so it is carried as rule text rather than as a keyword-granting engine with no consumer. Build `grantsKeywords` when something actually reads it.",
-      "ruleDescription": "<strong>Try Dat Button!:</strong> Each time a <strong>MEK</strong>, <strong>ORKS WALKER</strong> or <strong>GROTS VEHICLE</strong> unit from your army is selected to shoot or fight, roll one D6. Until the end of the phase, weapons equipped by models in that unit have the corresponding ability shown in the table below.<br><br><strong>D6 — BUTTON EFFECT</strong><br>• <strong>1-2</strong> — <strong>[SUSTAINED HITS 1]</strong> ability.<br>• <strong>3-4</strong> — <strong>[LETHAL HITS]</strong> ability.<br>• <strong>5-6</strong> — Each time an attack is made with this weapon, on a Critical Wound, improve the Armour Penetration characteristic of that attack by 2.<br><br>Alternatively, when such a unit is selected to shoot or fight, you can select one of the abilities above instead of rolling the D6. If you do, until the end of the phase, weapons equipped by models in that unit have the <strong>[HAZARDOUS]</strong> ability as well.<br><br>If a weapon equipped by a model from your army has the <strong>[HAZARDOUS]</strong> ability from multiple sources, each time you take a Hazardous test for that weapon, it is failed on a roll of 1-3.<br><br><strong>KEYWORDS:</strong> <strong>GRETCHIN</strong> units from your army gain the <strong>BATTLELINE</strong> keyword."
+      "_keywords_note": "The BATTLELINE grant is now wired via grantsKeywords, the mechanism added for Rollin' Deff's WAGON. Nothing in the app reads Battleline yet, so it shows on the card and feeds nothing else.",
+      "ruleDescription": "<strong>Try Dat Button!:</strong> Each time a <strong>MEK</strong>, <strong>ORKS WALKER</strong> or <strong>GROTS VEHICLE</strong> unit from your army is selected to shoot or fight, roll one D6. Until the end of the phase, weapons equipped by models in that unit have the corresponding ability shown in the table below.<br><br><strong>D6 — BUTTON EFFECT</strong><br>• <strong>1-2</strong> — <strong>[SUSTAINED HITS 1]</strong> ability.<br>• <strong>3-4</strong> — <strong>[LETHAL HITS]</strong> ability.<br>• <strong>5-6</strong> — Each time an attack is made with this weapon, on a Critical Wound, improve the Armour Penetration characteristic of that attack by 2.<br><br>Alternatively, when such a unit is selected to shoot or fight, you can select one of the abilities above instead of rolling the D6. If you do, until the end of the phase, weapons equipped by models in that unit have the <strong>[HAZARDOUS]</strong> ability as well.<br><br>If a weapon equipped by a model from your army has the <strong>[HAZARDOUS]</strong> ability from multiple sources, each time you take a Hazardous test for that weapon, it is failed on a roll of 1-3.<br><br><strong>KEYWORDS:</strong> <strong>GRETCHIN</strong> units from your army gain the <strong>BATTLELINE</strong> keyword.",
+      "grantsKeywords": [
+        {
+          "keyword": "GRETCHIN",
+          "add": "BATTLELINE"
+        }
+      ]
     },
     "green-tide": {
       "name": "Green Tide",
@@ -95,6 +101,101 @@
       "ruleType": "Detachment Rule — Freebooter Krew",
       "_grants_note": "Here Be Loot is the second nominated-target rule after Da Big Hunt's Prey: you pick a loot objective each Command phase, and [SUSTAINED HITS 1] only applies within range of it. Both the nomination and the range check are board state, so there is no static grant and no badge. Rule text only.",
       "ruleDescription": "<strong>Here Be Loot:</strong> At the start of your Command phase, select one objective marker. Until the start of your next Command phase, that objective marker is your <strong>loot objective</strong>.<br><br>Each time a model in an <strong>ORKS INFANTRY</strong>, <strong>ORKS MOUNTED</strong> or <strong>ORKS WALKER</strong> unit from your army makes an attack, that attack has the <strong>[SUSTAINED HITS 1]</strong> ability if either or both of the following are true:<br>• That model’s unit is within range of your <strong>loot objective</strong>.<br>• That attack targets a unit within range of your <strong>loot objective</strong>."
+    },
+    "speedwaaagh": {
+      "name": "Speedwaaagh!",
+      "dp": 2,
+      "_category_note": "No Force Disposition was given for this detachment. Fill it in with one of the keys in `categories` and the card picks up its colour.",
+      "category": null,
+      "unique": null,
+      "ruleId": "speedwaaagh-turbo-boostas",
+      "ruleType": "Detachment Rule — Speedwaaagh!",
+      "_grants_note": "Turbo Boostas is an option a unit takes when it Advances, not something it always has, so there is no grant and no badge.",
+      "ruleDescription": "<strong>Turbo Boostas:</strong> Each time a <strong>SPEED FREEKS</strong> or <strong>TRUKK</strong> unit (excluding <strong>AIRCRAFT</strong>) from your army Advances, it can <strong>use its turbo</strong>. If it does, do not make an Advance roll for it; instead, until the end of the phase, models in that unit have a <strong>Move</strong> characteristic of 24\" but can only move in one straight line, and until the end of the turn, ranged weapons equipped by those models have the <strong>[ASSAULT]</strong> ability and that unit cannot declare a charge.<br><br><em>Designer’s Note: When a unit uses its turbo, the models in that unit cannot pivot, and they cannot make a move of two or more straight lines (e.g. to navigate around obstacles). That unit also cannot declare a charge, even if another rule would let it declare a charge in a turn in which it Advanced.</em>"
+    },
+    "blitz-brigade": {
+      "name": "Blitz Brigade",
+      "dp": 2,
+      "_category_note": "No Force Disposition was given for this detachment.",
+      "category": null,
+      "_unique_note": "Tagged UNIQUE: WAGONS in the source, immediately above the detachment name. Rollin' Deff carries the same tag and states the exclusivity in its own rule text, so the two cannot be taken together.",
+      "unique": "WAGONS",
+      "ruleId": "blitz-brigade-eager-for-the-fight",
+      "ruleType": "Detachment Rule — Blitz Brigade",
+      "_grants_note": "Eager for the Fight triggers on disembarking, which is board state, so there is no grant.",
+      "ruleDescription": "<strong>Eager for the Fight:</strong> Each time an <strong>ORKS</strong> unit from your army disembarks from a <strong>TRANSPORT</strong>, until the end of the turn, you can re-roll Advance and Charge rolls made for that <strong>ORKS</strong> unit."
+    },
+    "more-dakka": {
+      "name": "More Dakka!",
+      "dp": 1,
+      "_category_note": "No Force Disposition was given for this detachment.",
+      "category": null,
+      "unique": null,
+      "ruleId": "more-dakka-dakka-dakka-dakka",
+      "ruleType": "Detachment Rule — More Dakka!",
+      "_rule_note": "This rule is named 'Dakka! Dakka! Dakka!', the same name as the Dread Mob STRATAGEM in data/stratagems.json. Different content in different files; the ids differ and they never collide. Do not merge them.",
+      "_grants_note": "The [ASSAULT] half is unconditional for ORKS INFANTRY, so it IS a grant and shows as a badge. The [SUSTAINED HITS 1] half is conditional on the Waaagh! being active, which the app does not track outside Combat Patrol, so only the first half is wired.",
+      "grantsWeaponAbilities": [
+        {
+          "keyword": [
+            "ORKS",
+            "INFANTRY"
+          ],
+          "appliesTo": "ranged",
+          "abilityId": "assault",
+          "display": "Assault"
+        }
+      ],
+      "ruleDescription": "<strong>Dakka! Dakka! Dakka!:</strong><br>• Friendly <strong>ORKS INFANTRY</strong> units’ ranged attacks have <strong>[ASSAULT]</strong>.<br>• In your Shooting phase, if the <strong>Waaagh!</strong> is active for your army, friendly <strong>ORKS INFANTRY</strong> units’ ranged attacks have <strong>[SUSTAINED HITS 1]</strong>."
+    },
+    "rollin-deff": {
+      "name": "Rollin’ Deff",
+      "dp": 1,
+      "_category_note": "No Force Disposition was given for this detachment.",
+      "category": null,
+      "unique": "WAGONS",
+      "ruleId": "rollin-deff-thundering-wagons",
+      "ruleType": "Detachment Rule — Rollin’ Deff",
+      "_grants_note": "The WAGON keyword grant is real and wired: both of this detachment's Upgrades are 'WAGON unit only', so without it they would match nothing. The re-roll and Advance clauses are dice effects, not grants.",
+      "grantsKeywords": [
+        {
+          "anyKeyword": [
+            "BATTLEWAGON",
+            "HUNTA RIG",
+            "KILL RIG"
+          ],
+          "add": "WAGON"
+        }
+      ],
+      "ruleDescription": "<strong>Thundering Wagons:</strong><br>• Friendly <strong>BATTLEWAGON</strong> / <strong>HUNTA RIG</strong> / <strong>KILL RIG</strong> units have <strong>WAGON</strong>.<br>• Friendly <strong>WAGON</strong> units can re-roll Charge rolls.<br>• When a friendly <strong>WAGON</strong> unit is selected to make an Advance move, that unit can change Advance rolls to a 6.<br><br>This detachment has the <strong>WAGONS</strong> tag and cannot be taken with another <strong>WAGONS</strong> detachment."
+    },
+    "taktikal-brigade": {
+      "name": "Taktikal Brigade",
+      "dp": 1,
+      "_category_note": "No Force Disposition was given for this detachment.",
+      "category": null,
+      "unique": null,
+      "ruleId": "taktikal-brigade-lissen-ere",
+      "ruleType": "Detachment Rule — Taktikal Brigade",
+      "_grants_note": "The BATTLELINE grant is wired for display only — nothing in the app reads Battleline yet, but the mechanism now exists for Rollin' Deff's WAGON, so this costs nothing and keeps the rule honest on the card.",
+      "grantsKeywords": [
+        {
+          "keyword": "STORMBOYZ",
+          "add": "BATTLELINE"
+        }
+      ],
+      "ruleDescription": "<strong>Lissen ’Ere:</strong><br>• Friendly <strong>STORMBOYZ</strong> units have <strong>BATTLELINE</strong>.<br>• When a friendly <strong>BOYZ</strong> / <strong>KOMMANDOS</strong> / <strong>STORMBOYZ</strong> unit is selected to make an Advance or Fall Back move, that move does not prevent that unit from being eligible to start an Action."
+    },
+    "equatorial-hordes": {
+      "name": "Equatorial Hordes",
+      "dp": 1,
+      "_category_note": "No Force Disposition was given for this detachment.",
+      "category": null,
+      "unique": null,
+      "ruleId": "equatorial-hordes-jungle-know-wotz",
+      "ruleType": "Detachment Rule — Equatorial Hordes",
+      "_grants_note": "Scouts 6\" goes to up to three units you pick in Declare Battle Formations, not to every matching unit, so it cannot be a blanket grant.",
+      "ruleDescription": "<strong>Jungle Know-Wotz:</strong> In the Declare Battle Formations step, select up to three friendly <strong>MOB</strong> / <strong>KOMMANDOS</strong> units. Those units have the <strong>Scouts 6\"</strong> ability until the end of the battle."
     }
   }
 }

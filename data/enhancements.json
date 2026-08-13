@@ -1,5 +1,5 @@
 {
-  "_note": "Enhancements and Upgrades, keyed by id. See NEW_ARMY_BUILD_GUIDE.md \u00a75.3. Enhancements go on non-Epic-Hero CHARACTER models only; that gate is applied by the app on top of each entry's own restriction.",
+  "_note": "Enhancements and Upgrades, keyed by id. See NEW_ARMY_BUILD_GUIDE.md §5.3. Enhancements go on non-Epic-Hero CHARACTER models only; that gate is applied by the app on top of each entry's own restriction.",
   "follow-me-ladz": {
     "name": "Follow Me Ladz",
     "type": "Enhancement (25 pts)",
@@ -11,7 +11,7 @@
     "description": "<strong>ORKS</strong> model only. While the bearer is leading a unit, add 2\" to the <strong>Move</strong> characteristic of models in that unit."
   },
   "headwoppas-killchoppa": {
-    "name": "Headwoppa\u2019s Killchoppa",
+    "name": "Headwoppa’s Killchoppa",
     "type": "Enhancement (20 pts)",
     "restriction": "ORKS model only",
     "restrictedToKeyword": "ORKS",
@@ -24,7 +24,7 @@
     "description": "<strong>ORKS</strong> model only. Melee weapons equipped by the bearer (excluding <strong>Extra Attacks</strong> weapons) have the <strong>[DEVASTATING WOUNDS]</strong> ability."
   },
   "kunnin-but-brutal": {
-    "name": "Kunnin\u2019 But Brutal",
+    "name": "Kunnin’ But Brutal",
     "type": "Enhancement (15 pts)",
     "restriction": "ORKS model only",
     "restrictedToKeyword": "ORKS",
@@ -46,9 +46,7 @@
     ],
     "description": "<strong>ORKS</strong> model only. The bearer has the <strong>Feel No Pain 4+</strong> ability."
   },
-
   "_da_big_hunt_note": "Da Big Hunt enhancements. Their restrictions key off BEAST SNAGGA and BEASTBOSS ON SQUIGOSAUR; no datasheet in data/units/ carries either keyword yet, so these stay unselectable until those units are added. That is expected, not a bug.",
-
   "glory-hog": {
     "name": "Glory Hog",
     "type": "Enhancement (30 pts)",
@@ -58,11 +56,13 @@
     "points": 30,
     "short": "Bearer’s unit has Scouts 9\".",
     "grantsAbilities": [
-      { "id": "scouts", "display": "Scouts 9\"" }
+      {
+        "id": "scouts",
+        "display": "Scouts 9\""
+      }
     ],
     "description": "<strong>BEASTBOSS ON SQUIGOSAUR</strong> model only. Models in the bearer’s unit have the <strong>Scouts 9\"</strong> ability."
   },
-
   "proper-killy": {
     "name": "Proper Killy",
     "type": "Enhancement (15 pts)",
@@ -73,7 +73,6 @@
     "short": "+1 Damage on the bearer’s melee weapons.",
     "description": "<strong>BEAST SNAGGA</strong> model only. Add 1 to the <strong>Damage</strong> characteristic of melee weapons equipped by the bearer."
   },
-
   "skrag-every-stash": {
     "name": "Skrag Every Stash!",
     "type": "Enhancement (25 pts)",
@@ -84,7 +83,6 @@
     "short": "Hold an objective the bearer reached without leaving models on it.",
     "description": "<strong>BEAST SNAGGA</strong> model only. At the end of your Command phase, if the bearer is within range of an objective marker you control, that objective marker remains under your control, even if you have no models within range of it, until your opponent controls it at the start or end of any turn."
   },
-
   "surly-as-a-squiggoth": {
     "name": "Surly as a Squiggoth",
     "type": "Enhancement (20 pts)",
@@ -95,20 +93,20 @@
     "short": "−1 to Wound against the led unit when S beats T.",
     "description": "<strong>BEASTBOSS ON SQUIGOSAUR</strong> model only. While the bearer is leading a unit, each time an attack targets that unit, if the <strong>Strength</strong> characteristic of that attack is greater than the <strong>Toughness</strong> characteristic of that unit, subtract 1 from the Wound roll."
   },
-
   "_kult_of_speed_note": "Kult of Speed enhancements. Fasta Than Yooz restricts on a COMPOUND keyword — 'ORKS INFANTRY model only' is two keywords, so restrictedToKeyword is an array and every entry must be present on the unit.",
-
   "fasta-than-yooz": {
     "name": "Fasta Than Yooz",
     "type": "Enhancement (35 pts)",
     "restriction": "ORKS INFANTRY model only",
-    "restrictedToKeyword": ["ORKS", "INFANTRY"],
+    "restrictedToKeyword": [
+      "ORKS",
+      "INFANTRY"
+    ],
     "detachment": "kult-of-speed",
     "points": 35,
     "short": "Bearer’s unit can charge after disembarking from a moved TRANSPORT.",
     "description": "<strong>ORKS INFANTRY</strong> model only. Each time the bearer’s unit disembarks from a <strong>TRANSPORT</strong> after that <strong>TRANSPORT</strong> has made a Normal move, the bearer’s unit is still eligible to <strong>declare a charge</strong> this turn."
   },
-
   "speed-makes-right": {
     "name": "Speed Makes Right",
     "type": "Enhancement (25 pts)",
@@ -119,7 +117,6 @@
     "short": "3+ on a D6 for 1CP while the bearer is near the enemy.",
     "description": "<strong>ORKS</strong> model only. In your Command phase, if the bearer (or a <strong>TRANSPORT</strong> the bearer is embarked within) is within 9\" of one or more enemy units, roll one D6: on a 3+, you gain 1CP."
   },
-
   "squig-hide-tyres": {
     "name": "Squig-hide Tyres",
     "type": "Enhancement (15 pts)",
@@ -130,7 +127,6 @@
     "short": "6\" Consolidation moves instead of 3\".",
     "description": "<strong>DEFFKILLA WARTRIKE</strong> model only. Each time a model in the bearer’s unit makes a Consolidation move, it can move up to 6\" instead of up to 3\"."
   },
-
   "wazblasta": {
     "name": "Wazblasta",
     "type": "Enhancement (10 pts)",
@@ -141,9 +137,7 @@
     "short": "6\" move after shooting, at the cost of charging.",
     "description": "<strong>DEFFKILLA WARTRIKE</strong> model only. In your Shooting phase, after the bearer’s unit has shot, if it is not within Engagement Range of one or more enemy units, it can make a Normal move of up to 6\". If it does, until the end of the turn, it is not eligible to <strong>declare a charge</strong>."
   },
-
-  "_dread_mob_note": "Dread Mob enhancements. All four are MEK model only. Press It Fasta! modifies the Try Dat Button! roll, so it inherits that rule's missing D6 ranges — its own wording is complete.",
-
+  "_dread_mob_note": "Dread Mob enhancements. All four are MEK model only. Press It Fasta! modifies the Try Dat Button! roll from the detachment rule.",
   "gitfinder-googlez": {
     "name": "Gitfinder Googlez",
     "type": "Enhancement (10 pts)",
@@ -157,7 +151,6 @@
     ],
     "description": "<strong>MEK</strong> model only. Ranged weapons equipped by models in the bearer’s unit have the <strong>[IGNORES COVER]</strong> ability."
   },
-
   "press-it-fasta": {
     "name": "Press It Fasta!",
     "type": "Enhancement (35 pts)",
@@ -168,7 +161,6 @@
     "short": "Roll an extra Button Effect die and take both results.",
     "description": "<strong>MEK</strong> model only. Each time the bearer’s unit is selected to shoot, when rolling to determine which ability that unit’s weapons gain from the <strong>Try Dat Button!</strong> Detachment rule, roll one additional D6: until the end of the phase, ranged weapons equipped by models in that unit gain both Button Effects generated by those rolls. If a duplicate Button Effect is rolled, it has no additional effect."
   },
-
   "smoky-gubbinz": {
     "name": "Smoky Gubbinz",
     "type": "Enhancement (15 pts)",
@@ -182,7 +174,6 @@
     ],
     "description": "<strong>MEK</strong> model only. Models in the bearer’s unit have the <strong>Stealth</strong> ability."
   },
-
   "supa-glowy-fing": {
     "name": "Supa-glowy Fing",
     "type": "Enhancement (20 pts)",
@@ -193,88 +184,99 @@
     "short": "D6 each Command phase: Battle-shock, mortals, or −1 to Hit.",
     "description": "<strong>MEK</strong> model only. In your Command phase, select one enemy unit within 18\" of and visible to the bearer, then roll one D6: on a 1-2, that enemy unit must take a Battle-shock test; on a 3-4, that enemy unit suffers D3 mortal wounds; on a 5-6, until the start of your next Command phase, each time a model in that enemy unit makes an attack, subtract 1 from the Hit roll."
   },
-
   "_green_tide_note": "Green Tide enhancements. All four are 'ORKS INFANTRY model only', a compound of two keywords. Three of them scale on whether the unit contains 10 or more models; Raucous Warcaller instead makes a unit COUNT as 10+ regardless of its real size.",
-
   "bloodthirsty-belligerence": {
     "name": "Bloodthirsty Belligerence",
     "type": "Enhancement (15 pts)",
     "restriction": "ORKS INFANTRY model only",
-    "restrictedToKeyword": ["ORKS", "INFANTRY"],
+    "restrictedToKeyword": [
+      "ORKS",
+      "INFANTRY"
+    ],
     "detachment": "green-tide",
     "points": 15,
     "short": "Re-roll Advance for the led unit, and Charge at 10+ models.",
     "description": "<strong>ORKS INFANTRY</strong> model only. While the bearer is leading a unit, you can re-roll Advance rolls made for that unit. While that unit contains 10 or more models, you can re-roll Charge rolls made for that unit as well."
   },
-
   "brutal-but-kunnin": {
     "name": "Brutal But Kunnin’",
     "type": "Enhancement (25 pts)",
     "restriction": "ORKS INFANTRY model only",
-    "restrictedToKeyword": ["ORKS", "INFANTRY"],
+    "restrictedToKeyword": [
+      "ORKS",
+      "INFANTRY"
+    ],
     "detachment": "green-tide",
     "points": 25,
     "short": "5+ on a D6 for 1CP, +2 to the roll at 10+ models.",
     "description": "<strong>ORKS INFANTRY</strong> model only. In your Command phase, if the bearer is on the battlefield (or is embarked within a <strong>TRANSPORT</strong> that is on the battlefield), roll one D6, adding 2 to the result if the bearer’s unit contains 10 or more models: on a 5+, you gain 1CP."
   },
-
   "ferocious-show-off": {
     "name": "Ferocious Show Off",
     "type": "Enhancement (10 pts)",
     "restriction": "ORKS INFANTRY model only",
-    "restrictedToKeyword": ["ORKS", "INFANTRY"],
+    "restrictedToKeyword": [
+      "ORKS",
+      "INFANTRY"
+    ],
     "detachment": "green-tide",
     "points": 10,
     "short": "+1 S on the bearer’s melee weapons, +3 instead at 10+ models.",
     "description": "<strong>ORKS INFANTRY</strong> model only. Each time the bearer fights, while resolving those attacks, add 1 to the <strong>Strength</strong> characteristic of the bearer’s melee weapons. If the bearer’s unit contains 10 or more models, while resolving those attacks, add 3 to the <strong>Strength</strong> characteristic instead."
   },
-
   "raucous-warcaller": {
     "name": "Raucous Warcaller",
     "type": "Enhancement (20 pts)",
     "restriction": "ORKS INFANTRY model only",
-    "restrictedToKeyword": ["ORKS", "INFANTRY"],
+    "restrictedToKeyword": [
+      "ORKS",
+      "INFANTRY"
+    ],
     "detachment": "green-tide",
     "points": 20,
     "short": "The led unit always counts as containing 10 or more models.",
     "description": "<strong>ORKS INFANTRY</strong> model only. While the bearer is leading a unit, that unit always counts as containing 10 or more models for the purposes of your Detachment rule and any Stratagems you use."
   },
-
   "_bully_boyz_note": "Bully Boyz enhancements. Three are 'INFANTRY WARBOSS model only' (a compound of two keywords); Tellyporta is restricted to the WARBOSS IN MEGA ARMOUR datasheet keyword, which is a single keyword despite reading like a phrase.",
-
   "big-gob": {
     "name": "Big Gob",
     "type": "Enhancement (20 pts)",
     "restriction": "INFANTRY WARBOSS model only",
-    "restrictedToKeyword": ["INFANTRY", "WARBOSS"],
+    "restrictedToKeyword": [
+      "INFANTRY",
+      "WARBOSS"
+    ],
     "detachment": "bully-boyz",
     "points": 20,
     "short": "Force a Battle-shock test at −1 in the Fight phase.",
     "description": "<strong>INFANTRY WARBOSS</strong> model only. At the start of the Fight phase, select one enemy unit within Engagement Range of the bearer. That unit must take a Battle-shock test, and when doing so, subtract 1 from the result."
   },
-
   "da-biggest-boss": {
     "name": "Da Biggest Boss",
     "type": "Enhancement (15 pts)",
     "restriction": "INFANTRY WARBOSS model only",
-    "restrictedToKeyword": ["INFANTRY", "WARBOSS"],
+    "restrictedToKeyword": [
+      "INFANTRY",
+      "WARBOSS"
+    ],
     "detachment": "bully-boyz",
     "points": 15,
     "short": "+2 to the bearer’s Wounds characteristic.",
     "description": "<strong>INFANTRY WARBOSS</strong> model only. Add 2 to the bearer’s <strong>Wounds</strong> characteristic."
   },
-
   "eadstompa": {
     "name": "’Eadstompa",
     "type": "Enhancement (10 pts)",
     "restriction": "INFANTRY WARBOSS model only",
-    "restrictedToKeyword": ["INFANTRY", "WARBOSS"],
+    "restrictedToKeyword": [
+      "INFANTRY",
+      "WARBOSS"
+    ],
     "detachment": "bully-boyz",
     "points": 10,
     "short": "Re-roll Wounds of 1 against a weakened unit, all of them below half.",
     "description": "<strong>INFANTRY WARBOSS</strong> model only. Each time the bearer makes an attack that targets a unit that is below its Starting Strength, re-roll a Wound roll of 1. If that unit is Below Half-strength, you can re-roll the Wound roll instead."
   },
-
   "tellyporta": {
     "name": "Tellyporta",
     "type": "Enhancement (25 pts)",
@@ -288,9 +290,7 @@
     ],
     "description": "<strong>WARBOSS IN MEGA ARMOUR</strong> model only. Models in the bearer’s unit have the <strong>Deep Strike</strong> ability."
   },
-
   "_freebooter_krew_note": "Freebooter Krew enhancements. Bionik Workshop is the first OR restriction — 'BIG MEK or PAINBOY model only' — so it uses restrictedToAnyKeyword (any one keyword matches) rather than restrictedToKeyword (every keyword must match). Do not merge the two fields.",
-
   "da-kaptin": {
     "name": "Da Kaptin",
     "type": "Enhancement (10 pts)",
@@ -301,7 +301,6 @@
     "short": "Clear Battle-shock on a nearby unit for D3 mortal wounds.",
     "description": "<strong>WARBOSS</strong> model only. Once per battle round, at the start of any phase, you can select one friendly <strong>ORKS</strong> unit that is Battle-shocked and within 12\" of the bearer. That unit suffers D3 mortal wounds and it is no longer Battle-shocked."
   },
-
   "git-spotter-squig": {
     "name": "Git-spotter Squig",
     "type": "Enhancement (20 pts)",
@@ -315,19 +314,20 @@
     ],
     "description": "<strong>ORKS</strong> model only. Ranged weapons equipped by models in the bearer’s unit have the <strong>[IGNORES COVER]</strong> ability."
   },
-
   "bionik-workshop": {
     "name": "Bionik Workshop",
     "type": "Enhancement (15 pts)",
     "restriction": "BIG MEK or PAINBOY model only",
-    "restrictedToAnyKeyword": ["BIG MEK", "PAINBOY"],
+    "restrictedToAnyKeyword": [
+      "BIG MEK",
+      "PAINBOY"
+    ],
     "detachment": "freebooter-krew",
     "points": 15,
     "short": "Roll a D3 at the start of the battle for one of three bioniks.",
     "_d3_note": "The D3 column was not printed in the supplied text, but a D3 has exactly three outcomes and exactly three bioniks are listed, so 1/2/3 in the order given is the only possible mapping. Correct it if the datasheet says otherwise.",
     "description": "<strong>BIG MEK</strong> or <strong>PAINBOY</strong> model only. At the start of the battle, roll one D3 and compare the result to the list below. Until the end of the battle, models in the bearer’s unit have that bioniks ability.<br>• <strong>1 — Bionik Legs:</strong> Add 2\" to the <strong>Move</strong> characteristic of this model.<br>• <strong>2 — Bionik Arms:</strong> Add 1 to the <strong>Strength</strong> characteristic of melee weapons equipped by this model.<br>• <strong>3 — Bionik Bonce:</strong> Improve the <strong>Weapon Skill</strong> characteristic of melee weapons equipped by this model by 1."
   },
-
   "razgits-magik-map": {
     "name": "Razgit’s Magik Map",
     "type": "Enhancement (25 pts)",
@@ -337,5 +337,220 @@
     "points": 25,
     "short": "Redeploy up to three ORKS INFANTRY units, Reserves allowed.",
     "description": "<strong>ORKS</strong> model only. After both players have deployed their armies, select up to three <strong>ORKS INFANTRY</strong> units from your army and redeploy them. When doing so, you can set those units up in Strategic Reserves, regardless of how many units are already in Strategic Reserves."
+  },
+  "_speedwaaagh_note": "Speedwaaagh! enhancements.",
+  "kustom-shokk-box": {
+    "name": "Kustom Shokk Box",
+    "type": "Enhancement (10 pts)",
+    "restriction": "DEFFKILLA WARTRIKE model only",
+    "restrictedToKeyword": "DEFFKILLA WARTRIKE",
+    "detachment": "speedwaaagh",
+    "points": 10,
+    "short": "Move horizontally through terrain when using the turbo.",
+    "description": "<strong>DEFFKILLA WARTRIKE</strong> model only. Each time the bearer uses its turbo, its unit can move horizontally through terrain features."
+  },
+  "dakkamek": {
+    "name": "Dakkamek",
+    "type": "Enhancement (25 pts)",
+    "restriction": "MEK model only",
+    "restrictedToKeyword": "MEK",
+    "detachment": "speedwaaagh",
+    "points": 25,
+    "short": "Mekaniak target gains [RAPID FIRE 1].",
+    "description": "<strong>MEK</strong> model only. Each time the bearer uses its <strong>Mekaniak</strong> ability, until the start of your next Command phase, ranged weapons equipped by the selected <strong>VEHICLE</strong> model have the <strong>[RAPID FIRE 1]</strong> ability."
+  },
+  "supa-burny-fuel": {
+    "name": "Supa-burny Fuel",
+    "type": "Enhancement (15 pts)",
+    "restriction": "DEFFKILLA WARTRIKE model only",
+    "restrictedToKeyword": "DEFFKILLA WARTRIKE",
+    "detachment": "speedwaaagh",
+    "points": 15,
+    "short": "Killa jet burna to 3D6 Attacks, cutta to 3.",
+    "description": "<strong>DEFFKILLA WARTRIKE</strong> model only. Change the <strong>Attacks</strong> characteristic of the bearer’s <em>killa jet – burna</em> weapon to 3D6, and change the <strong>Attacks</strong> characteristic of the bearer’s <em>killa jet – cutta</em> weapon to 3."
+  },
+  "master-meknologist": {
+    "name": "Master Meknologist",
+    "type": "Enhancement (20 pts)",
+    "restriction": "BIG MEK model only",
+    "restrictedToKeyword": "BIG MEK",
+    "detachment": "speedwaaagh",
+    "points": 20,
+    "short": "+1 Ballistic Skill on the bearer’s ranged weapons.",
+    "description": "<strong>BIG MEK</strong> model only. Improve the <strong>Ballistic Skill</strong> characteristic of the bearer’s ranged weapons by 1."
+  },
+  "_blitz_brigade_note": "Blitz Brigade enhancements.",
+  "runnin-boots": {
+    "name": "Runnin’ Boots",
+    "type": "Enhancement (10 pts)",
+    "restriction": "ORKS INFANTRY CHARACTER model only",
+    "restrictedToKeyword": [
+      "ORKS",
+      "INFANTRY",
+      "CHARACTER"
+    ],
+    "detachment": "blitz-brigade",
+    "points": 10,
+    "short": "+1 to Charge rolls after disembarking.",
+    "description": "<strong>ORKS INFANTRY CHARACTER</strong> model only. Each time you make a Charge roll for the bearer’s unit, if that unit disembarked from a <strong>TRANSPORT</strong> this turn, add 1 to the result."
+  },
+  "blitzkaptin": {
+    "name": "Blitzkaptin",
+    "type": "Enhancement (25 pts)",
+    "restriction": "ORKS CHARACTER model only",
+    "restrictedToKeyword": [
+      "ORKS",
+      "CHARACTER"
+    ],
+    "detachment": "blitz-brigade",
+    "points": 25,
+    "short": "Redeploy up to three ORKS VEHICLE units, Reserves allowed.",
+    "description": "<strong>ORKS CHARACTER</strong> model only. After both players have deployed their armies, if the bearer’s unit (or any <strong>TRANSPORT</strong> it is embarked within) is on the battlefield, select up to three <strong>ORKS VEHICLE</strong> units from your army and redeploy them. When doing so, you can set those units up in Strategic Reserves, regardless of how many units are already in Strategic Reserves."
+  },
+  "supercharged-squig-oil": {
+    "name": "Supercharged Squig Oil",
+    "type": "Enhancement (10 pts)",
+    "restriction": "MEK model only",
+    "restrictedToKeyword": "MEK",
+    "detachment": "blitz-brigade",
+    "points": 10,
+    "short": "Re-roll Charge rolls for the Mekaniak target’s unit.",
+    "description": "<strong>MEK</strong> model only. Each time the bearer uses its <strong>Mekaniak</strong> ability, until the end of the turn, you can re-roll Charge rolls for the selected <strong>VEHICLE</strong> model’s unit."
+  },
+  "tuff-git": {
+    "name": "Tuff Git",
+    "type": "Enhancement (5 pts)",
+    "restriction": "ORKS INFANTRY CHARACTER model only",
+    "restrictedToKeyword": [
+      "ORKS",
+      "INFANTRY",
+      "CHARACTER"
+    ],
+    "detachment": "blitz-brigade",
+    "points": 5,
+    "short": "Shed Battle-shock after disembarking.",
+    "description": "<strong>ORKS INFANTRY CHARACTER</strong> model only. At the end of a phase in which the bearer’s unit disembarked from a <strong>TRANSPORT</strong>, if that unit is Battle-shocked, it is no longer Battle-shocked."
+  },
+  "_more_dakka_note": "More Dakka! enhancements. Dead Shiny Shootas is tagged UPGRADE in the source and reads 'unit only', so it is upgrade:true — up to 3 copies, any non-Epic-Hero unit, only the first counts toward the Enhancement cap. Da Gobshot Thunderbuss is not tagged and reads 'model only', so it is an ordinary CHARACTER-only Enhancement.",
+  "dead-shiny-shootas": {
+    "name": "Dead Shiny Shootas",
+    "type": "Upgrade (15 pts)",
+    "upgrade": true,
+    "restriction": "ORKS INFANTRY unit only",
+    "restrictedToKeyword": [
+      "ORKS",
+      "INFANTRY"
+    ],
+    "detachment": "more-dakka",
+    "points": 15,
+    "short": "[RAPID FIRE 1], or +1 to an existing [RAPID FIRE].",
+    "description": "<strong>ORKS INFANTRY</strong> unit only. This unit’s ranged attacks have:<br>• <strong>[RAPID FIRE 1]</strong>.<br>• Or: if that attack already has <strong>[RAPID FIRE]</strong>, +1 to the value of that <strong>[RAPID FIRE]</strong> (e.g. <strong>[RAPID FIRE 1]</strong> becomes <strong>[RAPID FIRE 2]</strong>)."
+  },
+  "da-gobshot-thunderbuss": {
+    "name": "Da Gobshot Thunderbuss",
+    "type": "Enhancement (15 pts)",
+    "restriction": "ORKS INFANTRY model only",
+    "restrictedToKeyword": [
+      "ORKS",
+      "INFANTRY"
+    ],
+    "detachment": "more-dakka",
+    "points": 15,
+    "short": "Bearer’s ranged attacks gain [DEVASTATING WOUNDS] and [HAZARDOUS].",
+    "grantsAbilities": [
+      "devastating-wounds",
+      "hazardous"
+    ],
+    "description": "<strong>ORKS INFANTRY</strong> model only. This model’s ranged attacks have:<br>• <strong>[DEVASTATING WOUNDS]</strong>.<br>• <strong>[HAZARDOUS]</strong>."
+  },
+  "_rollin_deff_note": "Rollin' Deff enhancements. Both are UPGRADES and both are 'WAGON unit only' — a keyword no datasheet prints. It is handed out by this detachment's own rule via grantsKeywords, so these only become selectable while Rollin' Deff is active. That is the intended behaviour.",
+  "boarding-ramps": {
+    "name": "Boarding Ramps",
+    "type": "Upgrade (10 pts)",
+    "upgrade": true,
+    "restriction": "WAGON unit only",
+    "restrictedToKeyword": "WAGON",
+    "detachment": "rollin-deff",
+    "points": 10,
+    "short": "+1 to Charge rolls for units disembarking from this unit.",
+    "description": "<strong>WAGON</strong> unit only. When a unit embarked within this unit is selected to make a disembark move, that unit has +1 to Charge rolls until the end of the turn."
+  },
+  "targetin-gizmos": {
+    "name": "Targetin’ Gizmos",
+    "type": "Upgrade (15 pts)",
+    "upgrade": true,
+    "restriction": "WAGON unit only",
+    "restrictedToKeyword": "WAGON",
+    "detachment": "rollin-deff",
+    "points": 15,
+    "short": "With a BIG MEK aboard: [IGNORES COVER], and [SUSTAINED HITS 1] under a Waaagh!.",
+    "description": "<strong>WAGON</strong> unit only. While a <strong>BIG MEK</strong> model is embarked within this unit:<br>• This unit’s ranged attacks have <strong>[IGNORES COVER]</strong>.<br>• If the <strong>Waaagh!</strong> is active for this unit, this unit’s ranged attacks have <strong>[SUSTAINED HITS 1]</strong>."
+  },
+  "_taktikal_brigade_note": "Taktikal Brigade enhancements. Slippery Git is the first restriction with an EXCLUSION — 'INFANTRY WARBOSS model only (excluding MEGA ARMOUR models)' — handled by excludesKeyword.",
+  "morks-kunnin": {
+    "name": "Mork’s Kunnin’",
+    "type": "Enhancement (20 pts)",
+    "restriction": "ORKS model only",
+    "restrictedToKeyword": "ORKS",
+    "detachment": "taktikal-brigade",
+    "points": 20,
+    "short": "Redeploy up to three ORKS INFANTRY units, Reserves allowed.",
+    "description": "<strong>ORKS</strong> model only. When both players have deployed their armies, you can redeploy up to three friendly <strong>ORKS INFANTRY</strong> units. When doing so, you can set those units up in Strategic Reserves, regardless of how many units are already in Strategic Reserves."
+  },
+  "slippery-git": {
+    "name": "Slippery Git",
+    "type": "Enhancement (15 pts)",
+    "restriction": "INFANTRY WARBOSS model only (excluding MEGA ARMOUR models)",
+    "restrictedToKeyword": [
+      "INFANTRY",
+      "WARBOSS"
+    ],
+    "_excludes_note": "The source says 'excluding MEGA ARMOUR models'. Tellyporta records the Mega Armour Warboss as the single keyword WARBOSS IN MEGA ARMOUR, so it is not certain the bare keyword MEGA ARMOUR exists on these datasheets. Both are excluded here; drop whichever is wrong once a datasheet confirms it.",
+    "excludesKeyword": [
+      "MEGA ARMOUR",
+      "WARBOSS IN MEGA ARMOUR"
+    ],
+    "_leader_note": "The source carries a 'LEADER: KOMMANDOS' line above this Enhancement. The app has no way to change a model's Leader list from an Enhancement, so it is recorded here and in the description rather than altering canLead.",
+    "detachment": "taktikal-brigade",
+    "points": 15,
+    "short": "Bearer has Infiltrators and Stealth; can lead Kommandos.",
+    "grantsAbilities": [
+      "infiltrators",
+      "stealth"
+    ],
+    "description": "<strong>INFANTRY WARBOSS</strong> model only (excluding <strong>MEGA ARMOUR</strong> models). This model has <strong>Infiltrators</strong> and <strong>Stealth</strong>.<br><br><em>Leader: this model can be attached to a KOMMANDOS unit.</em>"
+  },
+  "_equatorial_hordes_note": "Equatorial Hordes enhancements. Both restrict to 'BEASTBOSS/INFANTRY WARBOSS model only' — an OR of two groups, the second of which is itself a compound. restrictedToAnyKeyword takes nested arrays: a bare string must match, a nested array must match in full.",
+  "kunnin-hunta": {
+    "name": "Kunnin’ Hunta",
+    "type": "Enhancement (25 pts)",
+    "restriction": "BEASTBOSS or INFANTRY WARBOSS model only",
+    "restrictedToAnyKeyword": [
+      "BEASTBOSS",
+      [
+        "INFANTRY",
+        "WARBOSS"
+      ]
+    ],
+    "detachment": "equatorial-hordes",
+    "points": 25,
+    "short": "D3+3\" reaction move when an enemy ends a move nearby.",
+    "description": "<strong>BEASTBOSS</strong> or <strong>INFANTRY WARBOSS</strong> model only. (Once per turn, per unit.) In your opponent’s Movement phase, when an enemy unit ends a move within 8\" of this unit, if this unit is unengaged, this unit can make a Normal move of up to D3+3\"."
+  },
+  "unkillable-scourge": {
+    "name": "Unkillable Scourge",
+    "type": "Enhancement (25 pts)",
+    "restriction": "BEASTBOSS or INFANTRY WARBOSS model only",
+    "restrictedToAnyKeyword": [
+      "BEASTBOSS",
+      [
+        "INFANTRY",
+        "WARBOSS"
+      ]
+    ],
+    "detachment": "equatorial-hordes",
+    "points": 25,
+    "short": "3+ to stay up and fight once more, +1 under a Waaagh!.",
+    "description": "<strong>BEASTBOSS</strong> or <strong>INFANTRY WARBOSS</strong> model only. When this model is destroyed, if this unit has not been selected to fight this phase, roll one D6, with +1 to that roll if the <strong>Waaagh!</strong> is active for this unit:<br>• On a 3+, do not remove this model from the battlefield. When this unit has fought, or at the end of the phase (whichever comes first), this model is removed from the battlefield."
   }
 }

@@ -105,8 +105,7 @@
     "speedwaaagh": {
       "name": "Speedwaaagh!",
       "dp": 2,
-      "_category_note": "No Force Disposition was given for this detachment. Fill it in with one of the keys in `categories` and the card picks up its colour.",
-      "category": null,
+      "category": "Reconnaissance",
       "unique": null,
       "ruleId": "speedwaaagh-turbo-boostas",
       "ruleType": "Detachment Rule — Speedwaaagh!",
@@ -116,8 +115,7 @@
     "blitz-brigade": {
       "name": "Blitz Brigade",
       "dp": 2,
-      "_category_note": "No Force Disposition was given for this detachment.",
-      "category": null,
+      "category": "Reconnaissance",
       "_unique_note": "Tagged UNIQUE: WAGONS in the source, immediately above the detachment name. Rollin' Deff carries the same tag and states the exclusivity in its own rule text, so the two cannot be taken together.",
       "unique": "WAGONS",
       "ruleId": "blitz-brigade-eager-for-the-fight",
@@ -128,8 +126,7 @@
     "more-dakka": {
       "name": "More Dakka!",
       "dp": 1,
-      "_category_note": "No Force Disposition was given for this detachment.",
-      "category": null,
+      "category": "Disruption",
       "unique": null,
       "ruleId": "more-dakka-dakka-dakka-dakka",
       "ruleType": "Detachment Rule — More Dakka!",
@@ -151,8 +148,7 @@
     "rollin-deff": {
       "name": "Rollin’ Deff",
       "dp": 1,
-      "_category_note": "No Force Disposition was given for this detachment.",
-      "category": null,
+      "category": "Priority Assets",
       "unique": "WAGONS",
       "ruleId": "rollin-deff-thundering-wagons",
       "ruleType": "Detachment Rule — Rollin’ Deff",
@@ -172,8 +168,7 @@
     "taktikal-brigade": {
       "name": "Taktikal Brigade",
       "dp": 1,
-      "_category_note": "No Force Disposition was given for this detachment.",
-      "category": null,
+      "category": "Reconnaissance",
       "unique": null,
       "ruleId": "taktikal-brigade-lissen-ere",
       "ruleType": "Detachment Rule — Taktikal Brigade",
@@ -189,8 +184,7 @@
     "equatorial-hordes": {
       "name": "Equatorial Hordes",
       "dp": 1,
-      "_category_note": "No Force Disposition was given for this detachment.",
-      "category": null,
+      "category": "Disruption",
       "unique": null,
       "ruleId": "equatorial-hordes-jungle-know-wotz",
       "ruleType": "Detachment Rule — Equatorial Hordes",

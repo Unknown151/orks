@@ -64,6 +64,17 @@
       "_grants_note": "Try Dat Button! is rolled fresh each time a unit is selected to shoot or fight, so nothing is granted unconditionally and there are no `grants` here. Same reasoning as Da Big Hunt. The Button Effect table is printed for the player to roll against and read — the app deliberately does not roll it, track it, or apply it.",
       "_keywords_note": "The rule also grants BATTLELINE to GRETCHIN units. The app has no Battleline mechanic for that to feed, so it is carried as rule text rather than as a keyword-granting engine with no consumer. Build `grantsKeywords` when something actually reads it.",
       "ruleDescription": "<strong>Try Dat Button!:</strong> Each time a <strong>MEK</strong>, <strong>ORKS WALKER</strong> or <strong>GROTS VEHICLE</strong> unit from your army is selected to shoot or fight, roll one D6. Until the end of the phase, weapons equipped by models in that unit have the corresponding ability shown in the table below.<br><br><strong>D6 — BUTTON EFFECT</strong><br>• <strong>1-2</strong> — <strong>[SUSTAINED HITS 1]</strong> ability.<br>• <strong>3-4</strong> — <strong>[LETHAL HITS]</strong> ability.<br>• <strong>5-6</strong> — Each time an attack is made with this weapon, on a Critical Wound, improve the Armour Penetration characteristic of that attack by 2.<br><br>Alternatively, when such a unit is selected to shoot or fight, you can select one of the abilities above instead of rolling the D6. If you do, until the end of the phase, weapons equipped by models in that unit have the <strong>[HAZARDOUS]</strong> ability as well.<br><br>If a weapon equipped by a model from your army has the <strong>[HAZARDOUS]</strong> ability from multiple sources, each time you take a Hazardous test for that weapon, it is failed on a roll of 1-3.<br><br><strong>KEYWORDS:</strong> <strong>GRETCHIN</strong> units from your army gain the <strong>BATTLELINE</strong> keyword."
+    },
+    "green-tide": {
+      "name": "Green Tide",
+      "dp": 3,
+      "category": "Take and Hold",
+      "unique": null,
+      "ruleId": "green-tide-mob-mentality",
+      "ruleType": "Detachment Rule — Green Tide",
+      "_grants_note": "Mob Mentality is conditional on UNIT SIZE, not on a keyword, so it cannot be expressed as a `grants` entry — those match keywords only. The app does track models per instance, so a size-aware invulnerable save is buildable; it is not built, because no matched-play BOYZ datasheet exists yet and nothing has asked for it. Rule text only for now.",
+      "_size_note": "Several Enhancements and Stratagems in this detachment also key off 'contains 10 or more models', and two of them (Raucous Warcaller, Braggin' Rights) let a unit COUNT as 10+ without being 10+. Any future size-aware display has to honour those overrides, not just read inst.models.",
+      "ruleDescription": "<strong>Mob Mentality:</strong> Each time an attack targets a <strong>BOYZ</strong> unit from your army, models in that unit have a 6+ invulnerable save against that attack. Each time an attack targets a <strong>BOYZ</strong> unit from your army that contains 10 or more models, models in that unit have a 5+ invulnerable save against that attack."
     }
   }
 }

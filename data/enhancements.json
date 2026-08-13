@@ -192,5 +192,51 @@
     "points": 20,
     "short": "D6 each Command phase: Battle-shock, mortals, or −1 to Hit.",
     "description": "<strong>MEK</strong> model only. In your Command phase, select one enemy unit within 18\" of and visible to the bearer, then roll one D6: on a 1-2, that enemy unit must take a Battle-shock test; on a 3-4, that enemy unit suffers D3 mortal wounds; on a 5-6, until the start of your next Command phase, each time a model in that enemy unit makes an attack, subtract 1 from the Hit roll."
+  },
+
+  "_green_tide_note": "Green Tide enhancements. All four are 'ORKS INFANTRY model only', a compound of two keywords. Three of them scale on whether the unit contains 10 or more models; Raucous Warcaller instead makes a unit COUNT as 10+ regardless of its real size.",
+
+  "bloodthirsty-belligerence": {
+    "name": "Bloodthirsty Belligerence",
+    "type": "Enhancement (15 pts)",
+    "restriction": "ORKS INFANTRY model only",
+    "restrictedToKeyword": ["ORKS", "INFANTRY"],
+    "detachment": "green-tide",
+    "points": 15,
+    "short": "Re-roll Advance for the led unit, and Charge at 10+ models.",
+    "description": "<strong>ORKS INFANTRY</strong> model only. While the bearer is leading a unit, you can re-roll Advance rolls made for that unit. While that unit contains 10 or more models, you can re-roll Charge rolls made for that unit as well."
+  },
+
+  "brutal-but-kunnin": {
+    "name": "Brutal But Kunnin’",
+    "type": "Enhancement (25 pts)",
+    "restriction": "ORKS INFANTRY model only",
+    "restrictedToKeyword": ["ORKS", "INFANTRY"],
+    "detachment": "green-tide",
+    "points": 25,
+    "short": "5+ on a D6 for 1CP, +2 to the roll at 10+ models.",
+    "description": "<strong>ORKS INFANTRY</strong> model only. In your Command phase, if the bearer is on the battlefield (or is embarked within a <strong>TRANSPORT</strong> that is on the battlefield), roll one D6, adding 2 to the result if the bearer’s unit contains 10 or more models: on a 5+, you gain 1CP."
+  },
+
+  "ferocious-show-off": {
+    "name": "Ferocious Show Off",
+    "type": "Enhancement (10 pts)",
+    "restriction": "ORKS INFANTRY model only",
+    "restrictedToKeyword": ["ORKS", "INFANTRY"],
+    "detachment": "green-tide",
+    "points": 10,
+    "short": "+1 S on the bearer’s melee weapons, +3 instead at 10+ models.",
+    "description": "<strong>ORKS INFANTRY</strong> model only. Each time the bearer fights, while resolving those attacks, add 1 to the <strong>Strength</strong> characteristic of the bearer’s melee weapons. If the bearer’s unit contains 10 or more models, while resolving those attacks, add 3 to the <strong>Strength</strong> characteristic instead."
+  },
+
+  "raucous-warcaller": {
+    "name": "Raucous Warcaller",
+    "type": "Enhancement (20 pts)",
+    "restriction": "ORKS INFANTRY model only",
+    "restrictedToKeyword": ["ORKS", "INFANTRY"],
+    "detachment": "green-tide",
+    "points": 20,
+    "short": "The led unit always counts as containing 10 or more models.",
+    "description": "<strong>ORKS INFANTRY</strong> model only. While the bearer is leading a unit, that unit always counts as containing 10 or more models for the purposes of your Detachment rule and any Stratagems you use."
   }
 }

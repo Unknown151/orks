@@ -374,5 +374,85 @@
     "target": "One <strong>SPEED FREEKS</strong> unit from your army that is within 8\" of that enemy unit and is not within Engagement Range of one or more enemy units.",
     "effect": "Your unit can make a Normal move of up to 6\".",
     "detachment": "kult-of-speed"
+  },
+
+  "_dread_mob_note": "Dread Mob detachment stratagems. Three of them carry a 'push it' option that adds [HAZARDOUS] on top of a bigger effect; that choice is part of the effect wording, not a separate stratagem.",
+
+  "klankin-klaws": {
+    "name": "Klankin’ Klaws",
+    "type": "Dread Mob – Battle Tactic Stratagem",
+    "turn": "either",
+    "phases": ["fight"],
+    "cpCost": 1,
+    "summary": "+2 S in melee, or push it for +1 D and [HAZARDOUS].",
+    "when": "Fight phase.",
+    "target": "One <strong>ORKS WALKER</strong> unit from your army that has not been selected to fight this phase.",
+    "effect": "Each time you use this Stratagem, you can choose to <strong>push it</strong>. Until the end of the phase, add 2 to the <strong>Strength</strong> characteristic of melee weapons equipped by models in your unit and, if you chose to push it, until the end of the phase, add 1 to the <strong>Damage</strong> characteristic of those weapons and they have the <strong>[HAZARDOUS]</strong> ability as well.",
+    "detachment": "dread-mob"
+  },
+
+  "superfuelled-boiler": {
+    "name": "Superfuelled Boiler",
+    "type": "Dread Mob – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": ["movement"],
+    "cpCost": 1,
+    "summary": "Re-roll Advance, and ranged weapons gain [ASSAULT].",
+    "when": "Your Movement phase, just after an <strong>ORKS WALKER</strong> unit from your army has been selected to Advance.",
+    "target": "That <strong>ORKS WALKER</strong> unit.",
+    "effect": "Until the end of the turn, you can re-roll Advance rolls made for your unit and ranged weapons equipped by models in your unit have the <strong>[ASSAULT]</strong> ability.",
+    "detachment": "dread-mob"
+  },
+
+  "bigger-shells-for-bigger-gitz": {
+    "name": "Bigger Shells For Bigger Gitz",
+    "type": "Dread Mob – Battle Tactic Stratagem",
+    "turn": "your",
+    "phases": ["shooting"],
+    "cpCost": 1,
+    "summary": "+1 to Wound vs MONSTER and VEHICLE, or push it for +1 D.",
+    "when": "Your Shooting phase.",
+    "target": "One <strong>MEK</strong>, <strong>ORKS WALKER</strong> or <strong>GROTS VEHICLE</strong> unit from your army that has not been selected to shoot this phase.",
+    "effect": "Each time you use this Stratagem, you can choose to <strong>push it</strong>. Until the end of the phase, each time a model in your unit makes an attack that targets a <strong>MONSTER</strong> or <strong>VEHICLE</strong>, add 1 to the Wound roll. If you chose to push it, add 1 to the <strong>Damage</strong> characteristic of that attack and, until the end of the phase, ranged weapons equipped by models in your unit have the <strong>[HAZARDOUS]</strong> ability as well.",
+    "detachment": "dread-mob"
+  },
+
+  "dakka-dakka-dakka": {
+    "name": "Dakka! Dakka! Dakka!",
+    "type": "Dread Mob – Battle Tactic Stratagem",
+    "turn": "your",
+    "phases": ["shooting"],
+    "cpCost": 1,
+    "summary": "Re-roll Hit rolls of 1, or push it to re-roll any Hit roll.",
+    "when": "Your Shooting phase.",
+    "target": "One <strong>ORKS WALKER</strong> or <strong>GROTS VEHICLE</strong> unit from your army that has not been selected to shoot this phase.",
+    "effect": "Each time you use this Stratagem, you can choose to <strong>push it</strong>. Until the end of the phase, each time a model in your unit makes an attack, re-roll a Hit roll of 1. If you chose to push it, you can re-roll the Hit roll instead and, until the end of the phase, ranged weapons equipped by models in your unit have the <strong>[HAZARDOUS]</strong> ability as well.",
+    "detachment": "dread-mob"
+  },
+
+  "conniving-runts": {
+    "name": "Conniving Runts",
+    "type": "Dread Mob – Strategic Ploy Stratagem",
+    "turn": "opponent",
+    "phases": ["movement"],
+    "cpCost": 1,
+    "summary": "4+ for D3+1 mortal wounds, then a Normal move.",
+    "when": "Your opponent’s Movement phase, just after an enemy unit ends a Normal, Advance or Fall Back move.",
+    "target": "One <strong>GRETCHIN</strong> unit from your army that is within 8\" of that enemy unit and not within Engagement Range of any enemy units.",
+    "effect": "Roll one D6: on a 4+, that enemy unit suffers D3+1 mortal wounds. Your unit can then make a Normal move.",
+    "detachment": "dread-mob"
+  },
+
+  "extra-gubbinz": {
+    "name": "Extra Gubbinz",
+    "type": "Dread Mob – Battle Tactic Stratagem",
+    "turn": "opponent",
+    "phases": ["shooting"],
+    "cpCost": 1,
+    "summary": "−1 to the Damage of every attack allocated to your unit.",
+    "when": "Your opponent’s Shooting phase, just after an enemy unit has selected its targets.",
+    "target": "One <strong>ORKS WALKER</strong> or <strong>GROTS VEHICLE</strong> unit from your army (excluding <strong>TITANIC</strong> units) that was selected as the target of one or more of the attacking unit’s attacks.",
+    "effect": "Until the end of the phase, each time an attack is allocated to a model in your unit, subtract 1 from the <strong>Damage</strong> characteristic of that attack.",
+    "detachment": "dread-mob"
   }
 }

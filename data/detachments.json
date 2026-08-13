@@ -53,6 +53,18 @@
         }
       ],
       "ruleDescription": "<strong>Adrenaline Junkies:</strong> <strong>SPEED FREEKS</strong> units from your army are eligible to <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which they <strong>Advanced</strong> or <strong>Fell Back</strong>."
+    },
+    "dread-mob": {
+      "name": "Dread Mob",
+      "dp": 2,
+      "category": "Priority Assets",
+      "unique": null,
+      "ruleId": "dread-mob-try-dat-button",
+      "ruleType": "Detachment Rule — Dread Mob",
+      "_d6_note": "INCOMPLETE: the D6 column of the Button Effect table was blank in the supplied text. The three effects are recorded in the order given, WITHOUT their ranges. Do not guess 1-2/3-4/5-6 — fill them in from the datasheet.",
+      "_grants_note": "Try Dat Button! is rolled fresh each time a unit is selected to shoot or fight, so nothing is granted unconditionally and there are no `grants` here. Same reasoning as Da Big Hunt.",
+      "_keywords_note": "The rule also grants BATTLELINE to GRETCHIN units. The app has no Battleline mechanic for that to feed, so it is carried as rule text rather than as a keyword-granting engine with no consumer. Build `grantsKeywords` when something actually reads it.",
+      "ruleDescription": "<strong>Try Dat Button!:</strong> Each time a <strong>MEK</strong>, <strong>ORKS WALKER</strong> or <strong>GROTS VEHICLE</strong> unit from your army is selected to shoot or fight, roll one D6. Until the end of the phase, weapons equipped by models in that unit have the corresponding ability shown in the table below.<br><br><em>The D6 ranges were not supplied — the three Button Effects are listed in order.</em><br>• <strong>[SUSTAINED HITS 1]</strong> ability.<br>• <strong>[LETHAL HITS]</strong> ability.<br>• Each time an attack is made with this weapon, on a Critical Wound, improve the Armour Penetration characteristic of that attack by 2.<br><br>Alternatively, when such a unit is selected to shoot or fight, you can select one of the abilities above instead of rolling the D6. If you do, until the end of the phase, weapons equipped by models in that unit have the <strong>[HAZARDOUS]</strong> ability as well.<br><br>If a weapon equipped by a model from your army has the <strong>[HAZARDOUS]</strong> ability from multiple sources, each time you take a Hazardous test for that weapon, it is failed on a roll of 1-3.<br><br><strong>KEYWORDS:</strong> <strong>GRETCHIN</strong> units from your army gain the <strong>BATTLELINE</strong> keyword."
     }
   }
 }

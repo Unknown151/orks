@@ -238,5 +238,54 @@
     "points": 20,
     "short": "The led unit always counts as containing 10 or more models.",
     "description": "<strong>ORKS INFANTRY</strong> model only. While the bearer is leading a unit, that unit always counts as containing 10 or more models for the purposes of your Detachment rule and any Stratagems you use."
+  },
+
+  "_bully_boyz_note": "Bully Boyz enhancements. Three are 'INFANTRY WARBOSS model only' (a compound of two keywords); Tellyporta is restricted to the WARBOSS IN MEGA ARMOUR datasheet keyword, which is a single keyword despite reading like a phrase.",
+
+  "big-gob": {
+    "name": "Big Gob",
+    "type": "Enhancement (20 pts)",
+    "restriction": "INFANTRY WARBOSS model only",
+    "restrictedToKeyword": ["INFANTRY", "WARBOSS"],
+    "detachment": "bully-boyz",
+    "points": 20,
+    "short": "Force a Battle-shock test at −1 in the Fight phase.",
+    "description": "<strong>INFANTRY WARBOSS</strong> model only. At the start of the Fight phase, select one enemy unit within Engagement Range of the bearer. That unit must take a Battle-shock test, and when doing so, subtract 1 from the result."
+  },
+
+  "da-biggest-boss": {
+    "name": "Da Biggest Boss",
+    "type": "Enhancement (15 pts)",
+    "restriction": "INFANTRY WARBOSS model only",
+    "restrictedToKeyword": ["INFANTRY", "WARBOSS"],
+    "detachment": "bully-boyz",
+    "points": 15,
+    "short": "+2 to the bearer’s Wounds characteristic.",
+    "description": "<strong>INFANTRY WARBOSS</strong> model only. Add 2 to the bearer’s <strong>Wounds</strong> characteristic."
+  },
+
+  "eadstompa": {
+    "name": "’Eadstompa",
+    "type": "Enhancement (10 pts)",
+    "restriction": "INFANTRY WARBOSS model only",
+    "restrictedToKeyword": ["INFANTRY", "WARBOSS"],
+    "detachment": "bully-boyz",
+    "points": 10,
+    "short": "Re-roll Wounds of 1 against a weakened unit, all of them below half.",
+    "description": "<strong>INFANTRY WARBOSS</strong> model only. Each time the bearer makes an attack that targets a unit that is below its Starting Strength, re-roll a Wound roll of 1. If that unit is Below Half-strength, you can re-roll the Wound roll instead."
+  },
+
+  "tellyporta": {
+    "name": "Tellyporta",
+    "type": "Enhancement (25 pts)",
+    "restriction": "WARBOSS IN MEGA ARMOUR model only",
+    "restrictedToKeyword": "WARBOSS IN MEGA ARMOUR",
+    "detachment": "bully-boyz",
+    "points": 25,
+    "short": "Bearer’s unit has Deep Strike.",
+    "grantsAbilities": [
+      "deep-strike"
+    ],
+    "description": "<strong>WARBOSS IN MEGA ARMOUR</strong> model only. Models in the bearer’s unit have the <strong>Deep Strike</strong> ability."
   }
 }

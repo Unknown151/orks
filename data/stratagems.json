@@ -534,5 +534,87 @@
     "target": "That <strong>BOYZ</strong> unit.",
     "effect": "Your unit can make a <strong>surge move</strong> of up to D6\".",
     "detachment": "green-tide"
+  },
+
+  "_bully_boyz_note": "Bully Boyz detachment stratagems. Every one of the six has a stronger mode while a Waaagh! is active for the target unit; that condition is carried in the effect wording, not tracked by the app.",
+
+  "armed-to-da-teef": {
+    "name": "Armed to da Teef",
+    "_name_note": "Ran together as 'ARMED TO DATEEF' in the supplied text; split back into words, wording otherwise untouched.",
+    "type": "Bully Boyz – Battle Tactic Stratagem",
+    "turn": "either",
+    "phases": ["shooting", "fight"],
+    "cpCost": 1,
+    "summary": "Re-roll Hit rolls of 1, or all of them under a Waaagh!.",
+    "when": "Your Shooting phase or the Fight phase.",
+    "target": "One <strong>NOBZ</strong> or <strong>MEGANOBZ</strong> unit from your army that has not been selected to shoot or fight this phase.",
+    "effect": "Until the end of the phase, each time a model in your unit makes an attack, re-roll a Hit roll of 1. If a <strong>Waaagh!</strong> is active for your unit, you can re-roll the Hit roll instead.",
+    "detachment": "bully-boyz"
+  },
+
+  "too-arrogant-to-die": {
+    "name": "Too Arrogant To Die",
+    "type": "Bully Boyz – Strategic Ploy Stratagem",
+    "turn": "either",
+    "phases": ["shooting", "fight"],
+    "cpCost": 1,
+    "summary": "5+ to let a slain model shoot or fight before it goes.",
+    "when": "Your opponent’s Shooting phase or the Fight phase, just after an enemy unit has selected its targets.",
+    "target": "One <strong>NOBZ</strong> or <strong>MEGANOBZ</strong> unit from your army that was selected as the target of one or more of the attacking unit’s attacks.",
+    "effect": "Until the end of the phase, each time a model in your unit is destroyed, if that model has not shot or fought this phase, roll one D6, adding 2 to the result if a <strong>Waaagh!</strong> is active for your unit. On a 5+, do not remove the destroyed model from play; it can shoot or fight after the attacking unit has finished making its attacks, and is then removed from play.",
+    "detachment": "bully-boyz"
+  },
+
+  "always-lookin-fer-a-fight": {
+    "name": "Always Lookin’ Fer a Fight",
+    "type": "Bully Boyz – Strategic Ploy Stratagem",
+    "turn": "either",
+    "phases": ["fight"],
+    "cpCost": 1,
+    "summary": "D3+3\" Consolidation moves, or 6\" under a Waaagh!.",
+    "when": "Fight phase, just after an enemy unit is destroyed.",
+    "target": "One <strong>NOBZ</strong> or <strong>MEGANOBZ</strong> unit from your army that destroyed that enemy unit.",
+    "effect": "Until the end of the phase, each time your unit makes a Consolidation move, it can move up to D3+3\" instead of up to 3\". If a <strong>Waaagh!</strong> is active for your unit, it can move up to 6\" instead.",
+    "detachment": "bully-boyz"
+  },
+
+  "krushin-impact": {
+    "name": "Krushin’ Impact",
+    "type": "Bully Boyz – Epic Deed Stratagem",
+    "turn": "your",
+    "phases": ["charge"],
+    "cpCost": 1,
+    "summary": "Mortal wounds on a 5+ per model, or a 4+ under a Waaagh!.",
+    "when": "Your Charge phase, just after a <strong>NOBZ</strong> or <strong>MEGANOBZ</strong> unit from your army ends a Charge move.",
+    "target": "That <strong>NOBZ</strong> or <strong>MEGANOBZ</strong> unit.",
+    "effect": "Select one enemy unit within Engagement Range of your unit, then roll one D6 for each model in your unit that is within Engagement Range of that enemy unit: for each 5+, that enemy unit suffers 1 mortal wound (to a maximum of 6 mortal wounds). If a <strong>Waaagh!</strong> is active for your unit, that enemy unit suffers 1 mortal wound for each 4+ instead.",
+    "detachment": "bully-boyz"
+  },
+
+  "cut-em-down": {
+    "name": "Cut ’Em Down",
+    "_name_note": "Ran together as \"CUT'EM DOWN\" in the supplied text; spacing restored, wording untouched.",
+    "type": "Bully Boyz – Battle Tactic Stratagem",
+    "turn": "opponent",
+    "phases": ["movement"],
+    "cpCost": 1,
+    "summary": "Force Desperate Escape tests, at −1 under a Waaagh!.",
+    "when": "Your opponent’s Movement phase, just after an enemy unit is selected to Fall Back.",
+    "target": "One <strong>NOBZ</strong> or <strong>MEGANOBZ</strong> unit from your army within Engagement Range of that enemy unit.",
+    "effect": "When that enemy unit Falls Back, all models in that enemy unit must take a Desperate Escape test. When doing so, if a <strong>Waaagh!</strong> is active for your unit, subtract 1 from each of those tests.",
+    "detachment": "bully-boyz"
+  },
+
+  "hulking-brutes": {
+    "name": "Hulking Brutes",
+    "type": "Bully Boyz – Battle Tactic Stratagem",
+    "turn": "opponent",
+    "phases": ["shooting"],
+    "cpCost": 1,
+    "summary": "Worsen the AP of every attack against your unit by 1.",
+    "when": "Your opponent’s Shooting phase, just after an enemy unit has selected its targets.",
+    "target": "One <strong>NOBZ</strong> or <strong>MEGANOBZ</strong> unit from your army that was selected as the target of one or more of the attacking unit’s attacks.",
+    "effect": "Until the attacking unit has finished making its attacks, each time an attack targets your unit, worsen the Armour Penetration characteristic of that attack by 1.",
+    "detachment": "bully-boyz"
   }
 }

@@ -75,6 +75,16 @@
       "_grants_note": "Mob Mentality is conditional on UNIT SIZE, not on a keyword, so it cannot be expressed as a `grants` entry — those match keywords only. The app does track models per instance, so a size-aware invulnerable save is buildable; it is not built, because no matched-play BOYZ datasheet exists yet and nothing has asked for it. Rule text only for now.",
       "_size_note": "Several Enhancements and Stratagems in this detachment also key off 'contains 10 or more models', and two of them (Raucous Warcaller, Braggin' Rights) let a unit COUNT as 10+ without being 10+. Any future size-aware display has to honour those overrides, not just read inst.models.",
       "ruleDescription": "<strong>Mob Mentality:</strong> Each time an attack targets a <strong>BOYZ</strong> unit from your army, models in that unit have a 6+ invulnerable save against that attack. Each time an attack targets a <strong>BOYZ</strong> unit from your army that contains 10 or more models, models in that unit have a 5+ invulnerable save against that attack."
+    },
+    "bully-boyz": {
+      "name": "Bully Boyz",
+      "dp": 2,
+      "category": "Purge the Foe",
+      "unique": null,
+      "ruleId": "bully-boyz-da-boss-is-watchin",
+      "ruleType": "Detachment Rule — Bully Boyz",
+      "_grants_note": "This rule changes how many times the Waaagh! can be called, and scopes the second one to WARBOSS, NOBZ and MEGANOBZ. It is not a keyword grant. The app's Waaagh! button (FACTION_CALL_ID / FACTION_CALL_TABS in index.html) is Combat Patrol only and tracks no per-battle count, so nothing here is wired to it — rule text only.",
+      "ruleDescription": "<strong>Da Boss Is Watchin’:</strong> At the start of your Command phase, in a turn in which you have not called a <strong>Waaagh!</strong>, if you have one or more <strong>WARBOSS</strong> models on the battlefield (or embarked within a <strong>TRANSPORT</strong> that is on the battlefield), you can call a <strong>Waaagh!</strong> for a second time this battle. When doing so, that second <strong>Waaagh!</strong> only counts as having been called for <strong>WARBOSS</strong>, <strong>NOBZ</strong> and <strong>MEGANOBZ</strong> units from your army."
     }
   }
 }

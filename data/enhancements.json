@@ -94,5 +94,51 @@
     "points": 20,
     "short": "−1 to Wound against the led unit when S beats T.",
     "description": "<strong>BEASTBOSS ON SQUIGOSAUR</strong> model only. While the bearer is leading a unit, each time an attack targets that unit, if the <strong>Strength</strong> characteristic of that attack is greater than the <strong>Toughness</strong> characteristic of that unit, subtract 1 from the Wound roll."
+  },
+
+  "_kult_of_speed_note": "Kult of Speed enhancements. Fasta Than Yooz restricts on a COMPOUND keyword — 'ORKS INFANTRY model only' is two keywords, so restrictedToKeyword is an array and every entry must be present on the unit.",
+
+  "fasta-than-yooz": {
+    "name": "Fasta Than Yooz",
+    "type": "Enhancement (35 pts)",
+    "restriction": "ORKS INFANTRY model only",
+    "restrictedToKeyword": ["ORKS", "INFANTRY"],
+    "detachment": "kult-of-speed",
+    "points": 35,
+    "short": "Bearer’s unit can charge after disembarking from a moved TRANSPORT.",
+    "description": "<strong>ORKS INFANTRY</strong> model only. Each time the bearer’s unit disembarks from a <strong>TRANSPORT</strong> after that <strong>TRANSPORT</strong> has made a Normal move, the bearer’s unit is still eligible to <strong>declare a charge</strong> this turn."
+  },
+
+  "speed-makes-right": {
+    "name": "Speed Makes Right",
+    "type": "Enhancement (25 pts)",
+    "restriction": "ORKS model only",
+    "restrictedToKeyword": "ORKS",
+    "detachment": "kult-of-speed",
+    "points": 25,
+    "short": "3+ on a D6 for 1CP while the bearer is near the enemy.",
+    "description": "<strong>ORKS</strong> model only. In your Command phase, if the bearer (or a <strong>TRANSPORT</strong> the bearer is embarked within) is within 9\" of one or more enemy units, roll one D6: on a 3+, you gain 1CP."
+  },
+
+  "squig-hide-tyres": {
+    "name": "Squig-hide Tyres",
+    "type": "Enhancement (15 pts)",
+    "restriction": "DEFFKILLA WARTRIKE model only",
+    "restrictedToKeyword": "DEFFKILLA WARTRIKE",
+    "detachment": "kult-of-speed",
+    "points": 15,
+    "short": "6\" Consolidation moves instead of 3\".",
+    "description": "<strong>DEFFKILLA WARTRIKE</strong> model only. Each time a model in the bearer’s unit makes a Consolidation move, it can move up to 6\" instead of up to 3\"."
+  },
+
+  "wazblasta": {
+    "name": "Wazblasta",
+    "type": "Enhancement (10 pts)",
+    "restriction": "DEFFKILLA WARTRIKE model only",
+    "restrictedToKeyword": "DEFFKILLA WARTRIKE",
+    "detachment": "kult-of-speed",
+    "points": 10,
+    "short": "6\" move after shooting, at the cost of charging.",
+    "description": "<strong>DEFFKILLA WARTRIKE</strong> model only. In your Shooting phase, after the bearer’s unit has shot, if it is not within Engagement Range of one or more enemy units, it can make a Normal move of up to 6\". If it does, until the end of the turn, it is not eligible to <strong>declare a charge</strong>."
   }
 }

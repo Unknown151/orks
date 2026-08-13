@@ -1,16 +1,19 @@
 {
   "_note": "Every ability/keyword the app can show, keyed by id. Entries flagged needsVerification:true are edition-core rules seeded as scaffolding — diff their wording against your 11th-ed source and drop the flag once checked. Delete this _note key whenever you like; the loader ignores keys starting with an underscore.",
-
   "prophet-of-da-great-waaagh": {
     "name": "Prophet of Da Great Waaagh!",
     "type": "Ability — Ghazghkull Thraka",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "description": "While this unit is leading a unit, each time a model in that unit makes a melee attack, add 1 to the <strong>Hit roll</strong> and add 1 to the <strong>Wound roll</strong> and if the <strong>Waaagh!</strong> is active for your army, a <strong>Critical Hit</strong> is scored on a successful unmodified Hit roll of 5+."
   },
   "ghazghkulls-waaagh-banner": {
-    "name": "Ghazghkull\u2019s Waaagh! Banner (Aura)",
+    "name": "Ghazghkull’s Waaagh! Banner (Aura)",
     "type": "Ability — Ghazghkull Thraka",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "description": "While a friendly <strong>ORKS</strong> unit is within 12\" of Makari, if the <strong>Waaagh!</strong> is active for your army, melee weapons equipped by models in that unit have the <strong>[LETHAL HITS]</strong> ability."
   },
   "supreme-commander": {
@@ -26,7 +29,9 @@
   "totem-of-mork": {
     "name": "Totem of Mork (Psychic)",
     "type": "Ability — 'Ardmob Weirdboy",
-    "phases": ["command"],
+    "phases": [
+      "command"
+    ],
     "description": "At the end of your Command phase, if this unit is controlling an <strong>objective</strong>, that <strong>objective</strong> is <strong>secured</strong>."
   },
   "psychic": {
@@ -37,19 +42,25 @@
   "cleave": {
     "name": "Cleave",
     "type": "Weapon Ability",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "description": "This ability always takes the form <strong>[CLEAVE X]</strong>. Each time you gather <strong>attack dice</strong> for a <strong>[CLEAVE]</strong> weapon, if you only selected one target for all of that weapon's attacks, add <strong>X</strong> additional <strong>attack dice</strong> for every five models that were in the target unit in the Select Targets step (rounding down)."
   },
   "smash-em-up": {
     "name": "Smash 'Em Up",
     "type": "Ability — 'Ardmob Warboss",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "description": "In the Fight phase, when this unit is <strong>selected to fight</strong>, this unit's melee attacks have:<br>• <strong>[LETHAL HITS]</strong>.<br>• <u>Or:</u> <strong>[SUSTAINED HITS 1]</strong>."
   },
   "indiscriminate-detonations": {
     "name": "Indiscriminate Detonations",
     "type": "Ability — 'Ardmob Wartrakk",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "description": "In your Shooting phase, when this unit has shot, select one enemy unit hit by those attacks. That unit is <strong>suppressed</strong> until the start of your next turn:<br>• While a unit is <strong>suppressed</strong>, that unit's attacks have -1 to <strong>hit rolls</strong>."
   },
   "grot-infestation": {
@@ -60,152 +71,195 @@
   "close-quarters": {
     "name": "Close-quarters",
     "type": "Weapon Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "description": "Units containing one or more models with a <strong>[CLOSE-QUARTERS]</strong> weapon can shoot using <strong>close-quarters shooting</strong> (10.06).<br><br>When using another <strong>shooting type</strong>, for each model in that unit (excluding <strong>MONSTER/VEHICLE</strong> models), you can only select <u>one</u> of the following to make attacks with:<br>• One or more of its <strong>[CLOSE-QUARTERS]</strong> weapons.<br>• One or more of its other ranged weapons."
   },
   "waaagh": {
     "name": "Waaagh!",
     "type": "Faction Ability — Orks",
     "description": "If your Army Faction is <strong>ORKS</strong>, once per battle, at the start of your Command phase, you can call a Waaagh!. If you do, until the start of your next Command phase, the Waaagh! is active for your army and:<br>• Units from your army with this ability are eligible to declare a charge in a turn in which they <strong>Advanced</strong>.<br>• Add 1 to the <strong>Strength</strong> and <strong>Attacks</strong> characteristics of melee weapons equipped by models from your army with this ability.<br>• Models from your army with this ability have a <strong>5+ invulnerable save</strong>.",
-
     "_call_note": "These keys drive the always-on call button at the bottom of the screen. Remove them and the button disappears — it is entirely data-driven.",
     "callLabel": "WAAAGH! CALLED",
     "callWhen": "Start of the Command phase · once per battle",
     "callDuration": "Until the start of your next Command phase",
     "callEffect": "• Eligible to <strong>declare a charge</strong> in a turn in which they <strong>Advanced</strong>.<br>• +1 <strong>S</strong> and +1 <strong>A</strong> on melee weapons.<br>• <strong>5+ invulnerable save</strong>.",
-
     "_callEffects_note": "Applied live to unit cards while the call is active, and only to units whose factionAbilities include this ability. Changed values pulse green. The charge bullet has no stat to change, so it lives in the text only.",
     "callEffects": {
-      "meleeWeapon": { "s": 1, "a": 1 },
+      "meleeWeapon": {
+        "s": 1,
+        "a": 1
+      },
       "invulnerableSave": "5+"
     },
-
     "_callGif_note": "Optional background flourish played when the button is pressed. Drop the file at this path; if it is missing or fails to load, nothing happens and the button behaves exactly as before. Remove this key to switch the flourish off.",
     "callGif": "assets/waaagh.gif"
   },
-
   "lethal-hits": {
     "name": "Lethal Hits",
     "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "needsVerification": true,
     "description": "Each Critical Hit scored with this weapon automatically wounds the target."
   },
   "sustained-hits": {
     "name": "Sustained Hits",
     "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "needsVerification": true,
     "description": "Each Critical Hit scored with this weapon scores a number of additional hits on the target, as specified by the ability (e.g. <strong>Sustained Hits 1</strong>)."
   },
   "devastating-wounds": {
     "name": "Devastating Wounds",
     "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "description": "Each time an attack made with a <strong>[DEVASTATING WOUNDS]</strong> weapon results in a <strong>critical wound</strong>, the attack sequence for that attack ends and the target unit suffers a number of <strong>mortal wounds</strong> equal to the <strong>D</strong> characteristic of that weapon. These are inflicted after resolving any normal damage inflicted by those attacks.<br><br><strong>Mortal wounds</strong> inflicted by <strong>[DEVASTATING WOUNDS]</strong> weapons can damage a maximum of one model for each <strong>critical wound</strong>; any remaining <strong>mortal wounds</strong> inflicted by that attack are lost.<br><br><strong>Example:</strong> <em>An attack made with a <strong>[DEVASTATING WOUNDS]</strong> weapon with a <strong>D</strong> characteristic of 3 results in a <strong>critical wound</strong> against an Intercessor Squad, so inflicts 3 <strong>mortal wounds</strong>. The first 2 <strong>mortal wounds</strong> are sufficient to destroy 1 Intercessor model, so the remaining <strong>mortal wound</strong> is lost.</em>"
   },
   "rapid-fire": {
     "name": "Rapid Fire",
     "type": "Weapon Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "description": "This ability always takes the form <strong>[RAPID FIRE X]</strong>. Each time you gather <strong>attack dice</strong> for a <strong>[RAPID FIRE]</strong> weapon, add <strong>X</strong> additional <strong>attack dice</strong> if the target unit was within half range of that weapon in the Select Targets step.<br><br><strong>Example:</strong> If a <strong>[RAPID FIRE 1]</strong> weapon with an <strong>A</strong> characteristic of 1 targets a unit that is within half range, you would gather one additional <strong>attack dice</strong> for that weapon (for a total of two for that weapon)."
   },
   "assault": {
     "name": "Assault",
     "type": "Weapon Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "needsVerification": true,
     "description": "This weapon can be shot by a unit that Advanced this turn."
   },
   "heavy": {
     "name": "Heavy",
     "type": "Weapon Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "needsVerification": true,
     "description": "Add 1 to Hit rolls with this weapon if the bearer's unit Remained Stationary this turn."
   },
   "pistol": {
     "name": "Pistol",
     "type": "Weapon Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "needsVerification": true,
     "description": "This weapon can be shot even when the bearer's unit is within Engagement Range of enemy units, but it can then only target one of those enemy units."
   },
   "blast": {
     "name": "Blast",
     "type": "Weapon Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "description": "Each time you gather <strong>attack dice</strong> for a <strong>[BLAST]</strong> weapon, add one additional <strong>attack dice</strong> for every five models that were in the target unit in the Select Targets step (rounding down).<br><br>If this ability takes the form <strong>[BLAST X]</strong>, each time you gather <strong>attack dice</strong> for such a weapon, add <strong>X</strong> additional <strong>attack dice</strong> for every five models that were in the target unit in the Select Targets step (rounding down) instead.<br><br><strong>Example:</strong> <em>If a <strong>[BLAST 2]</strong> weapon with an <strong>A</strong> characteristic of 3 targets a unit containing 12 models, you would gather four additional <strong>attack dice</strong> for that weapon (for a total of seven for that weapon).</em>"
   },
   "torrent": {
     "name": "Torrent",
     "type": "Weapon Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "needsVerification": true,
     "description": "Attacks made with this weapon automatically hit the target."
   },
   "precision": {
     "name": "Precision",
     "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "description": "While resolving attacks made with one or more <strong>[PRECISION]</strong> weapons, at the start of the Allocation Order step (05.03), if the target unit contains one or more <strong>CHARACTER</strong> models <strong>visible</strong> to one or more of the attacking models, the active player can select one allocation group that contains one of those <strong>visible CHARACTER</strong> models. If they do, until those attacks are resolved, or until that <strong>CHARACTER</strong> group is destroyed (whichever happens first), that <strong>CHARACTER</strong> group is the current allocation group."
   },
   "ignores-cover": {
     "name": "Ignores Cover",
     "type": "Weapon Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "needsVerification": true,
     "description": "The target cannot have the Benefit of Cover against attacks made with this weapon."
   },
   "hazardous": {
     "name": "Hazardous",
     "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "description": "Each time a unit is <strong>selected to shoot</strong> or <strong>selected to fight</strong>, after that unit has resolved all of its attacks, make a number of <strong>hazard rolls</strong> (06.03) for that unit equal to the number of <strong>[HAZARDOUS]</strong> weapons you selected in the Select Weapons step."
   },
   "melta": {
     "name": "Melta",
     "type": "Weapon Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "needsVerification": true,
     "description": "Add the specified value to this weapon's Damage characteristic when it targets a unit within half range (e.g. <strong>Melta 2</strong>)."
   },
   "lance": {
     "name": "Lance",
     "type": "Weapon Ability",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "needsVerification": true,
     "description": "Add 1 to Wound rolls with this weapon if the bearer's unit made a Charge move this turn."
   },
   "twin-linked": {
     "name": "Twin-linked",
     "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "needsVerification": true,
     "description": "Re-roll the Wound roll for attacks made with this weapon."
   },
   "extra-attacks": {
     "name": "Extra Attacks",
     "type": "Weapon Ability",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "needsVerification": true,
     "description": "Attacks with this weapon are made in addition to the attacks made with the bearer's other melee weapon."
   },
   "anti": {
     "name": "Anti-",
     "type": "Weapon Ability",
-    "phases": ["shooting", "fight"],
+    "phases": [
+      "shooting",
+      "fight"
+    ],
     "needsVerification": true,
     "description": "Wound rolls of the specified value or better against the specified target keyword are Critical Wounds (e.g. <strong>Anti-Vehicle 4+</strong>)."
   },
   "indirect-fire": {
     "name": "Indirect Fire",
     "type": "Weapon Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "needsVerification": true,
     "description": "This weapon can target units that are not visible to the bearer, with penalties to the Hit roll and the target gaining the Benefit of Cover."
   },
-
   "leader": {
     "name": "Leader",
     "type": "Core Ability",
@@ -245,7 +299,9 @@
   "fights-first": {
     "name": "Fights First",
     "type": "Core Ability",
-    "phases": ["fight"],
+    "phases": [
+      "fight"
+    ],
     "needsVerification": true,
     "description": "This unit fights in the Fights First step of the Fight phase."
   },
@@ -276,8 +332,20 @@
   "firing-deck": {
     "name": "Firing Deck",
     "type": "Core Ability",
-    "phases": ["shooting"],
+    "phases": [
+      "shooting"
+    ],
     "needsVerification": true,
     "description": "Each time this Transport shoots, it can also fire the ranged weapons of the specified number of models embarked within it (e.g. <strong>Firing Deck 6</strong>)."
+  },
+  "adrenaline-junkies": {
+    "name": "Adrenaline Junkies",
+    "type": "Detachment Rule — Kult of Speed",
+    "phases": [
+      "movement",
+      "shooting",
+      "charge"
+    ],
+    "description": "<strong>SPEED FREEKS</strong> units from your army are eligible to <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which they <strong>Advanced</strong> or <strong>Fell Back</strong>."
   }
 }

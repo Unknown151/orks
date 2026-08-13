@@ -115,6 +115,25 @@ t('leaderBonus appliesTo respected (no inherit on ranged)',
 t('granted ability shows on MOB unit', await p.evaluate(()=>getDetachmentGrantedAbilities(DATA.units['demo-boyz']).length)===1);
 t('granted ability absent on non-MOB', await p.evaluate(()=>getDetachmentGrantedAbilities(DATA.units['demo-buggy']).length)===0);
 
+// --- compound keyword restrictions ("ORKS INFANTRY model only" is two keywords)
+t('single keyword still matches', await p.evaluate(()=>unitHasKeyword(DATA.units['demo-boyz'],'MOB'))===true);
+t('array requires every keyword',
+  await p.evaluate(()=>unitHasKeyword(DATA.units['demo-boyz'],['ORKS','INFANTRY']))===true);
+t('array fails when one keyword is missing',
+  await p.evaluate(()=>unitHasKeyword(DATA.units['demo-buggy'],['ORKS','INFANTRY']))===false);
+t('array is AND, not OR',
+  await p.evaluate(()=>unitHasKeyword(DATA.units['demo-buggy'],['ORKS','NOPE']))===false);
+t('empty array matches everything, like no restriction',
+  await p.evaluate(()=>unitHasKeyword(DATA.units['demo-buggy'],[]))===true);
+t('compound restriction narrows enhancement eligibility', await p.evaluate(()=>{
+  const was=DATA.enhancements['extra-armour'].restrictedToKeyword;
+  DATA.enhancements['extra-armour'].restrictedToKeyword=['ORKS','INFANTRY'];
+  const boyz=eligibleEnhancements(armyList.find(i=>i.unitId==='demo-boyz')).map(e=>e.id);
+  const bug =eligibleEnhancements(armyList.find(i=>i.unitId==='demo-buggy')).map(e=>e.id);
+  DATA.enhancements['extra-armour'].restrictedToKeyword=was;
+  return boyz.includes('extra-armour') && !bug.includes('extra-armour');
+}));
+
 // --- enhancements / upgrades
 const wb=await p.evaluate(()=>armyList.find(i=>i.unitId==='demo-warboss').uid);
 t('warboss eligible for both', await p.evaluate(u=>eligibleEnhancements(armyList.find(i=>i.uid===u)).map(e=>e.id).sort().join(),wb)==='extra-armour,shiny-bit');

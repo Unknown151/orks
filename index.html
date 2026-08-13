@@ -336,7 +336,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.17.0';
+const VERSION = '0.18.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -540,9 +540,12 @@ function showDetachmentRules(){
 }
 // Keywords live in three places now — the shared list, a profile's own list, and
 // the Faction Keywords line. A rule that matches on one must see all of them.
+// `kw` may be an array, in which case EVERY keyword must be present: datasheets
+// restrict on compounds like "ORKS INFANTRY model only", which is two keywords.
 function unitHasKeyword(unit, kw){
-  if(!kw) return true;
+  if(!kw || (Array.isArray(kw) && !kw.length)) return true;
   if(!unit) return false;
+  if(Array.isArray(kw)) return kw.every(k => unitHasKeyword(unit, k));
   return (unit.keywords || []).includes(kw)
       || (unit.factionKeywords || []).includes(kw)
       || (unit.modelProfiles || []).some(p => (p.keywords || []).includes(kw));

@@ -37,6 +37,22 @@
       "ruleType": "Detachment Rule — Da Big Hunt",
       "_grants_note": "Da Hunt Is On is STATEFUL: every benefit is conditional on the Prey unit you nominate each Command phase. There is nothing unconditional to hand out, so this detachment deliberately has no `grants` / `grantsWeaponAbilities` and puts no badges on unit cards. Read the rule from the scroll icon in the header. Do not invent a grant to make it look busier.",
       "ruleDescription": "<strong>Da Hunt Is On:</strong> At the start of your Command phase, select one <strong>MONSTER</strong>, <strong>VEHICLE</strong> or <strong>CHARACTER</strong> unit from your opponent’s army. Until the start of your next Command phase, that enemy unit is your <strong>Prey</strong>:<br>• When a friendly <strong>BEAST SNAGGA</strong> unit declares a charge, if your <strong>Prey</strong> is within 12\" of that unit, you can use this part of this ability. If you do: that <strong>BEAST SNAGGA</strong> unit can re-roll that charge roll; and that <strong>BEAST SNAGGA</strong> unit must end that charge move engaged with your <strong>Prey</strong>.<br>• Each time a <strong>BEAST SNAGGA</strong> model from your army makes an attack that targets your <strong>Prey</strong>, improve the Armour Penetration characteristic of that attack by 1."
+    },
+    "kult-of-speed": {
+      "name": "Kult of Speed",
+      "dp": 2,
+      "category": "Disruption",
+      "unique": null,
+      "ruleId": "adrenaline-junkies",
+      "ruleType": "Detachment Rule — Kult of Speed",
+      "_grants_note": "Unlike Da Hunt Is On, this rule is unconditional for every SPEED FREEKS unit, so it is a real `grants` entry and shows as a dashed badge on matching unit cards. The ability it points at lives in data/abilities.json.",
+      "grants": [
+        {
+          "keyword": "SPEED FREEKS",
+          "abilityId": "adrenaline-junkies"
+        }
+      ],
+      "ruleDescription": "<strong>Adrenaline Junkies:</strong> <strong>SPEED FREEKS</strong> units from your army are eligible to <strong>shoot</strong> and <strong>declare a charge</strong> in a turn in which they <strong>Advanced</strong> or <strong>Fell Back</strong>."
     }
   }
 }

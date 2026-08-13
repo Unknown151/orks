@@ -287,5 +287,55 @@
       "deep-strike"
     ],
     "description": "<strong>WARBOSS IN MEGA ARMOUR</strong> model only. Models in the bearer’s unit have the <strong>Deep Strike</strong> ability."
+  },
+
+  "_freebooter_krew_note": "Freebooter Krew enhancements. Bionik Workshop is the first OR restriction — 'BIG MEK or PAINBOY model only' — so it uses restrictedToAnyKeyword (any one keyword matches) rather than restrictedToKeyword (every keyword must match). Do not merge the two fields.",
+
+  "da-kaptin": {
+    "name": "Da Kaptin",
+    "type": "Enhancement (10 pts)",
+    "restriction": "WARBOSS model only",
+    "restrictedToKeyword": "WARBOSS",
+    "detachment": "freebooter-krew",
+    "points": 10,
+    "short": "Clear Battle-shock on a nearby unit for D3 mortal wounds.",
+    "description": "<strong>WARBOSS</strong> model only. Once per battle round, at the start of any phase, you can select one friendly <strong>ORKS</strong> unit that is Battle-shocked and within 12\" of the bearer. That unit suffers D3 mortal wounds and it is no longer Battle-shocked."
+  },
+
+  "git-spotter-squig": {
+    "name": "Git-spotter Squig",
+    "type": "Enhancement (20 pts)",
+    "restriction": "ORKS model only",
+    "restrictedToKeyword": "ORKS",
+    "detachment": "freebooter-krew",
+    "points": 20,
+    "short": "Bearer’s unit gains [IGNORES COVER] on ranged weapons.",
+    "grantsAbilities": [
+      "ignores-cover"
+    ],
+    "description": "<strong>ORKS</strong> model only. Ranged weapons equipped by models in the bearer’s unit have the <strong>[IGNORES COVER]</strong> ability."
+  },
+
+  "bionik-workshop": {
+    "name": "Bionik Workshop",
+    "type": "Enhancement (15 pts)",
+    "restriction": "BIG MEK or PAINBOY model only",
+    "restrictedToAnyKeyword": ["BIG MEK", "PAINBOY"],
+    "detachment": "freebooter-krew",
+    "points": 15,
+    "short": "Roll a D3 at the start of the battle for one of three bioniks.",
+    "_d3_note": "The D3 column was not printed in the supplied text, but a D3 has exactly three outcomes and exactly three bioniks are listed, so 1/2/3 in the order given is the only possible mapping. Correct it if the datasheet says otherwise.",
+    "description": "<strong>BIG MEK</strong> or <strong>PAINBOY</strong> model only. At the start of the battle, roll one D3 and compare the result to the list below. Until the end of the battle, models in the bearer’s unit have that bioniks ability.<br>• <strong>1 — Bionik Legs:</strong> Add 2\" to the <strong>Move</strong> characteristic of this model.<br>• <strong>2 — Bionik Arms:</strong> Add 1 to the <strong>Strength</strong> characteristic of melee weapons equipped by this model.<br>• <strong>3 — Bionik Bonce:</strong> Improve the <strong>Weapon Skill</strong> characteristic of melee weapons equipped by this model by 1."
+  },
+
+  "razgits-magik-map": {
+    "name": "Razgit’s Magik Map",
+    "type": "Enhancement (25 pts)",
+    "restriction": "ORKS model only",
+    "restrictedToKeyword": "ORKS",
+    "detachment": "freebooter-krew",
+    "points": 25,
+    "short": "Redeploy up to three ORKS INFANTRY units, Reserves allowed.",
+    "description": "<strong>ORKS</strong> model only. After both players have deployed their armies, select up to three <strong>ORKS INFANTRY</strong> units from your army and redeploy them. When doing so, you can set those units up in Strategic Reserves, regardless of how many units are already in Strategic Reserves."
   }
 }

@@ -125,6 +125,26 @@ t('array is AND, not OR',
   await p.evaluate(()=>unitHasKeyword(DATA.units['demo-buggy'],['ORKS','NOPE']))===false);
 t('empty array matches everything, like no restriction',
   await p.evaluate(()=>unitHasKeyword(DATA.units['demo-buggy'],[]))===true);
+// ...and the OR counterpart: "BIG MEK or PAINBOY model only".
+t('any-keyword matches on the first', await p.evaluate(()=>unitHasAnyKeyword(DATA.units['demo-buggy'],['VEHICLE','NOPE']))===true);
+t('any-keyword matches on the last', await p.evaluate(()=>unitHasAnyKeyword(DATA.units['demo-buggy'],['NOPE','VEHICLE']))===true);
+t('any-keyword fails when none match', await p.evaluate(()=>unitHasAnyKeyword(DATA.units['demo-buggy'],['NOPE','ALSO-NOPE']))===false);
+t('any-keyword is OR, not AND',
+  await p.evaluate(()=>unitHasAnyKeyword(DATA.units['demo-buggy'],['VEHICLE','INFANTRY']))===true);
+t('AND and OR disagree on the same input, proving they are distinct', await p.evaluate(()=>
+  unitHasAnyKeyword(DATA.units['demo-buggy'],['VEHICLE','INFANTRY'])===true &&
+  unitHasKeyword(DATA.units['demo-buggy'],['VEHICLE','INFANTRY'])===false));
+t('restrictedToAnyKeyword gates enhancement eligibility', await p.evaluate(()=>{
+  const e=DATA.enhancements['extra-armour'];
+  e.restrictedToAnyKeyword=['VEHICLE','MOB'];
+  const boyz=eligibleEnhancements(armyList.find(i=>i.unitId==='demo-boyz')).map(x=>x.id);
+  const bug =eligibleEnhancements(armyList.find(i=>i.unitId==='demo-buggy')).map(x=>x.id);
+  e.restrictedToAnyKeyword=['CHARACTER'];
+  const boyz2=eligibleEnhancements(armyList.find(i=>i.unitId==='demo-boyz')).map(x=>x.id);
+  delete e.restrictedToAnyKeyword;
+  // MOB and VEHICLE between them cover both units; CHARACTER covers neither.
+  return boyz.includes('extra-armour') && bug.includes('extra-armour') && !boyz2.includes('extra-armour');
+}));
 t('compound restriction narrows enhancement eligibility', await p.evaluate(()=>{
   const was=DATA.enhancements['extra-armour'].restrictedToKeyword;
   DATA.enhancements['extra-armour'].restrictedToKeyword=['ORKS','INFANTRY'];

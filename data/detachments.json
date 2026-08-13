@@ -85,6 +85,16 @@
       "ruleType": "Detachment Rule — Bully Boyz",
       "_grants_note": "This rule changes how many times the Waaagh! can be called, and scopes the second one to WARBOSS, NOBZ and MEGANOBZ. It is not a keyword grant. The app's Waaagh! button (FACTION_CALL_ID / FACTION_CALL_TABS in index.html) is Combat Patrol only and tracks no per-battle count, so nothing here is wired to it — rule text only.",
       "ruleDescription": "<strong>Da Boss Is Watchin’:</strong> At the start of your Command phase, in a turn in which you have not called a <strong>Waaagh!</strong>, if you have one or more <strong>WARBOSS</strong> models on the battlefield (or embarked within a <strong>TRANSPORT</strong> that is on the battlefield), you can call a <strong>Waaagh!</strong> for a second time this battle. When doing so, that second <strong>Waaagh!</strong> only counts as having been called for <strong>WARBOSS</strong>, <strong>NOBZ</strong> and <strong>MEGANOBZ</strong> units from your army."
+    },
+    "freebooter-krew": {
+      "name": "Freebooter Krew",
+      "dp": 2,
+      "category": "Take and Hold",
+      "unique": null,
+      "ruleId": "freebooter-krew-here-be-loot",
+      "ruleType": "Detachment Rule — Freebooter Krew",
+      "_grants_note": "Here Be Loot is the second nominated-target rule after Da Big Hunt's Prey: you pick a loot objective each Command phase, and [SUSTAINED HITS 1] only applies within range of it. Both the nomination and the range check are board state, so there is no static grant and no badge. Rule text only.",
+      "ruleDescription": "<strong>Here Be Loot:</strong> At the start of your Command phase, select one objective marker. Until the start of your next Command phase, that objective marker is your <strong>loot objective</strong>.<br><br>Each time a model in an <strong>ORKS INFANTRY</strong>, <strong>ORKS MOUNTED</strong> or <strong>ORKS WALKER</strong> unit from your army makes an attack, that attack has the <strong>[SUSTAINED HITS 1]</strong> ability if either or both of the following are true:<br>• That model’s unit is within range of your <strong>loot objective</strong>.<br>• That attack targets a unit within range of your <strong>loot objective</strong>."
     }
   }
 }

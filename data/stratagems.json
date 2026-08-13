@@ -616,5 +616,86 @@
     "target": "One <strong>NOBZ</strong> or <strong>MEGANOBZ</strong> unit from your army that was selected as the target of one or more of the attacking unit’s attacks.",
     "effect": "Until the attacking unit has finished making its attacks, each time an attack targets your unit, worsen the Armour Penetration characteristic of that attack by 1.",
     "detachment": "bully-boyz"
+  },
+
+  "_freebooter_krew_note": "Freebooter Krew detachment stratagems. Several reference the loot objective nominated by the Here Be Loot detachment rule; the app does not track it, so the wording carries the condition.",
+
+  "bash-and-grab": {
+    "name": "Bash and Grab",
+    "type": "Freebooter Krew – Battle Tactic Stratagem",
+    "turn": "either",
+    "phases": ["fight"],
+    "cpCost": 1,
+    "summary": "Re-roll Wound rolls against a unit on the loot objective.",
+    "when": "The Fight phase.",
+    "target": "One <strong>ORKS</strong> unit from your army that has not been selected to fight this phase.",
+    "effect": "Until the end of the phase, each time a model in your unit makes an attack that targets an enemy unit within range of the <strong>loot objective</strong>, you can re-roll the Wound roll.",
+    "detachment": "freebooter-krew"
+  },
+
+  "grab-and-bash": {
+    "name": "Grab and Bash",
+    "type": "Freebooter Krew – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": ["command"],
+    "cpCost": 1,
+    "summary": "Turn the Waaagh! on for one unit, even if already called.",
+    "when": "Your Command phase.",
+    "target": "One <strong>ORKS</strong> unit from your army (excluding <strong>GRETCHIN</strong> units) that is within range of the <strong>loot objective</strong>.",
+    "effect": "Until the start of your next Command phase, the <strong>Waaagh!</strong> is active for your unit, even if you have already called a <strong>Waaagh!</strong> this battle.<br><br><em>Designer’s Note: This means that any abilities that are in effect while the Waaagh! is active for your army will be in effect for your unit.</em>",
+    "detachment": "freebooter-krew"
+  },
+
+  "boardin-rush": {
+    "name": "Boardin’ Rush",
+    "type": "Freebooter Krew – Battle Tactic Stratagem",
+    "turn": "your",
+    "phases": ["movement"],
+    "cpCost": 1,
+    "summary": "Advance without rolling — a flat +6\" Move instead.",
+    "when": "Your Movement phase.",
+    "target": "One <strong>ORKS</strong> unit from your army that has not been selected to move this phase.",
+    "effect": "Until the end of the phase, each time your unit Advances, do not make an Advance roll. Instead, until the end of the phase, add 6\" to the <strong>Move</strong> characteristic of models in your unit.",
+    "detachment": "freebooter-krew"
+  },
+
+  "deck-fraggers": {
+    "name": "Deck Fraggers",
+    "type": "Freebooter Krew – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": ["shooting"],
+    "cpCost": 1,
+    "summary": "Ranged weapons gain [BLAST] against INFANTRY.",
+    "when": "Your Shooting phase.",
+    "target": "One <strong>ORKS</strong> unit from your army that has not been selected to shoot this phase.",
+    "effect": "Until the end of the phase, each time a model in your unit targets an <strong>INFANTRY</strong> unit with a ranged weapon, that weapon has the <strong>[BLAST]</strong> ability.",
+    "detachment": "freebooter-krew"
+  },
+
+  "rolling-loot-heap": {
+    "name": "Rolling Loot-heap",
+    "type": "Freebooter Krew – Strategic Ploy Stratagem",
+    "turn": "your",
+    "phases": ["shooting"],
+    "cpCost": 1,
+    "summary": "Flash Gitz ranged weapons gain [ANTI-VEHICLE 4+].",
+    "when": "Your Shooting phase.",
+    "target": "One <strong>FLASH GITZ</strong> unit from your army that has not been selected to shoot this phase.",
+    "effect": "Until the end of the phase, ranged weapons equipped by models in your unit have the <strong>[ANTI-VEHICLE 4+]</strong> ability.",
+    "detachment": "freebooter-krew"
+  },
+
+  "krump-and-run": {
+    "name": "Krump and Run",
+    "type": "Freebooter Krew – Strategic Ploy Stratagem",
+    "turn": "opponent",
+    "phases": ["movement"],
+    "cpCost": 1,
+    "summary": "6\" Normal move when an engaged enemy Falls Back.",
+    "when": "Your opponent’s Movement phase, just after an enemy unit Falls Back.",
+    "_target_note": "The final clause reads 'is not within range of one or more enemy units' in the supplied text, where the parallel stratagems in other detachments say Engagement Range. Left verbatim rather than assumed — confirm against the datasheet.",
+    "target": "One <strong>ORKS</strong> unit from your army that was within Engagement Range of that enemy unit at the start of the phase and is not within range of one or more enemy units.",
+    "effect": "Your unit can make a Normal move of up to 6\".",
+    "detachment": "freebooter-krew"
   }
 }

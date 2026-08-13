@@ -138,8 +138,7 @@
 
   "careen": {
     "name": "Careen!",
-    "type": "War Horde Stratagem",
-    "_type_note": "The stratagem sub-category (Battle Tactic / Epic Deed / etc.) was not supplied for this one. Fill it in when known.",
+    "type": "War Horde \u2013 Epic Deed Stratagem",
     "turn": "either",
     "phases": ["command", "movement", "shooting", "charge", "fight"],
     "cpCost": 1,

@@ -2,7 +2,7 @@
   "id": "ghazghkull-thraka",
   "name": "Ghazghkull Thraka",
   "type": ["Infantry", "Character", "Epic Hero"],
-  "_keywords_note": "Transcribed from the printed KEYWORDS line, which is scoped: ALL MODELS carry the list below, while the Ghazghkull Thraka model additionally carries WARBOSS and GHAZGHKULL THRAKA (see modelProfiles). The separate FACTION KEYWORDS line was not in the supplied image — ORKS below is inferred and should be confirmed.",
+  "_keywords_note": "Transcribed from the printed KEYWORDS line, which is scoped: ALL MODELS carry the list below, while the Ghazghkull Thraka model additionally carries WARBOSS and GHAZGHKULL THRAKA (see modelProfiles). The separate FACTION KEYWORDS line was not in the supplied image, but ORKS below has since been confirmed. It is what the War Horde detachment rule and all four of its enhancements match on.",
   "keywords": ["INFANTRY", "CHARACTER", "EPIC HERO"],
   "factionKeywords": ["ORKS"],
 

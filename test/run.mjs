@@ -511,6 +511,33 @@ t('clearing the enhancement restores the datasheet Sv', await p.evaluate(()=>{
 // leader choice -> merged card, leader removed from its own slot
 await p.selectOption('#cpLeadSel','cp-nob'); await p.waitForTimeout(150);
 t('single legal target auto-selected', await p.evaluate(()=>cpChoice.target)!==null);
+// Picking a leader has to say what the leader actually brings, or the dropdown
+// is two names with no way to choose between them.
+// Always returns a shape, so a missing block fails the assertions below instead
+// of throwing and taking the rest of the suite down with it.
+const perk=()=>p.evaluate(()=>{
+  const b=document.querySelector('#cpChoice .lperk');
+  if(!b) return { missing:true, txt:'', pills:[] };
+  return { missing:false, txt:b.innerText, pills:[...b.querySelectorAll('.pill')].map(x=>
+    ({txt:x.textContent, ab:x.dataset.ab, grant:x.classList.contains('grant')})) };
+});
+t('leader summary appears once a leader is chosen', (await perk()).missing===false);
+t('summary names the leader\'s own datasheet ability',
+  (await perk()).pills.some(x=>x.txt==='Fights First' && x.ab==='fights-first' && !x.grant));
+t('summary carries that ability\'s rules text',
+  (await perk()).txt.includes('fights in the Fights First step'));
+t('summary lists what the leader gives the unit it leads',
+  (await perk()).pills.some(x=>x.txt==='Lethal Hits (led)' && x.ab==='lethal-hits' && x.grant));
+t('the injected ability is labelled with its weapon scope',
+  (await perk()).txt.includes('Gives the unit it leads (melee weapons)'));
+t('both kinds of perk are shown, not just one', (await perk()).pills.length===2);
+t('every perk pill opens its ability', (await perk()).pills.every(x=>x.ab));
+await p.selectOption('#cpLeadSel','cp-buggy'); await p.waitForTimeout(150);
+t('a leader with no abilities says so rather than showing an empty box',
+  (await perk()).txt.includes('no datasheet ability of its own'));
+t('  ...and shows no perk pills', (await perk()).pills.length===0);
+await p.selectOption('#cpLeadSel','cp-nob'); await p.waitForTimeout(150);
+t('summary follows the dropdown back', (await perk()).pills.length===2);
 t('attaching merges the cards', await p.evaluate(()=>document.querySelectorAll('#view-cp .leader-band').length)===2);
 t('attached leader loses its own card', await p.evaluate(()=>
   [...document.querySelectorAll('#view-cp .unit-hd h3')].filter(h=>h.firstChild.textContent.includes('CP Nob')).length)===0);
@@ -539,8 +566,10 @@ await p.selectOption('#cpLeadSel',''); await p.waitForTimeout(150);
 t('detaching restores the leader card', await p.evaluate(()=>document.querySelectorAll('#view-cp .unit').length)===4);
 t('  (control: the same keyword DOES grant in matched play)',
   await p.evaluate(()=>document.querySelectorAll('#view-army .pill.grant').length)>0);
+// Scoped to unit cards on purpose: the Force Choices panel legitimately shows a
+// grant pill for what an attached leader injects, which is not a leak.
 t('detachment grants do NOT leak into CP cards',
-  await p.evaluate(()=>document.querySelectorAll('#view-cp .pill.grant').length)===0);
+  await p.evaluate(()=>document.querySelectorAll('#view-cp .unit .pill.grant').length)===0);
 t('  ...and the CP unit really does carry the granted keyword',
   await p.evaluate(()=>DATA.cpUnits['cp-boyz'].keywords.includes('MOB')));
 // CP panels

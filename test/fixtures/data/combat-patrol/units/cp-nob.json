@@ -41,5 +41,17 @@
  ],
  "canLead": [
   "cp-boyz"
- ]
+ ],
+ "abilities": [
+  "fights-first"
+ ],
+ "leaderBonus": {
+  "appliesTo": "melee",
+  "grantsAbilities": [
+   {
+    "id": "lethal-hits",
+    "display": "Lethal Hits (led)"
+   }
+  ]
+ }
 }

@@ -172,6 +172,9 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 
 /* ---------- enhancement overview ---------- */
 .egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.lperk{margin-top:7px;padding:7px 9px;background:var(--card2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px}
+.lperk-r+.lperk-r{margin-top:7px;padding-top:7px;border-top:1px solid var(--line)}
+.lperk-d{font-size:12px;line-height:1.45;margin-top:3px}
 .ecard{background:var(--card2);border:1px solid var(--line);border-radius:9px;padding:8px 9px;text-align:left;cursor:pointer}
 .ecard .n{font-size:13px;font-weight:600}
 .ecard .p{font-size:11px;color:var(--accent);font-weight:700}
@@ -336,7 +339,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.23.1';
+const VERSION = '0.24.0';
 
 // Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
 // this number has changed between editions (guide §5.3).
@@ -1494,6 +1497,39 @@ const cpActiveEnh = () => {
   return e ? { id: cpChoice.enh, ...e } : null;
 };
 const cpLeaders = () => (DATA.combatPatrol?.leaderChoice?.leaders || []);
+// What attaching this leader actually buys you: its own datasheet abilities, plus
+// any weapon abilities it injects into the unit it leads. The faction call is
+// skipped — every unit in the force has it, so it says nothing about the choice.
+function cpLeaderPerks(id){
+  const u = DATA.cpUnits[id];
+  if(!u) return [];
+  const out = (u.abilities || []).map(a => ({ id:a, kind:'ability' }));
+  ((u.leaderBonus?.grantsAbilities) || []).forEach(a => out.push({
+    id: typeof a === 'string' ? a : a.id,
+    display: typeof a === 'string' ? null : a.display,
+    kind: 'grant',
+    appliesTo: u.leaderBonus.appliesTo
+  }));
+  return out;
+}
+function cpLeaderPerkBlock(id){
+  const perks = cpLeaderPerks(id);
+  const u = DATA.cpUnits[id];
+  if(!u) return '';
+  if(!perks.length) return `<div class="lperk"><div class="muted">This leader has no datasheet ability of its own.</div></div>`;
+  return `<div class="lperk">${perks.map(p => {
+    const a = DATA.abilities[p.id];
+    const name = p.display || a?.name || p.id;
+    const scope = p.kind === 'grant'
+      ? `Gives the unit it leads${p.appliesTo ? ` (${p.appliesTo} weapons)` : ''}`
+      : null;
+    return `<div class="lperk-r">
+      <span class="pill tap ${p.kind === 'grant' ? 'grant' : ''}" data-ab="${esc(p.id)}">${esc(name)}</span>
+      ${scope ? `<span class="muted" style="font-size:11px">${esc(scope)}</span>` : ''}
+      <div class="lperk-d">${a?.description || '<em>Rule to be added.</em>'}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
 // Roster entries the chosen leader is allowed to attach to.
 function cpLeaderTargets(leaderId){
   const lu = DATA.cpUnits[leaderId];
@@ -1624,6 +1660,7 @@ function renderCombatPatrol(){
           <option value="">— not attached —</option>
           ${targets.map(e => `<option value="${e.idx}" ${cpChoice.target===e.idx?'selected':''}>${esc(DATA.cpUnits[e.unit]?.name || e.unit)}${e.note?' — '+esc(e.note):''}</option>`).join('')}
         </select></div>` : ''}
+      ${cpChoice.leader ? cpLeaderPerkBlock(cpChoice.leader) : ''}
       <div class="muted" style="font-size:11.5px;margin-top:4px">${esc(cp.leaderChoice?.prompt || '')}</div>`);
   }
   const choiceSummary = [

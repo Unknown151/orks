@@ -1,0 +1,43 @@
+{
+  "id": "zodgrod-wortsnagga",
+  "name": "Zodgrod Wortsnagga",
+  "type": ["Infantry", "Character", "Epic Hero"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER", "EPIC HERO", "RUNTHERD"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": true,
+  "isEpicHero": true,
+
+  "points": 50,
+  "models": 1,
+  "modelBreakdown": "1 Zodgrod Wortsnagga",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 5, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Da Grabzappa; 1 Squigstoppa.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Squigstoppa", "count": 1, "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "-1", "d": "1",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}, "close-quarters", {"id": "devastating-wounds", "display": "Devastating Wounds: Monster/Vehicle"}] }
+    ],
+    "melee": [
+      { "name": "Da Grabzappa", "count": 1, "a": "5", "ws": "2+", "s": "7", "ap": "-2", "d": "2",
+        "abilities": [] }
+    ]
+  },
+
+  "_alwaysCalled_note": "Super Runts: this unit is riled up permanently, so its card always shows the riled-up effects, and so do the cards of the unit it leads.",
+  "alwaysCalled": true,
+
+  "abilities": ["super-runts"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["leader"],
+  "wargear": [],
+
+  "canLead": ["gretchin"]
+}

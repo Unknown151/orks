@@ -1,0 +1,40 @@
+{
+  "id": "boss-snikrot",
+  "name": "Boss Snikrot",
+  "type": ["Infantry", "Character", "Epic Hero"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER", "EPIC HERO", "EXPLOSIVES", "SMOKE"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": true,
+  "isEpicHero": true,
+
+  "points": 80,
+  "models": 1,
+  "modelBreakdown": "1 Boss Snikrot",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 6, "ld": "6+", "oc": 1 },
+
+  "invulnerableSave": "5+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Mork’s Teef; 1 Slugga.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Slugga", "count": 1, "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, "precision"] }
+    ],
+    "melee": [
+      { "name": "Mork’s Teef", "count": 1, "a": "6", "ws": "2+", "s": "6", "ap": "-2", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Infantry 2+"}, "precision"] }
+    ]
+  },
+
+  "abilities": ["kunnin-infiltrator", "deff-from-the-shadows"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["infiltrators", "leader", "lone-operative", "stealth"],
+  "wargear": [],
+
+  "canLead": ["kommandos"]
+}

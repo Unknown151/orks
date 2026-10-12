@@ -1,0 +1,49 @@
+{
+  "id": "deffkilla-wartrike",
+  "name": "Deffkilla Wartrike",
+  "type": ["Mounted", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["MOUNTED", "CHARACTER", "SPEED FREEKS", "WARBOSS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": true,
+  "isEpicHero": false,
+
+  "points": 80,
+  "models": 1,
+  "modelBreakdown": "1 Deffkilla Wartrike",
+
+  "stats": { "m": "12\"", "t": 6, "sv": "4+", "w": 9, "ld": "6+", "oc": 3 },
+
+  "invulnerableSave": "5+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Boomstikks; 1 Killa Jet; 1 Snagga Klaw.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Boomstikks", "count": 1, "range": "12\"", "a": "6", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": ["assault", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}] },
+      { "name": "Snagga Klaw", "count": 1, "range": "12\"", "a": "1", "bs": "5+", "s": "7", "ap": "-2", "d": "2",
+        "abilities": ["assault", "precision"] }
+    ],
+    "melee": [
+      { "name": "Killa Jet - Burna", "count": 1, "a": "3", "ws": "3+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}, "extra-attacks"],
+        "weaponGroup": "Killa Jet",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Killa Jet - Cutta", "count": 1, "a": "1", "ws": "3+", "s": "10", "ap": "-3", "d": "D6+2",
+        "abilities": ["extra-attacks"],
+        "weaponGroup": "Killa Jet" },
+      { "name": "Snagga Klaw", "count": 1, "a": "5", "ws": "2+", "s": "7", "ap": "-2", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 2"}] }
+    ]
+  },
+
+  "abilities": ["get-back-in-da-race", "fuel-mixa-grot"],
+  "factionAbilities": ["da-boss", "waaagh"],
+  "coreAbilities": [{"id": "deadly-demise", "display": "Deadly Demise 1"}, "leader"],
+  "wargear": [],
+
+  "canLead": ["warbikers"]
+}

@@ -265,6 +265,8 @@
     "detachment": "madcap-meks",
     "points": 30,
     "short": "This unit is always riled up.",
+    "_alwaysCalled_note": "'This unit is riled up' — permanently, so the bearer's card (and the unit it leads) always shows the riled-up effects.",
+    "alwaysCalled": true,
     "description": "<strong>BIG MEK</strong> model only. This unit is <strong>riled up</strong>."
   },
   "temperamental-shokka": {

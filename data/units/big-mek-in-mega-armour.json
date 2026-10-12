@@ -1,0 +1,80 @@
+{
+  "id": "big-mek-in-mega-armour",
+  "name": "Big Mek in Mega Armour",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "BIG MEK", "CHARACTER", "EXPLOSIVES", "MEGA ARMOUR"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": true,
+  "isEpicHero": false,
+
+  "points": 90,
+  "models": 1,
+  "modelBreakdown": "1 Big Mek in Mega Armour",
+
+  "stats": { "m": "5\"", "t": 6, "sv": "2+", "w": 5, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Kustom Shoota; 1 Power Klaw.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kombi-weapon - Shoota", "count": 1, "range": "18\"", "a": "2", "bs": "4+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 1"}],
+        "weaponGroup": "Kombi-weapon",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kombi-weapon - Kill Shot", "count": 1, "range": "24\"", "a": "1", "bs": "4+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [],
+        "weaponGroup": "Kombi-weapon" },
+      { "name": "Kombi-weapon - Point Blank", "count": 1, "range": "12\"", "a": "3", "bs": "-", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "torrent"],
+        "weaponGroup": "Kombi-weapon" },
+      { "name": "Kustom Mega-blasta", "count": 1, "range": "24\"", "a": "3", "bs": "4+", "s": "9", "ap": "-2", "d": "3",
+        "abilities": ["hazardous"] },
+      { "name": "Kustom Shoota - Aimed", "count": 1, "range": "18\"", "a": "4", "bs": "4+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}],
+        "weaponGroup": "Kustom Shoota",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kustom Shoota - Point Blank", "count": 1, "range": "6\"", "a": "D3+3", "bs": "-", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", "torrent"],
+        "weaponGroup": "Kustom Shoota" },
+      { "name": "Tellyport Blasta", "count": 1, "range": "12\"", "a": "6", "bs": "4+", "s": "9", "ap": "-2", "d": "3",
+        "abilities": [{"id": "blast", "display": "Blast 1"}] }
+    ],
+    "melee": [
+      { "name": "Killsaw", "count": 1, "a": "3", "ws": "4+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [] },
+      { "name": "Power Klaw", "count": 1, "a": "3", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": [] }
+    ]
+  },
+
+  "_wargearOptions_note": "Each option is one decision; the first choice is the printed loadout. `weapons` names a weapon or a weaponGroup; a weapon named by any choice is carried only while that choice is picked.",
+  "wargearOptions": [
+    { "id": "shoota", "label": "Kustom Shoota", "choices": [
+        { "id": "kustom-shoota", "name": "Kustom Shoota", "weapons": ["Kustom Shoota"] },
+        { "id": "killsaw", "name": "Killsaw", "weapons": ["Killsaw"] },
+        { "id": "kombi-weapon", "name": "Kombi-weapon", "weapons": ["Kombi-weapon"] },
+        { "id": "kustom-mega-blasta", "name": "Kustom Mega-blasta", "weapons": ["Kustom Mega-blasta"] } ] },
+    { "id": "extra", "label": "Also takes", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "tellyport-blasta", "name": "Tellyport Blasta", "weapons": ["Tellyport Blasta"] },
+        { "id": "kustom-force-field", "name": "Kustom Force Field", "weapons": [], "abilities": ["kustom-force-field"] } ] }
+  ],
+
+  "_unitWeaponAbilities_note": "\"This unit's ranged attacks have …\" reaches every model in the unit, so these show on this datasheet's own weapon rows and on the rest of an Attached unit. whileCalled entries only apply while the unit is riled up.",
+  "unitWeaponAbilities": [
+    { "appliesTo": "ranged", "abilityId": "ignores-cover", "display": "Ignores Cover" },
+    { "appliesTo": "ranged", "abilityId": "sustained-hits", "display": "Sustained Hits 1", "whileCalled": true }
+  ],
+
+  "abilities": ["fix-dat-armour-up", "more-dakka"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["leader"],
+  "wargear": [],
+
+  "canLead": ["meganobz", "mek-gunz"]
+}

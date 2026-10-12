@@ -1,0 +1,45 @@
+{
+  "id": "mek",
+  "name": "Mek",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER", "EXPLOSIVES"],
+  "factionKeywords": ["ORKS"],
+
+  "isSupport": true,
+  "isEpicHero": false,
+
+  "points": 55,
+  "models": 1,
+  "modelBreakdown": "1 Mek",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 4, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Kustom Mega-slugga; 1 Mek’s Toolz.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kustom Mega-slugga", "count": 1, "range": "12\"", "a": "3", "bs": "4+", "s": "8", "ap": "-2", "d": "3",
+        "abilities": ["close-quarters", "hazardous"] }
+    ],
+    "melee": [
+      { "name": "Mek’s Toolz", "count": 1, "a": "3", "ws": "3+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [] }
+    ]
+  },
+
+  "_unitWeaponAbilities_note": "\"This unit's ranged attacks have …\" reaches every model in the unit, so these show on this datasheet's own weapon rows and on the rest of an Attached unit. whileCalled entries only apply while the unit is riled up.",
+  "unitWeaponAbilities": [
+    { "appliesTo": "ranged", "abilityId": "ignores-cover", "display": "Ignores Cover" }
+  ],
+
+  "abilities": ["kustom-dakka", "clever-know-wotz"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["support"],
+  "wargear": [],
+
+  "canLead": ["boyz", "flash-gitz", "mek-gunz", "nobz", "tankbustas"]
+}

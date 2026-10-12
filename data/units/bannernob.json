@@ -1,0 +1,40 @@
+{
+  "id": "bannernob",
+  "name": "Bannernob",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER"],
+  "factionKeywords": ["ORKS"],
+
+  "isSupport": true,
+  "isEpicHero": false,
+
+  "points": 30,
+  "models": 1,
+  "modelBreakdown": "1 Bannernob",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "4+", "w": 4, "ld": "7+", "oc": 3 },
+
+  "invulnerableSave": "5+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Kustom Choppa; 1 Shoota.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Shoota", "count": 1, "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 1"}] }
+    ],
+    "melee": [
+      { "name": "Kustom Choppa", "count": 1, "a": "4", "ws": "3+", "s": "5", "ap": "-2", "d": "2",
+        "abilities": [] }
+    ]
+  },
+
+  "abilities": ["waaagh-banner"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["support"],
+  "wargear": [],
+
+  "canLead": ["boyz", "nobz"]
+}

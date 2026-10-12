@@ -1,0 +1,40 @@
+{
+  "id": "beastboss",
+  "name": "Beastboss",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "BEAST SNAGGA", "CHARACTER", "WARBOSS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": true,
+  "isEpicHero": false,
+
+  "points": 85,
+  "models": 1,
+  "modelBreakdown": "1 Beastboss",
+
+  "stats": { "m": "6\"", "t": 6, "sv": "4+", "w": 6, "ld": "6+", "oc": 1 },
+
+  "invulnerableSave": "5+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Shoota; 1 Beast Snagga Klaw and Beastchoppa.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Shoota", "count": 1, "range": "18\"", "a": "2", "bs": "4+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 1"}] }
+    ],
+    "melee": [
+      { "name": "Beast Snagga Klaw and Beastchoppa", "count": 1, "a": "6", "ws": "2+", "s": "12", "ap": "-2", "d": "2",
+        "abilities": [{"id": "sustained-hits", "display": "Sustained Hits 2: Monster/Vehicle"}] }
+    ]
+  },
+
+  "abilities": ["keep-huntin", "dodge-dis"],
+  "factionAbilities": ["da-boss", "waaagh"],
+  "coreAbilities": ["feel-no-pain-6", "leader"],
+  "wargear": [],
+
+  "canLead": ["beast-snagga-boyz"]
+}

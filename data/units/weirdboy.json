@@ -1,0 +1,40 @@
+{
+  "id": "weirdboy",
+  "name": "Weirdboy",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER", "PSYKER"],
+  "factionKeywords": ["ORKS"],
+
+  "isSupport": true,
+  "isEpicHero": false,
+
+  "points": 60,
+  "models": 1,
+  "modelBreakdown": "1 Weirdboy",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 4, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Power Vomit; 1 Copper Staff.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Power Vomit", "count": 1, "range": "12\"", "a": "3", "bs": "-", "s": "5", "ap": "-3", "d": "2",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "hazardous", "psychic", "torrent"] }
+    ],
+    "melee": [
+      { "name": "Copper Staff", "count": 1, "a": "3", "ws": "3+", "s": "8", "ap": "-1", "d": "2",
+        "abilities": ["psychic"] }
+    ]
+  },
+
+  "abilities": ["waaagh-energy", "da-jump", "warpath"],
+  "factionAbilities": ["unstable-energies", "waaagh"],
+  "coreAbilities": [{"id": "deadly-demise", "display": "Deadly Demise D3"}, "support"],
+  "wargear": [],
+
+  "canLead": ["beast-snagga-boyz", "boyz"]
+}

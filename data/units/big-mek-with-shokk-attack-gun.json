@@ -1,0 +1,54 @@
+{
+  "id": "big-mek-with-shokk-attack-gun",
+  "name": "Big Mek with Shokk Attack Gun",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "BIG MEK", "CHARACTER", "EXPLOSIVES"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": true,
+  "isEpicHero": false,
+
+  "points": 110,
+  "models": 1,
+  "modelBreakdown": "1 Big Mek with Shokk Attack Gun",
+  "_costing_note": "Printed as: 1st unit 110 pts, 2nd+ unit 125 pts.",
+  "costing": {
+    "escalationAfter": 1,
+    "tiers": [
+      [{ "models": 1, "points": 110 }],
+      [{ "models": 1, "points": 125 }]
+    ]
+  },
+
+  "stats": { "m": "6\"", "t": 5, "sv": "4+", "w": 5, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Big Mek’s Toolz; 1 Shokk Attack Gun.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Shokk Attack Gun", "count": 1, "range": "60\"", "a": "D3+3", "bs": "5+", "s": "12", "ap": "-4", "d": "D6+1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "heavy"] }
+    ],
+    "melee": [
+      { "name": "Big Mek’s Toolz", "count": 1, "a": "4", "ws": "3+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [] }
+    ]
+  },
+
+  "_unitWeaponAbilities_note": "\"This unit's ranged attacks have …\" reaches every model in the unit, so these show on this datasheet's own weapon rows and on the rest of an Attached unit. whileCalled entries only apply while the unit is riled up.",
+  "unitWeaponAbilities": [
+    { "appliesTo": "ranged", "abilityId": "ignores-cover", "display": "Ignores Cover" },
+    { "appliesTo": "ranged", "abilityId": "sustained-hits", "display": "Sustained Hits 1", "whileCalled": true }
+  ],
+
+  "abilities": ["more-dakka", "support-shokka"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["leader"],
+  "wargear": [],
+
+  "canLead": ["boyz", "mek-gunz", "nobz", "tankbustas"]
+}

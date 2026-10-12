@@ -1,0 +1,62 @@
+{
+  "id": "beastboss-on-squigosaur",
+  "name": "Beastboss on Squigosaur",
+  "type": ["Monster", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["MONSTER", "BEAST SNAGGA", "CHARACTER", "WARBOSS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+
+  "points": 140,
+  "models": 1,
+  "modelBreakdown": "1 Beastboss on Squigosaur",
+  "_costing_note": "Printed as: 1st to 2nd unit 140 pts, 3rd+ unit 155 pts.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 1, "points": 140 }],
+      [{ "models": 1, "points": 155 }]
+    ]
+  },
+
+  "stats": { "m": "10\"", "t": 9, "sv": "3+", "w": 10, "ld": "6+", "oc": 3 },
+
+  "invulnerableSave": "5+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Beastchoppa; 1 Slugga; 1 Squigosaur’s Jaws.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Slugga", "count": 1, "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}] },
+      { "name": "Thump Gun", "count": 1, "range": "18\"", "a": "3", "bs": "5+", "s": "6", "ap": "0", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}] }
+    ],
+    "melee": [
+      { "name": "Beastchoppa - Standard", "count": 1, "a": "6", "ws": "2+", "s": "6", "ap": "-2", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}],
+        "weaponGroup": "Beastchoppa",
+        "weaponGroupLabel": "Pick one eligible profile before selecting targets. A Hunter profile can only target units with the keywords it names." },
+      { "name": "Beastchoppa - Hunter", "count": 1, "a": "6", "ws": "2+", "s": "12", "ap": "-2", "d": "D6",
+        "abilities": [{"id": "hunter", "display": "Hunter: Monster/Vehicle"}],
+        "weaponGroup": "Beastchoppa" },
+      { "name": "Squigosaur’s Jaws", "count": 1, "a": "3", "ws": "3+", "s": "7", "ap": "-2", "d": "3",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 3+"}, "extra-attacks"] }
+    ]
+  },
+
+  "_wargearOptions_note": "Each option is one decision; the first choice is the printed loadout. `weapons` names a weapon or a weaponGroup; a weapon named by any choice is carried only while that choice is picked.",
+  "wargearOptions": [
+    { "id": "extra", "label": "Also takes", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "thump-gun", "name": "Thump Gun", "weapons": ["Thump Gun"] } ] }
+  ],
+
+  "abilities": ["thundering-stampede", "keep-huntin", "boss-of-da-hunt"],
+  "factionAbilities": ["da-boss", "waaagh"],
+  "coreAbilities": ["feel-no-pain-5"],
+  "wargear": []
+}

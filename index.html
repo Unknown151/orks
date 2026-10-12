@@ -353,7 +353,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.26.0';
+const VERSION = '0.27.0';
 
 // The army-wide Enhancement limit comes from the battle size (core rules 25.03),
 // which lives in data/detachments.json — see battleSize(). This is only the
@@ -751,21 +751,22 @@ function eligibleEnhancements(inst){
   }).map(([id,e]) => ({ id, ...e }));
 }
 // 25.04: no unit — including an Attached unit — can have more than one
-// Enhancement, and an Upgrade is an Enhancement. A leader and the unit it leads
-// are separate instances here, so the check has to look across the pair.
+// Enhancement, and an Upgrade is an Enhancement. A leader, a support unit and the
+// unit they join are separate instances here, so the check looks across all of
+// them. This is everyone else in the same Attached unit as `inst`.
 function attachedPartners(inst){
-  const out = [];
-  const l = leaderInstOf(inst);
-  if(l) out.push(l);
-  armyList.forEach(x => { if(x.leaderId === inst.uid) out.push(x); });
-  return out;
+  const host = hostOf(inst) || inst;          // the Bodyguard unit at the centre
+  return [host, leaderInstOf(host), supportInstOf(host)].filter(x => x && x.uid !== inst.uid);
 }
-const partnerWithEnhancement = inst =>
-  attachedPartners(inst).find(x => x.enhancementId && DATA.enhancements[x.enhancementId]) || null;
-// Would attaching this leader to this unit put two Enhancements in one Attached unit?
-const attachWouldClash = (inst, leader) =>
-  !!(inst?.enhancementId && DATA.enhancements[inst.enhancementId] &&
-     leader?.enhancementId && DATA.enhancements[leader.enhancementId]);
+const hasEnhancement = x => !!(x?.enhancementId && DATA.enhancements[x.enhancementId]);
+const partnerWithEnhancement = inst => attachedPartners(inst).find(hasEnhancement) || null;
+// Would attaching this leader/support to this unit put two Enhancements in one
+// Attached unit? `slot` is the one being filled, so whoever it replaces is ignored.
+function attachWouldClash(inst, attacher, slot){
+  if(!hasEnhancement(attacher)) return false;
+  const other = slot === 'supportId' ? leaderInstOf(inst) : supportInstOf(inst);
+  return hasEnhancement(inst) || hasEnhancement(other);
+}
 // Why this enhancement can't be picked for this instance — or null if it can.
 function enhancementBlockReason(id, inst){
   const e = DATA.enhancements[id];
@@ -793,7 +794,35 @@ function unitLimitFor(unit){
 const isOverUnitLimit = inst => unitCopyIndex(inst) > unitLimitFor(DATA.units[inst.unitId]);
 
 /* ================================ WEAPONS ================================ */
-const weaponCount = (inst, w) => inst?.weaponCounts?.[w.name] ?? (w.count ?? 1);  // ?? not || (guide §9)
+/* Wargear options (guide §5.5c). Each option on a datasheet is one decision with
+   named choices; the first choice is the printed default loadout. The instance
+   stores only the decisions (inst.slots), and what the model carries is derived
+   from them — so "its Kustom Shoota can be replaced with 1 Kombi-rokkit" can
+   never leave it holding both, or neither.
+     wargearOptions:[{ id, label, choices:[{ id, name, weapons:[name|weaponGroup], abilities:[id] }] }] */
+const unitOptions = unit => unit?.wargearOptions || [];
+const chosenOption = (inst, opt) => opt.choices.find(c => c.id === inst?.slots?.[opt.id]) || opt.choices[0];
+const weaponInChoice = (w, c) => (c.weapons || []).some(x => x === w.name || (w.weaponGroup && x === w.weaponGroup));
+// How many of this weapon an option says the unit carries — or null if no option
+// mentions the weapon, in which case it is simply part of the fixed loadout.
+function optionCount(unit, inst, w){
+  let governed = false, carried = false;
+  unitOptions(unit).forEach(opt => opt.choices.forEach(c => {
+    if(!weaponInChoice(w, c)) return;
+    governed = true;
+    if(chosenOption(inst, opt) === c) carried = true;
+  }));
+  return governed ? (carried ? (w.count || 1) : 0) : null;
+}
+// Wargear abilities (a Kustom Force Field, say) that come with the chosen options.
+const optionAbilities = (unit, inst) => unitOptions(unit).flatMap(opt => chosenOption(inst, opt).abilities || []);
+// Choices that differ from the printed loadout, for labels and the text export.
+const nonDefaultChoices = (unit, inst) => unitOptions(unit)
+  .map(opt => chosenOption(inst, opt)).filter((c, n) => c !== unitOptions(unit)[n].choices[0]);
+function weaponCount(inst, w, unit){
+  const fromOption = unit ? optionCount(unit, inst, w) : null;
+  return fromOption != null ? fromOption : (inst?.weaponCounts?.[w.name] ?? (w.count ?? 1));  // ?? not || (guide §9)
+}
 // Units live in two namespaces (matched play / Combat Patrol); look in both.
 const lookupUnit = id => DATA.units[id] || DATA.cpUnits[id] || null;
 // A datasheet can name units that have not been added yet; show a readable name
@@ -812,7 +841,7 @@ function baseWeaponName(n){
 function summarizeWeaponEntries(unit, inst){
   const out = [], seen = {};
   ['ranged','melee'].forEach(k => (unit.weapons?.[k] || []).forEach(w => {
-    const c = weaponCount(inst, w);
+    const c = weaponCount(inst, w, unit);
     if(!c) return;
     const key = w.weaponGroup || w.name;
     if(seen[key] != null){ out[seen[key]].count = Math.max(out[seen[key]].count, c); return; }
@@ -824,32 +853,62 @@ function summarizeWeaponEntries(unit, inst){
 const weaponSummaryText = (unit, inst) =>
   summarizeWeaponEntries(unit, inst).map(w => (w.count > 1 ? w.count + '× ' : '') + w.name).join(', ');
 
-/* ================================ LEADERS ================================ */
-/* guide §5.4 — leaders keep their abilities when the bodyguard dies (11th ed) */
-const leaderInstOf = inst => armyList.find(x => x.uid === inst.leaderId) || null;
-const isAttachedLeader = inst => armyList.some(x => x.leaderId === inst.uid);
+/* =========================== LEADERS AND SUPPORT ========================== */
+/* guide §5.4 — leaders keep their abilities when the bodyguard dies (11th ed).
+   Core rules 19.01: a Bodyguard unit can have ONE Leader unit and ONE Support
+   unit attached. Each is its own instance; the bodyguard points at them through
+   leaderId / supportId. A datasheet is a Leader (isLeader) or a Support unit
+   (isSupport), and `canLead` lists what it can be attached to either way. */
+const ATTACH_SLOTS = [
+  { slot:'leaderId',  flag:'isLeader',  label:'Led by',  none:'— no leader —',  band:'Leader' },
+  { slot:'supportId', flag:'isSupport', label:'Support', none:'— no support —', band:'Support' }
+];
+const leaderInstOf  = inst => armyList.find(x => x.uid === inst?.leaderId) || null;
+const supportInstOf = inst => armyList.find(x => x.uid === inst?.supportId) || null;
+// The Bodyguard unit this leader or support unit is attached to, if any.
+const hostOf = inst => inst?.uid ? (armyList.find(x => x.leaderId === inst.uid || x.supportId === inst.uid) || null) : null;
+const isAttachedLeader = inst => !!hostOf(inst);
+const canAttach = unit => !!(unit?.isLeader || unit?.isSupport);
 function canLeadPair(leaderUnit, unit){
   return (leaderUnit.canLead || []).includes(unit.id) || (unit.canBeLeadBy || []).includes(leaderUnit.id);
 }
-function availableLeadersFor(inst){
+// Leaders (or, with slot 'supportId', Support units) in the list that this unit
+// could take: the right kind, free or already ours, and allowed to join it.
+function availableLeadersFor(inst, slot){
   const u = DATA.units[inst.unitId];
-  if(!u || u.isLeader) return [];
+  if(!u || canAttach(u)) return [];
+  const flag = (ATTACH_SLOTS.find(a => a.slot === slot) || ATTACH_SLOTS[0]).flag;
   return armyList.filter(l => {
     const lu = DATA.units[l.unitId];
-    if(!lu?.isLeader) return false;
-    if(armyList.some(x => x.leaderId === l.uid && x.uid !== inst.uid)) return false;   // already attached
+    if(!lu?.[flag]) return false;
+    const host = hostOf(l);
+    if(host && host.uid !== inst.uid) return false;                                    // already attached
     return canLeadPair(lu, u);
   });
 }
-// Abilities a leader injects into its unit's weapon rows, as inherited badges.
+// Abilities a leader or support unit injects into its unit's weapon rows, as
+// inherited badges.
 function inheritedAbilitiesFor(inst, weaponKind){
   if(!inst) return [];
-  const l = leaderInstOf(inst);
-  const b = l && DATA.units[l.unitId]?.leaderBonus;
-  if(!b?.grantsAbilities?.length) return [];
-  if(b.appliesTo && b.appliesTo !== weaponKind) return [];
-  return b.grantsAbilities;
+  return [leaderInstOf(inst), supportInstOf(inst)].flatMap(l => {
+    const b = l && DATA.units[l.unitId]?.leaderBonus;
+    if(!b?.grantsAbilities?.length) return [];
+    if(b.appliesTo && b.appliesTo !== weaponKind) return [];
+    return b.grantsAbilities;
+  });
 }
+// "This unit's ranged attacks have [IGNORES COVER]" — a datasheet ability that
+// reaches every model in the unit. So it shows on the datasheet's own weapons
+// and, in an Attached unit, on everyone else's as well. An entry marked
+// whileCalled only applies while the unit is under the faction call.
+//   unitWeaponAbilities:[{ appliesTo, abilityId, display, whileCalled }]
+function unitWeaponAbilitiesFor(unit, inst, kind){
+  const members = [unit].concat((inst ? attachedPartners(inst) : []).map(x => DATA.units[x.unitId]).filter(Boolean));
+  return members.flatMap(m => (m.unitWeaponAbilities || [])
+    .filter(g => (!g.appliesTo || g.appliesTo === kind) && (!g.whileCalled || unit._called)));
+}
+// A Support unit has to be attached to something (25.04); a Leader need not be.
+const isLooseSupport = inst => !!DATA.units[inst.unitId]?.isSupport && !hostOf(inst);
 
 /* =============================== INSTANCES =============================== */
 function makeInstance(unitId){
@@ -857,7 +916,7 @@ function makeInstance(unitId){
   return {
     uid: uid(), unitId,
     models: u ? (sizeOptions(u)[0] ?? u.models ?? 1) : 1,
-    leaderId: null, enhancementId: null,
+    leaderId: null, supportId: null, enhancementId: null,
     wargear: {},        // wargearChoices id -> bool
     exclusive: null,    // wargearExclusiveChoices pick
     weaponCounts: {},   // weapon name -> count override
@@ -873,7 +932,10 @@ function addUnit(unitId){
   if(isOverUnitLimit(inst)) toast(`${u.name}: over the unit limit of ${unitLimitFor(u)}.`);
 }
 function removeInstance(uidToRemove){
-  armyList.forEach(i => { if(i.leaderId === uidToRemove) i.leaderId = null; });
+  armyList.forEach(i => {
+    if(i.leaderId === uidToRemove) i.leaderId = null;
+    if(i.supportId === uidToRemove) i.supportId = null;
+  });
   armyList = armyList.filter(i => i.uid !== uidToRemove);
   save(); renderAll();
 }
@@ -883,6 +945,7 @@ function duplicateInstance(u){
   const copy = JSON.parse(JSON.stringify(src));
   copy.uid = uid();
   copy.leaderId = null;                    // a leader can only lead one unit
+  copy.supportId = null;
   const enh = copy.enhancementId && DATA.enhancements[copy.enhancementId];
   if(enh && enhancementBlockReason(copy.enhancementId, copy)) copy.enhancementId = null;
   armyList.splice(armyList.indexOf(src) + 1, 0, copy);
@@ -933,6 +996,7 @@ function normalizeInstance(i){
     uid: i.uid || uid(), unitId: i.unitId,
     models: i.models ?? (u ? sizeOptions(u)[0] : 1),
     leaderId: i.leaderId ?? null,
+    supportId: i.supportId ?? null,
     enhancementId: i.enhancementId ?? null,
     wargear: i.wargear || {},
     exclusive: i.exclusive ?? null,
@@ -973,6 +1037,7 @@ function packList(){
     a: armyList.map(i => {
       const o = { u:i.unitId, m:i.models };
       if(i.leaderId != null && idx[i.leaderId] != null) o.L = idx[i.leaderId];
+      if(i.supportId != null && idx[i.supportId] != null) o.S = idx[i.supportId];
       if(i.enhancementId) o.e = i.enhancementId;
       if(Object.keys(i.wargear||{}).length) o.w = i.wargear;
       if(i.exclusive) o.x = i.exclusive;
@@ -989,11 +1054,14 @@ function unpackList(p){
   selectedDetachments = Array.isArray(p.d) ? p.d.filter(id => DATA.detachments[id])
                       : (DATA.detachments[p.d] ? [p.d] : []);      // legacy single string
   armyList = p.a.filter(o => DATA.units[o.u]).map(o => ({
-    uid: uid(), unitId:o.u, models:o.m, leaderId:null,
+    uid: uid(), unitId:o.u, models:o.m, leaderId:null, supportId:null,
     enhancementId:o.e || null, wargear:o.w || {}, exclusive:o.x || null,
     weaponCounts:o.c || {}, slots:o.s || {}
   }));
-  p.a.forEach((o,n) => { if(o.L != null && armyList[n] && armyList[o.L]) armyList[n].leaderId = armyList[o.L].uid; });
+  p.a.forEach((o,n) => {
+    if(o.L != null && armyList[n] && armyList[o.L]) armyList[n].leaderId = armyList[o.L].uid;
+    if(o.S != null && armyList[n] && armyList[o.S]) armyList[n].supportId = armyList[o.S].uid;
+  });
   clearOrphanedEnhancements();
   return true;
 }
@@ -1049,8 +1117,11 @@ function exportText(){
     const u = DATA.units[i.unitId]; if(!u) return;
     const ci = unitCopyIndex(i);
     lines.push(`${u.name}${i.models > 1 ? ' ×' + i.models : ''} — ${priceFor(u, i.models, ci)} pts${isEscalated(u,ci) ? ' (escalated)' : ''}`);
-    const l = leaderInstOf(i);
+    const l = leaderInstOf(i), sp = supportInstOf(i);
     if(l) lines.push(`  Led by: ${DATA.units[l.unitId].name}`);
+    if(sp) lines.push(`  Support: ${DATA.units[sp.unitId].name}`);
+    const picks = nonDefaultChoices(u, i).map(c => c.name);
+    if(picks.length) lines.push('  Options: ' + picks.join(', '));
     if(i.enhancementId && DATA.enhancements[i.enhancementId]){
       const e = DATA.enhancements[i.enhancementId];
       lines.push(`  ${e.upgrade ? 'Upgrade' : 'Enhancement'}: ${e.name} (+${e.points||0} pts)`);
@@ -1150,13 +1221,16 @@ function statBlock(stats, mods){
 // right-hand columns and left melee with a dead Range column.
 function weaponRows(unit, inst, kind, opts){
   opts = opts || {};
-  const list = (unit.weapons?.[kind] || []).filter(w => weaponCount(inst, w) > 0);
+  const list = (unit.weapons?.[kind] || []).filter(w => weaponCount(inst, w, unit) > 0);
   if(!list.length) return '';
   const inherited = inheritedAbilitiesFor(inst, kind).map(id => ({ id }));
   const granted = opts.noGrants ? [] : getDetachmentWeaponGrants(unit, kind);
-  const fromElsewhere = inherited.concat(granted);
-  // Weapon abilities an active faction call hands out (riled up: ranged [ASSAULT]).
-  const called = (unit._callWeaponAbilities || []).filter(g => !g.appliesTo || g.appliesTo === kind);
+  const unitWide = unitWeaponAbilitiesFor(unit, inst, kind);
+  const fromElsewhere = inherited.concat(granted, unitWide.filter(g => !g.whileCalled));
+  // Weapon abilities an active faction call hands out (riled up: ranged [ASSAULT]),
+  // and unit-wide ones that only apply under it.
+  const called = (unit._callWeaponAbilities || []).filter(g => !g.appliesTo || g.appliesTo === kind)
+    .concat(unitWide.filter(g => g.whileCalled));
   const ranged = kind === 'ranged';
   const cols = ranged
     ? [['range','Range'],['a','A'],['bs','BS'],['s','S'],['ap','AP'],['d','D']]
@@ -1170,15 +1244,24 @@ function weaponRows(unit, inst, kind, opts){
       lastGroup = w.weaponGroup;
     }
     if(!w.weaponGroup) lastGroup = null;
-    const n = weaponCount(inst, w);
+    const n = weaponCount(inst, w, unit);
     const abs = (w.abilities || []).map(a =>
       typeof a === 'string' ? abilityPill(a) : abilityPill(a.id, '', a.display));
-    const all = abs.concat(fromElsewhere.map(g => abilityPill(g.abilityId || g.id, 'inh', g.display)));
-    // Skip a called ability the weapon already has from its profile or elsewhere.
-    const have = (w.abilities || []).map(a => typeof a === 'string' ? a : a.id)
-      .concat(fromElsewhere.map(g => g.abilityId || g.id));
-    called.filter(g => !have.includes(g.abilityId))
-      .forEach(g => all.push(abilityPill(g.abilityId, 'inh call', g.display)));
+    // An ability from elsewhere is not repeated if the weapon already shows the
+    // same thing, from its own profile or from an earlier source. Compared by what
+    // the badge says, so [SUSTAINED HITS 1] from a detachment still shows next to
+    // a weapon's own [SUSTAINED HITS 2: MONSTER/VEHICLE] — they are different rules.
+    const said = (id, display) => String(display || DATA.abilities[id]?.name || id).toLowerCase();
+    const have = (w.abilities || []).map(a => typeof a === 'string' ? said(a) : said(a.id, a.display));
+    const all = abs.slice();
+    const add = (g, cls) => {
+      const id = g.abilityId || g.id;
+      if(have.includes(said(id, g.display))) return;
+      have.push(said(id, g.display));
+      all.push(abilityPill(id, cls, g.display));
+    };
+    fromElsewhere.forEach(g => add(g, 'inh'));
+    called.forEach(g => add(g, 'inh call'));
     html += `<div class="wrow ${kindClass}">
       <div class="wn">${n>1?n+'× ':''}${esc(w.name)}</div>
       <div class="wstats">${cols.map(([k,l]) =>
@@ -1235,8 +1318,16 @@ function bestInvuln(a, b){
   return n(a) <= n(b) ? a : b;
 }
 // Returns a display copy with the call's effects applied, marking what changed.
-function applyCallEffects(unit, opts){
-  const call = game.waaagh ? unitCall(unit) : null;
+// Some rules leave a unit under the call for the whole battle — Zodgrod's Super
+// Runts, the Mekwaaagh! Mastermind Enhancement ("this unit is riled up"). They are
+// marked `alwaysCalled` on the datasheet or the Enhancement, and since "this
+// unit" is the whole Attached unit, a marked leader covers the unit it joins.
+function alwaysUnderCall(unit, inst){
+  const marked = x => !!(DATA.units[x?.unitId]?.alwaysCalled || DATA.enhancements[x?.enhancementId]?.alwaysCalled);
+  return !!unit?.alwaysCalled || marked(inst) || (inst ? attachedPartners(inst).some(marked) : false);
+}
+function applyCallEffects(unit, opts, inst){
+  const call = (game.waaagh || alwaysUnderCall(unit, inst)) ? unitCall(unit) : null;
   const fx = call?.callEffects;
   if(!unit || !fx) return unit;
   const d = { ...unit, _called: call };
@@ -1246,7 +1337,10 @@ function applyCallEffects(unit, opts){
   const abilities = (fx.weaponAbilities || []).concat(extras.flatMap(x => x.weaponAbilities || []));
   if(abilities.length) d._callWeaponAbilities = abilities;
   // Effects with no number to change are listed on the card instead.
+  // ...the call's own, what this datasheet's abilities add (`whileCalled` on the
+  // unit), and what the active detachments add.
   const notes = (call.callNotes || []).map(text => ({ text }))
+    .concat((unit.whileCalled || []).map(x => ({ text: x.text, from: x.from })))
     .concat(extras.filter(x => x.text).map(x => ({ text: x.text, from: x.from })));
   if(notes.length) d._callNotes = notes;
 
@@ -1278,7 +1372,7 @@ const callStateName = a => a?.callState || a?.name || '';
 
 function unitBody(unit, inst, opts){
   opts = opts || {};
-  unit = applyCallEffects(unit, opts);
+  unit = applyCallEffects(unit, opts, inst);
   let h = '';
   const mods = unit._statMods;
   if(unit.modelProfiles?.length){
@@ -1318,11 +1412,13 @@ function unitBody(unit, inst, opts){
   h += weaponRows(unit, inst, 'melee', opts);
 
   const fac  = (unit.factionAbilities || []).map(id => abilityPill(id, 'fac'));
-  const core = (unit.coreAbilities || []).map(id => abilityPill(id, 'core'));
+  // A core ability is an id, or {id, display} when the datasheet carries a value (Deadly Demise D3).
+  const core = (unit.coreAbilities || []).map(a => typeof a === 'string' ? abilityPill(a, 'core') : abilityPill(a.id, 'core', a.display));
   const abil = (unit.abilities || []).map(id => abilityPill(id));
   const wg   = (unit.wargear || []).map(id => abilityPill(id));
   if(inst?.exclusive) wg.push(abilityPill(inst.exclusive));
   Object.entries(inst?.wargear || {}).forEach(([id,on]) => { if(on) wg.push(abilityPill(id)); });
+  optionAbilities(unit, inst).forEach(id => wg.push(abilityPill(id)));
   if(fac.length || core.length || abil.length)
     h += `<div class="sec"><div class="sec-t">Abilities</div>${fac.join('')}${core.join('')}${abil.join('')}</div>`;
   if(wg.length) h += `<div class="sec"><div class="sec-t">Wargear</div>${wg.join('')}</div>`;
@@ -1331,7 +1427,7 @@ function unitBody(unit, inst, opts){
   // 'Ardmob Boyz), so list each name once, as the datasheet does.
   if(unit.canLead?.length && !opts.noLead){
     const names = [...new Set(unit.canLead.map(unitDisplayName))];
-    h += `<div class="sec"><div class="sec-t">Leader</div>
+    h += `<div class="sec"><div class="sec-t">${unit.isSupport ? 'Support' : 'Leader'}</div>
       <div class="muted" style="font-size:12.5px;margin-bottom:4px">This model can be attached to the following units:</div>
       ${names.map(n => `<span class="pill">${esc(n)}</span>`).join('')}</div>`;
   }
@@ -1374,16 +1470,18 @@ function unitBody(unit, inst, opts){
 // same-datasheet units with different configs get a short diff label.
 function instanceSignature(i){
   return JSON.stringify([i.unitId, i.models, i.enhancementId,
-    leaderInstOf(i)?.unitId || null, i.exclusive, i.wargear, i.weaponCounts, i.slots]);
+    leaderInstOf(i)?.unitId || null, supportInstOf(i)?.unitId || null, i.exclusive, i.wargear, i.weaponCounts, i.slots]);
 }
 function diffLabel(i){
   const u = DATA.units[i.unitId], bits = [];
   if(sizeOptions(u).length > 1) bits.push(i.models + ' models');
   const e = i.enhancementId && DATA.enhancements[i.enhancementId];
   if(e) bits.push(e.name);
-  const l = leaderInstOf(i);
+  const l = leaderInstOf(i), sp = supportInstOf(i);
   if(l) bits.push('led by ' + DATA.units[l.unitId].name);
+  if(sp) bits.push('with ' + DATA.units[sp.unitId].name);
   if(i.exclusive && DATA.abilities[i.exclusive]) bits.push(DATA.abilities[i.exclusive].name);
+  nonDefaultChoices(u, i).forEach(c => bits.push(c.name));
   return bits.join(' · ');
 }
 function renderArmy(){
@@ -1407,13 +1505,16 @@ function renderArmy(){
 
   el.innerHTML = groups.map(g => {
     const i = g.inst, u = DATA.units[i.unitId];
-    const l = leaderInstOf(i), lu = l && DATA.units[l.unitId];
+    // Whoever is attached, leader first: each gets its own section in the card.
+    const joined = ATTACH_SLOTS.map(a => ({ a, x: armyList.find(y => y.uid === i[a.slot]) || null }))
+      .filter(j => j.x && DATA.units[j.x.unitId]).map(j => ({ ...j, xu: DATA.units[j.x.unitId] }));
     const label = multiConfig[i.unitId] > 1 ? diffLabel(i) : '';
     const ci = unitCopyIndex(i);
     // An Attached unit is one card, so it shows one combined cost (guide §5.1).
-    const pts = instancePoints(i) + (l ? instancePoints(l) : 0);
+    const pts = instancePoints(i) + joined.reduce((s,j) => s + instancePoints(j.x), 0);
     const sub = [u.modelBreakdown || (i.models > 1 ? i.models + ' models' : ''), label,
-                 l ? `${instancePoints(i)} + ${instancePoints(l)} pts` : ''].filter(Boolean).join(' · ');
+                 joined.length ? [instancePoints(i)].concat(joined.map(j => instancePoints(j.x))).join(' + ') + ' pts' : '']
+                .filter(Boolean).join(' · ');
     const ck = 'a:' + i.uid;
     return `<div class="unit${collapseClass(ck)}">
       <div class="unit-hd" data-ucol="${ck}">
@@ -1422,8 +1523,9 @@ function renderArmy(){
         <span class="pts">${pts}${isEscalated(u,ci)?' <span class="esc" title="Escalated cost — copy #'+ci+'">↑</span>':''}</span>
         ${collapseChevron()}
       </div>
-      ${lu ? `<div class="leader-band">Leader — ${esc(lu.name)}</div><div class="unit-bd">${unitBody(lu, l, {noLead:true})}</div>
-              <div class="leader-band merged-sec">Unit — ${esc(u.name)}</div>` : ''}
+      ${joined.map((j,n) => `<div class="leader-band${n ? ' merged-sec' : ''}">${j.a.band} — ${esc(j.xu.name)}</div>
+              <div class="unit-bd">${unitBody(j.xu, j.x, {noLead:true})}</div>`).join('')}
+      ${joined.length ? `<div class="leader-band merged-sec">Unit — ${esc(u.name)}</div>` : ''}
       <div class="unit-bd">${unitBody(u, i)}</div>
     </div>`;
   }).join('');
@@ -1493,10 +1595,11 @@ function addUnitControl(){
     return `<div class="empty">No datasheets loaded yet.<br>
       Add unit files to <code>data/units/</code> and list their ids in <code>data/units/index.json</code>.</div>`;
   }
-  const groups = { 'Characters':[], 'Battleline':[], 'Other':[] };
+  const groups = { 'Epic Heroes':[], 'Characters':[], 'Battleline':[], 'Other':[] };
   DATA.unitOrder.forEach(id => {
     const u = DATA.units[id];
-    const g = u.isLeader || u.isEpicHero || (u.keywords||[]).includes('CHARACTER') ? 'Characters'
+    const g = u.isEpicHero ? 'Epic Heroes'
+            : canAttach(u) || (u.keywords||[]).includes('CHARACTER') ? 'Characters'
             : u.isBattleline ? 'Battleline' : 'Other';
     groups[g].push(u);
   });
@@ -1515,12 +1618,11 @@ function builderCard(inst){
   const sizes = sizeOptions(u);
   const enh = inst.enhancementId && DATA.enhancements[inst.enhancementId];
   const elig = eligibleEnhancements(inst);
-  const leaders = availableLeadersFor(inst);
   const summary = weaponSummaryText(u, inst);
 
   const ck = 'b:' + inst.uid;
   // Cards start collapsed, so a broken rule has to show on the header too.
-  const flagged = (enh && partnerWithEnhancement(inst)) || isOverUnitLimit(inst);
+  const flagged = (enh && partnerWithEnhancement(inst)) || isOverUnitLimit(inst) || isLooseSupport(inst);
   let h = `<div class="unit${collapseClass(ck)}"><div class="unit-hd" data-ucol="${ck}">
     <h3>${flagged?'<span class="rulemark" title="Breaks a list-building rule — open the card">⚠</span> ':''}${enh?'<span class="star">★</span> ':''}${esc(u.name)}
       <span class="sub">${esc(u.modelBreakdown||'')}${summary?(u.modelBreakdown?' · ':'')+esc(summary):''}</span></h3>
@@ -1551,14 +1653,30 @@ function builderCard(inst){
         `<label class="pill" style="cursor:pointer"><input type="checkbox" data-wpn="${inst.uid}:${esc(w.name)}" ${weaponCount(inst,w)>0?'checked':''}> ${esc(w.name)}</label>`).join('')}</div></div>`;
     }
   }
-  if(leaders.length){
-    h += `<div class="ctl"><label>Led by</label><select class="sel grow" data-leader="${inst.uid}">
-      <option value="">— no leader —</option>
-      ${leaders.map(l => {
-        const clash = inst.leaderId !== l.uid && attachWouldClash(inst, l);
-        return `<option value="${esc(l.uid)}" ${inst.leaderId===l.uid?'selected':''} ${clash?'disabled':''}>${esc(DATA.units[l.unitId].name)}${clash?' — both have an enhancement':''}</option>`;
+  // One decision per wargear option; the loadout is derived from the picks.
+  unitOptions(u).forEach(opt => {
+    const cur = chosenOption(inst, opt);
+    h += `<div class="ctl"><label>${esc(opt.label)}</label><select class="sel grow" data-opt="${inst.uid}:${esc(opt.id)}">
+      ${opt.choices.map(c => `<option value="${esc(c.id)}" ${c===cur?'selected':''}>${esc(c.name)}</option>`).join('')}
+    </select></div>`;
+  });
+  // A Bodyguard unit can take one Leader and one Support unit.
+  ATTACH_SLOTS.forEach(a => {
+    const options = availableLeadersFor(inst, a.slot);
+    if(!options.length) return;
+    h += `<div class="ctl"><label>${a.label}</label><select class="sel grow" data-${a.slot === 'leaderId' ? 'leader' : 'support'}="${inst.uid}">
+      <option value="">${a.none}</option>
+      ${options.map(l => {
+        const clash = inst[a.slot] !== l.uid && attachWouldClash(inst, l, a.slot);
+        return `<option value="${esc(l.uid)}" ${inst[a.slot]===l.uid?'selected':''} ${clash?'disabled':''}>${esc(DATA.units[l.unitId].name)}${clash?' — the unit already has an enhancement':''}</option>`;
       }).join('')}
     </select></div>`;
+  });
+  // Where a leader or support unit currently sits, since its own card has no picker.
+  if(canAttach(u)){
+    const host = hostOf(inst);
+    h += `<div class="ctl"><label>${u.isSupport ? 'Supports' : 'Leads'}</label><span class="muted" style="font-size:12.5px">${
+      host ? esc(DATA.units[host.unitId]?.name || host.unitId) : 'not attached — pick it on the card of the unit it joins'}</span></div>`;
   }
   if(elig.length){
     h += `<div class="ctl"><label>Enhancement</label><select class="sel grow" data-enhsel="${inst.uid}">
@@ -1574,6 +1692,10 @@ function builderCard(inst){
   if(enh && partnerWithEnhancement(inst)){
     h += `<div class="rulewarn">⚠ An Attached unit can have only one Enhancement or Upgrade — this unit and its ${
       leaderInstOf(inst) ? 'leader' : 'bodyguard'} both have one.</div>`;
+  }
+  if(isLooseSupport(inst)){
+    h += `<div class="rulewarn">⚠ A Support unit must be attached to a Bodyguard unit — add one it can join (${
+      esc((u.canLead || []).map(unitDisplayName).join(', '))}) and pick it there.</div>`;
   }
   if(isOverUnitLimit(inst)){
     h += `<div class="rulewarn">⚠ Over the unit limit — ${esc(u.name)} is limited to ${unitLimitFor(u)} in ${
@@ -2144,13 +2266,23 @@ document.addEventListener('change', e => {
   if(t.id === 'limitIn'){ pointsLimit = parseInt(t.value,10) || 0; save(); renderAll(); return; }
 
   if(t.dataset.excl){ const i = find(t.dataset.excl); i.exclusive = t.value || null; save(); renderAll(); return; }
-  if(t.dataset.leader){
-    const i = find(t.dataset.leader), l = t.value ? find(t.value) : null;
-    if(l && attachWouldClash(i, l)){
+  if(t.dataset.leader || t.dataset.support){
+    const slot = t.dataset.leader ? 'leaderId' : 'supportId';
+    const i = find(t.dataset.leader || t.dataset.support), l = t.value ? find(t.value) : null;
+    if(l && attachWouldClash(i, l, slot)){
       toast('An Attached unit can have only one Enhancement or Upgrade.');
       renderAll(); return;
     }
-    i.leaderId = t.value || null; save(); renderAll(); return;
+    i[slot] = t.value || null; save(); renderAll(); return;
+  }
+  if(t.dataset.opt){
+    const at = t.dataset.opt.indexOf(':');
+    const i = find(t.dataset.opt.slice(0, at)), optId = t.dataset.opt.slice(at + 1);
+    const opt = unitOptions(DATA.units[i.unitId]).find(o => o.id === optId);
+    if(!opt) return;
+    // Only a non-default pick is stored, so an untouched unit stays an empty object.
+    if(t.value && t.value !== opt.choices[0].id) i.slots[optId] = t.value; else delete i.slots[optId];
+    save(); renderAll(); return;
   }
   if(t.dataset.enhsel){
     const i = find(t.dataset.enhsel);

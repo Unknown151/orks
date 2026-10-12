@@ -1,0 +1,53 @@
+{
+  "id": "big-mek-dakkarig",
+  "name": "Big Mek Dakkarig",
+  "type": ["Vehicle", "Walker", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["VEHICLE", "BIG MEK", "CHARACTER", "WALKER"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+
+  "points": 160,
+  "models": 1,
+  "modelBreakdown": "1 Big Mek Dakkarig",
+  "_costing_note": "Printed as: 1st to 2nd unit 160 pts, 3rd+ unit 180 pts.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 1, "points": 160 }],
+      [{ "models": 1, "points": 180 }]
+    ]
+  },
+
+  "stats": { "m": "8\"", "t": 8, "sv": "3+", "w": 11, "ld": "7+", "oc": 3 },
+
+  "invulnerableSave": "5+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Blitzkannon; 1 Multi-busta Launcha; 1 Stompy Feet.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Blitzkannon", "count": 1, "range": "24\"", "a": "8", "bs": "4+", "s": "7", "ap": "-2", "d": "2",
+        "abilities": ["ignores-cover", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}] },
+      { "name": "Multi-busta Launcha", "count": 1, "range": "24\"", "a": "6", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": ["ignores-cover", "lethal-hits"] }
+    ],
+    "melee": [
+      { "name": "Stompy Feet", "count": 1, "a": "4", "ws": "3+", "s": "6", "ap": "-1", "d": "1",
+        "abilities": [] }
+    ]
+  },
+
+  "_unitWeaponAbilities_note": "\"This unit's ranged attacks have …\" reaches every model in the unit, so these show on this datasheet's own weapon rows and on the rest of an Attached unit. whileCalled entries only apply while the unit is riled up.",
+  "unitWeaponAbilities": [
+    { "appliesTo": "ranged", "abilityId": "sustained-hits", "display": "Sustained Hits 1", "whileCalled": true }
+  ],
+
+  "abilities": ["even-more-dakka", "blitz-dem-gitz"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "deadly-demise", "display": "Deadly Demise 1"}],
+  "wargear": []
+}

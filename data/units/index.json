@@ -1,4 +1,27 @@
 {
   "_note": "Manifest of unit files to load. A browser can't list a directory over HTTP, so every datasheet added to data/units/ must be listed here by id (== filename without .json). Files whose name starts with _ are documentation and must NOT be listed.",
-  "units": ["ghazghkull-thraka"]
+  "units": [
+    "ghazghkull-thraka",
+    "boss-snikrot",
+    "nazdreg",
+    "zodgrod-wortsnagga",
+    "mozrog-skragbad",
+    "wazdakka-gutsmek",
+    "bannernob",
+    "beastboss",
+    "big-mek",
+    "big-mek-in-mega-armour",
+    "big-mek-with-shokk-attack-gun",
+    "bigboss",
+    "mek",
+    "painboss",
+    "painboy",
+    "runtherd",
+    "warboss",
+    "warboss-in-mega-armour",
+    "weirdboy",
+    "beastboss-on-squigosaur",
+    "deffkilla-wartrike",
+    "big-mek-dakkarig"
+  ]
 }

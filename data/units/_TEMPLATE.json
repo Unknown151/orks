@@ -8,7 +8,9 @@
   "_keywords_note": "The printed KEYWORDS line can be scoped. `keywords` is what ALL MODELS carry; a modelProfile may add its own `keywords` for a model-specific list. `factionKeywords` is the separate FACTION KEYWORDS line. Copy the lines exactly as printed: the datasheet's own name is a keyword as well (core rules 02.01.01), but the app adds that from `name`, so do not list it here.",
   "keywords": ["INFANTRY", "CHARACTER"],
   "factionKeywords": ["ORKS"],
+  "_attach_note": "A datasheet is a Leader (isLeader) OR a Support unit (isSupport); a Bodyguard unit can take one of each. canLead lists what it can join either way. A Support unit MUST be attached.",
   "isLeader": false,
+  "isSupport": false,
   "isEpicHero": false,
   "isBattleline": false,
 
@@ -74,10 +76,28 @@
 
   "abilities": ["ability-id"],
   "factionAbilities": ["waaagh"],
-  "coreAbilities": ["leader"],
+  "_coreAbilities_note": "An id, or {id, display} when the datasheet prints a value.",
+  "coreAbilities": ["leader", { "id": "deadly-demise", "display": "Deadly Demise D3" }],
   "wargear": ["always-equipped-item"],
   "wargearChoices": ["optional-a", "optional-b"],
   "wargearExclusiveChoices": ["option-a", "option-b"],
+  "_wargearOptions_note": "Swaps and add-ons ('X can be replaced with Y'). One decision per option; the FIRST choice is the printed loadout. `weapons` names a weapon or a weaponGroup; a weapon named by any choice is carried only while that choice is picked. `abilities` are wargear abilities that come with a choice.",
+  "wargearOptions": [
+    { "id": "ranged", "label": "Weapon Name", "choices": [
+        { "id": "weapon-name", "name": "Weapon Name", "weapons": ["Weapon Name"] },
+        { "id": "other-weapon", "name": "Other Weapon", "weapons": ["Other Weapon"] } ] },
+    { "id": "extra", "label": "Also takes", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "force-field", "name": "Force Field", "abilities": ["force-field-ability-id"] } ] }
+  ],
+  "_unitWeaponAbilities_note": "'This unit's ranged attacks have [X]' — shown on this datasheet's weapon rows and on the rest of an Attached unit. whileCalled:true = only while the unit is riled up.",
+  "unitWeaponAbilities": [
+    { "appliesTo": "ranged", "abilityId": "ignores-cover", "display": "Ignores Cover" },
+    { "appliesTo": "ranged", "abilityId": "sustained-hits", "display": "Sustained Hits 1", "whileCalled": true }
+  ],
+  "_whileCalled_note": "What this datasheet's own abilities add while it is riled up, listed in the card note. alwaysCalled:true = the unit is riled up permanently.",
+  "whileCalled": [{ "text": "Move up to 5\" instead of D6\"", "from": "Ability Name" }],
+  "alwaysCalled": false,
   "canBeLeadBy": ["leader-unit-id"],
 
   "canLead": ["bodyguard-unit-id"],

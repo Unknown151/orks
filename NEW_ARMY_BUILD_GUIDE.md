@@ -258,6 +258,10 @@ Two sub-types with different rules — get this right or list-building breaks:
 - `leaderBonus.grantsAbilities` are injected into the led unit's weapon rows as *inherited* badges (visually distinct).
 - 11th ed.: **leaders keep their abilities when their unit dies.** Don't build a "bodyguard wiped" state that strips them — that's a 10th-ed behaviour.
 - Enhancements assigned to an attached leader belong to the *instance*, not the leader unit.
+- 11th ed. also has **Support** units: a Bodyguard unit can take one Leader *and* one Support unit
+  (core rules 19.01), and a Support unit must be attached to something (25.04). Give the
+  bodyguard a second slot (`supportId`), render all three as one card, and count the whole
+  Attached unit for the one-Enhancement rule.
 
 ### 5.5 Wargear — three levels of complexity
 

@@ -1,0 +1,67 @@
+{
+  "id": "warboss",
+  "name": "Warboss",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER", "EXPLOSIVES", "WARBOSS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": true,
+  "isEpicHero": false,
+
+  "points": 100,
+  "models": 1,
+  "modelBreakdown": "1 Warboss",
+
+  "stats": { "m": "6\"", "t": 6, "sv": "4+", "w": 6, "ld": "6+", "oc": 1 },
+
+  "invulnerableSave": "5+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Kustom Choppa; 1 Kustom Shoota.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kombi-rokkit - Busta Rokkit", "count": 1, "range": "24\"", "a": "1", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [],
+        "weaponGroup": "Kombi-rokkit",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kombi-rokkit - Shoota", "count": 1, "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 1"}],
+        "weaponGroup": "Kombi-rokkit" },
+      { "name": "Kombi-skorcha - Shoota", "count": 1, "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 1"}],
+        "weaponGroup": "Kombi-skorcha",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kombi-skorcha - Skorcha", "count": 1, "range": "12\"", "a": "3", "bs": "-", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "torrent"],
+        "weaponGroup": "Kombi-skorcha" },
+      { "name": "Kustom Shoota", "count": 1, "range": "18\"", "a": "4", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}] }
+    ],
+    "melee": [
+      { "name": "Kustom Choppa", "count": 1, "a": "6", "ws": "2+", "s": "7", "ap": "-2", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 2"}] },
+      { "name": "Power Klaw", "count": 1, "a": "6", "ws": "2+", "s": "12", "ap": "-2", "d": "2",
+        "abilities": [] }
+    ]
+  },
+
+  "_wargearOptions_note": "Each option is one decision; the first choice is the printed loadout. `weapons` names a weapon or a weaponGroup; a weapon named by any choice is carried only while that choice is picked.",
+  "wargearOptions": [
+    { "id": "melee", "label": "Kustom Choppa", "choices": [
+        { "id": "kustom-choppa", "name": "Kustom Choppa", "weapons": ["Kustom Choppa"] },
+        { "id": "power-klaw", "name": "Power Klaw", "weapons": ["Power Klaw"] } ] },
+    { "id": "ranged", "label": "Kustom Shoota", "choices": [
+        { "id": "kustom-shoota", "name": "Kustom Shoota", "weapons": ["Kustom Shoota"] },
+        { "id": "kombi-rokkit", "name": "Kombi-rokkit", "weapons": ["Kombi-rokkit"] },
+        { "id": "kombi-skorcha", "name": "Kombi-skorcha", "weapons": ["Kombi-skorcha"] } ] }
+  ],
+
+  "abilities": ["boss-ammo-runt", "might-is-right", "intimidating-motivation"],
+  "factionAbilities": ["da-boss", "waaagh"],
+  "coreAbilities": ["leader"],
+  "wargear": [],
+
+  "canLead": ["boyz", "breaka-boyz", "nobz"]
+}

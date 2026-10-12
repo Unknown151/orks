@@ -1,0 +1,40 @@
+{
+  "id": "runtherd",
+  "name": "Runtherd",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER"],
+  "factionKeywords": ["ORKS"],
+
+  "isSupport": true,
+  "isEpicHero": false,
+
+  "points": 10,
+  "models": 1,
+  "modelBreakdown": "1 Runtherd",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 3, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Runtherd’s Toolz; 1 Slugga.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Slugga", "count": 1, "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}] }
+    ],
+    "melee": [
+      { "name": "Runtherd’s Toolz", "count": 1, "a": "3", "ws": "3+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [] }
+    ]
+  },
+
+  "abilities": ["thatll-learn-ya"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["support"],
+  "wargear": [],
+
+  "canLead": ["gretchin"]
+}

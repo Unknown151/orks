@@ -1,0 +1,44 @@
+{
+  "id": "wazdakka-gutsmek",
+  "name": "Wazdakka Gutsmek",
+  "type": ["Mounted", "Vehicle", "Character", "Epic Hero"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["MOUNTED", "VEHICLE", "CHARACTER", "EPIC HERO", "SMOKE", "SPEED FREEKS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": true,
+
+  "points": 200,
+  "models": 1,
+  "modelBreakdown": "1 Wazdakka Gutsmek",
+
+  "stats": { "m": "14\"", "t": 8, "sv": "3+", "w": 10, "ld": "6+", "oc": 3 },
+
+  "invulnerableSave": "4+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Speeding Bulk and Flaming Exhaust; 1 Fixit’s Wrench; 1 Grabba Dragga; 1 Psyko-gatler.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Grabba Dragga", "count": 1, "range": "12\"", "a": "1", "bs": "2+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": ["assault", "precision"] },
+      { "name": "Psyko-gatler", "count": 1, "range": "24\"", "a": "12", "bs": "4+", "s": "6", "ap": "-2", "d": "2",
+        "abilities": ["assault", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "sustained-hits", "display": "Sustained Hits 1"}] }
+    ],
+    "melee": [
+      { "name": "Speeding Bulk and Flaming Exhaust", "count": 1, "a": "3", "ws": "2+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}, "extra-attacks"] },
+      { "name": "Fixit’s Wrench", "count": 1, "a": "1", "ws": "4+", "s": "3", "ap": "0", "d": "1",
+        "abilities": ["extra-attacks"] },
+      { "name": "Grabba Dragga", "count": 1, "a": "6", "ws": "2+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [{"id": "cleave", "display": "Cleave 2"}, "lance"] }
+    ]
+  },
+
+  "abilities": ["full-throttle", "turbo-engine", "shokk-attack-engine", "pulse-jet"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "deadly-demise", "display": "Deadly Demise D3"}, "deep-strike", "lone-operative"],
+  "wargear": []
+}

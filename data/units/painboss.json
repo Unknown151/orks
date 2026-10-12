@@ -1,0 +1,45 @@
+{
+  "id": "painboss",
+  "name": "Painboss",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "BEAST SNAGGA", "CHARACTER"],
+  "factionKeywords": ["ORKS"],
+
+  "isSupport": true,
+  "isEpicHero": false,
+
+  "points": 60,
+  "models": 1,
+  "modelBreakdown": "1 Painboss",
+  "_costing_note": "Printed as: 1st to 2nd unit 60 pts, 3rd+ unit 70 pts.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 1, "points": 60 }],
+      [{ "models": 1, "points": 70 }]
+    ]
+  },
+
+  "stats": { "m": "6\"", "t": 5, "sv": "4+", "w": 4, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Beast Snagga Klaw.",
+
+  "weapons": {
+    "ranged": [],
+    "melee": [
+      { "name": "Beast Snagga Klaw", "count": 1, "a": "3", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}] }
+    ]
+  },
+
+  "abilities": ["push-dat-bit-back-in", "hardy-bioniks", "runnin-wiv-da-herd"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["support"],
+  "wargear": [],
+
+  "canLead": ["beast-snagga-boyz", "squighog-boyz"]
+}

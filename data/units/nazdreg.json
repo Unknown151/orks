@@ -1,0 +1,60 @@
+{
+  "id": "nazdreg",
+  "name": "Nazdreg",
+  "type": ["Infantry", "Character", "Epic Hero"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER", "EPIC HERO", "MEGA ARMOUR", "WARBOSS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": true,
+  "isEpicHero": true,
+
+  "points": 165,
+  "models": 1,
+  "modelBreakdown": "1 Nazdreg",
+
+  "stats": { "m": "5\"", "t": 7, "sv": "2+", "w": 8, "ld": "6+", "oc": 1 },
+
+  "invulnerableSave": "5+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Kustom Blasta X; 1 Moonchewa.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kustom Blasta X - Gatler", "count": 1, "range": "24\"", "a": "6", "bs": "4+", "s": "9", "ap": "-2", "d": "3",
+        "abilities": ["hazardous"],
+        "weaponGroup": "Kustom Blasta X",
+        "weaponGroupLabel": "One weapon with three separate ranged profiles — each of them can be selected to make attacks with." },
+      { "name": "Kustom Blasta X - Shoota", "count": 1, "range": "18\"", "a": "4", "bs": "4+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}],
+        "weaponGroup": "Kustom Blasta X" },
+      { "name": "Kustom Blasta X - Skorcha", "count": 1, "range": "12\"", "a": "3", "bs": "-", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "torrent"],
+        "weaponGroup": "Kustom Blasta X" }
+    ],
+    "melee": [
+      { "name": "Kustom Blasta X", "count": 1, "a": "6", "ws": "2+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}, "extra-attacks"] },
+      { "name": "Moonchewa", "count": 1, "a": "5", "ws": "2+", "s": "12", "ap": "-2", "d": "3",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}, "twin-linked"] }
+    ]
+  },
+
+  "_unitWeaponAbilities_note": "\"This unit's ranged attacks have …\" reaches every model in the unit, so these show on this datasheet's own weapon rows and on the rest of an Attached unit. whileCalled entries only apply while the unit is riled up.",
+  "unitWeaponAbilities": [
+    { "appliesTo": "ranged", "abilityId": "ignores-cover", "display": "Ignores Cover" }
+  ],
+
+  "_whileCalled_note": "What this datasheet's own abilities add while the unit is riled up, listed in the card's riled-up note.",
+  "whileCalled": [
+    { "text": "Move up to 5\" instead of D6\"", "from": "Supreme Kunnin’" }
+  ],
+
+  "abilities": ["intimidating-motivation", "nazdregs-know-wotz", "supreme-kunnin"],
+  "factionAbilities": ["da-boss", "waaagh"],
+  "coreAbilities": ["deep-strike", "leader"],
+  "wargear": [],
+
+  "canLead": ["meganobz"]
+}

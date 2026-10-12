@@ -1,0 +1,45 @@
+{
+  "id": "mozrog-skragbad",
+  "name": "Mozrog Skragbad",
+  "type": ["Monster", "Character", "Epic Hero"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["MONSTER", "BEAST SNAGGA", "CHARACTER", "EPIC HERO"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": true,
+
+  "points": 170,
+  "models": 1,
+  "modelBreakdown": "1 Mozrog Skragbad",
+
+  "stats": { "m": "10\"", "t": 9, "sv": "3+", "w": 10, "ld": "6+", "oc": 3 },
+
+  "invulnerableSave": "4+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Big Chompa’s Jaws; 1 Gutrippa; 1 Thump Gun.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Thump Gun", "count": 1, "range": "18\"", "a": "3", "bs": "5+", "s": "6", "ap": "0", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}] }
+    ],
+    "melee": [
+      { "name": "Big Chompa’s Jaws", "count": 1, "a": "3", "ws": "3+", "s": "7", "ap": "-2", "d": "4",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 3+"}, "extra-attacks"] },
+      { "name": "Gutrippa - Standard", "count": 1, "a": "6", "ws": "2+", "s": "9", "ap": "-2", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}],
+        "weaponGroup": "Gutrippa",
+        "weaponGroupLabel": "Pick one eligible profile before selecting targets. A Hunter profile can only target units with the keywords it names." },
+      { "name": "Gutrippa - Hunter", "count": 1, "a": "6", "ws": "2+", "s": "12", "ap": "-2", "d": "D6+1",
+        "abilities": ["lethal-hits", {"id": "hunter", "display": "Hunter: Monster/Vehicle"}],
+        "weaponGroup": "Gutrippa" }
+    ]
+  },
+
+  "abilities": ["one-last-kill", "da-bigger-dey-iz", "beast-snagga-following"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["feel-no-pain-5"],
+  "wargear": []
+}

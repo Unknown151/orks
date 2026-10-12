@@ -382,5 +382,329 @@
       "shooting"
     ],
     "description": "<strong>Firing Deck X</strong>: in your Shooting phase, when this <strong>TRANSPORT</strong> is selected to shoot, pick up to X embarked models whose units have not shot this phase, and one ranged weapon from each (not <strong>[ONE SHOT]</strong>). The <strong>TRANSPORT</strong> fires those weapons as its own, and its passengers cannot shoot for the rest of the turn."
+  },
+  "support": {
+    "name": "Support",
+    "type": "Core Ability",
+    "description": "When you muster your army, this unit <strong>must</strong> be attached to one Bodyguard unit it is able to join, forming an Attached unit with it. A Bodyguard unit can have one Support unit as well as one Leader."
+  },
+  "hunter": {
+    "name": "Hunter",
+    "type": "Weapon Ability",
+    "phases": [
+      "fight"
+    ],
+    "description": "A Hunter profile can only be used against units that have the keywords it names — <strong>[HUNTER: MONSTER/VEHICLE]</strong> can only target <strong>MONSTER</strong> or <strong>VEHICLE</strong> units. Pick one of the weapon’s eligible profiles before selecting targets."
+  },
+  "kunnin-infiltrator": {
+    "name": "Kunnin’ Infiltrator",
+    "type": "Ability — Boss Snikrot",
+    "phases": [
+      "fight"
+    ],
+    "description": "At the end of your opponent’s Fight phase, if every model in this unit is hidden and unengaged, you can place the unit into Strategic Reserves."
+  },
+  "deff-from-the-shadows": {
+    "name": "Deff from the Shadows",
+    "type": "Ability — Boss Snikrot",
+    "phases": [
+      "movement"
+    ],
+    "description": "From the first battle round onwards: at the end of your opponent’s Movement phase, if this unit is in Strategic Reserves, it can make an ingress move."
+  },
+  "intimidating-motivation": {
+    "name": "Intimidating Motivation",
+    "type": "Ability — Warboss, Warboss in Mega Armour, Nazdreg",
+    "phases": [
+      "movement"
+    ],
+    "description": "Once per battle round, per army. In your Movement phase, at the start or end of this unit’s move, you can select one friendly <strong>ORKS</strong> unit within 6\" of this unit. That unit:<br>• Is no longer Battle-shocked.<br>• Is <strong>riled up</strong> until the start of your next turn."
+  },
+  "nazdregs-know-wotz": {
+    "name": "Nazdreg’s Know-wotz",
+    "type": "Ability — Nazdreg",
+    "description": "This unit has <strong>Deep Strike</strong>, and its ranged attacks have <strong>[IGNORES COVER]</strong>."
+  },
+  "supreme-kunnin": {
+    "name": "Supreme Kunnin’",
+    "type": "Ability — Nazdreg",
+    "phases": [
+      "movement"
+    ],
+    "description": "Once per phase, per army: in your opponent’s Movement phase, when an enemy unit ends a move within 8\" of this unit, if this unit is unengaged it can make a Normal move of up to D6\" — or of up to 5\" if it is <strong>riled up</strong>."
+  },
+  "super-runts": {
+    "name": "Super Runts",
+    "type": "Ability — Zodgrod Wortsnagga",
+    "description": "This unit is <strong>riled up</strong>, and its Scavenged Shivs weapons have +1 to their <strong>A</strong>, <strong>WS</strong> and <strong>S</strong>."
+  },
+  "one-last-kill": {
+    "name": "One Last Kill",
+    "type": "Ability — Mozrog Skragbad",
+    "phases": [
+      "fight"
+    ],
+    "description": "In the Fight phase, when this model is destroyed, if its unit has not been selected to fight this phase, roll one D6. On a 2+ the model is not removed yet: it stays on the battlefield until the unit has fought or the phase ends, whichever comes first."
+  },
+  "da-bigger-dey-iz": {
+    "name": "Da Bigger Dey Iz…",
+    "type": "Ability — Mozrog Skragbad",
+    "phases": [
+      "fight"
+    ],
+    "description": "This unit’s melee attacks that target a <strong>MONSTER</strong> or <strong>VEHICLE</strong> unit can re-roll the Wound roll."
+  },
+  "beast-snagga-following": {
+    "name": "Beast Snagga Following",
+    "type": "Ability — Mozrog Skragbad",
+    "description": "While this unit is within 3\" of a friendly <strong>BEAST SNAGGA</strong> unit (excluding <strong>MONSTER CHARACTER</strong> units), it has <strong>Lone Operative</strong>."
+  },
+  "full-throttle": {
+    "name": "Full Throttle",
+    "type": "Ability — Wazdakka Gutsmek",
+    "phases": [
+      "command"
+    ],
+    "description": "In your Command phase, select one Throttlerokkit Shokka Engine ability: Turbo Engine, Shokk Attack Engine or Pulse Jet. This unit has that ability until the start of your next Command phase."
+  },
+  "turbo-engine": {
+    "name": "Turbo Engine",
+    "type": "Throttlerokkit Shokka Engine ability — Wazdakka Gutsmek",
+    "phases": [
+      "movement",
+      "charge"
+    ],
+    "description": "<em>Only while selected with Full Throttle.</em> When this unit is selected to make an Advance or Fall Back move, that move does not stop it from declaring a charge."
+  },
+  "shokk-attack-engine": {
+    "name": "Shokk Attack Engine",
+    "type": "Throttlerokkit Shokka Engine ability — Wazdakka Gutsmek",
+    "phases": [
+      "command"
+    ],
+    "description": "<em>Only while selected with Full Throttle.</em> In your Command phase, if this unit is unengaged, you can place it into Strategic Reserves."
+  },
+  "pulse-jet": {
+    "name": "Pulse Jet",
+    "type": "Throttlerokkit Shokka Engine ability — Wazdakka Gutsmek",
+    "phases": [
+      "movement"
+    ],
+    "description": "<em>Only while selected with Full Throttle.</em> In your Movement phase, when this unit is selected to move, if it is unengaged it can make a pulse jet move.<br><br><strong>Pulse jet move:</strong> roll one D6 and move up to that plus 18\". The move ignores vertical distance and can pass through models and through terrain. The unit must end unengaged, cannot declare a charge or start an action until the end of the turn, and until the start of your next turn attacks that target it have -1 to Hit rolls."
+  },
+  "waaagh-banner": {
+    "name": "Waaagh! Banner",
+    "type": "Ability — Bannernob",
+    "phases": [
+      "charge"
+    ],
+    "description": "This unit has +1 to Charge rolls."
+  },
+  "keep-huntin": {
+    "name": "Keep Huntin’!",
+    "type": "Ability — Beastboss, Beastboss on Squigosaur",
+    "phases": [
+      "movement"
+    ],
+    "description": "Once per battle round, per army. In your Movement phase, at the start or end of this unit’s move, you can select one friendly <strong>BEAST SNAGGA</strong> unit within 6\" of this unit. That unit:<br>• Is no longer Battle-shocked.<br>• Is <strong>riled up</strong> until the start of your next turn."
+  },
+  "dodge-dis": {
+    "name": "Dodge Dis!",
+    "type": "Ability — Beastboss",
+    "phases": [
+      "shooting",
+      "fight"
+    ],
+    "description": "This unit’s attacks have +1 to Hit rolls."
+  },
+  "more-dakka": {
+    "name": "More Dakka",
+    "type": "Ability — Big Mek, Big Mek in Mega Armour, Big Mek with Shokk Attack Gun",
+    "phases": [
+      "shooting"
+    ],
+    "description": "This unit’s ranged attacks have <strong>[IGNORES COVER]</strong> — and <strong>[SUSTAINED HITS 1]</strong> as well while the unit is <strong>riled up</strong>."
+  },
+  "shokk-boosta": {
+    "name": "Shokk-boosta",
+    "type": "Ability — Big Mek",
+    "phases": [
+      "movement"
+    ],
+    "description": "In your Movement phase, when this unit is selected to make an Advance move, you can use this ability. If you do:<br>• The Advance roll can be changed to a 6.<br>• The unit can move through all types of model.<br>• When it ends that move, make a hazard roll for each model in the unit."
+  },
+  "fix-dat-armour-up": {
+    "name": "Fix Dat Armour Up",
+    "type": "Ability — Big Mek in Mega Armour",
+    "phases": [
+      "command"
+    ],
+    "description": "Once per battle, per unit: in your Command phase, this unit heals 3 wounds. Keep a Grot Oiler token next to the unit and remove it when the ability is used."
+  },
+  "kustom-force-field": {
+    "name": "Kustom Force Field",
+    "type": "Wargear",
+    "phases": [
+      "shooting"
+    ],
+    "description": "This unit has a 4+ invulnerable save against ranged attacks."
+  },
+  "support-shokka": {
+    "name": "Support Shokka",
+    "type": "Ability — Big Mek with Shokk Attack Gun",
+    "description": "While this model is within 3\" of a friendly <strong>ORKS INFANTRY</strong> unit (excluding <strong>BIG MEK WITH SHOKK ATTACK GUN</strong> units), it has <strong>Lone Operative</strong>."
+  },
+  "sumfin-to-prove": {
+    "name": "Sumfin’ to Prove",
+    "type": "Ability — Bigboss",
+    "phases": [
+      "fight"
+    ],
+    "description": "This unit’s melee attacks have +1 to Hit rolls."
+  },
+  "kustom-dakka": {
+    "name": "Kustom Dakka",
+    "type": "Ability — Mek",
+    "phases": [
+      "shooting"
+    ],
+    "description": "This unit’s ranged attacks have <strong>[IGNORES COVER]</strong>."
+  },
+  "clever-know-wotz": {
+    "name": "Clever Know-wotz",
+    "type": "Ability — Mek",
+    "phases": [
+      "movement"
+    ],
+    "description": "In your Movement phase, at the start or end of this unit’s move, you can select one friendly <strong>ORKS VEHICLE</strong> model (excluding <strong>AIRCRAFT</strong> and <strong>TITANIC</strong> models) within 3\" of this model:<br>• That model heals D3 wounds.<br>• Its attacks have +1 to Hit rolls until the start of your next Movement phase."
+  },
+  "push-dat-bit-back-in": {
+    "name": "Push Dat Bit Back In",
+    "type": "Ability — Painboss",
+    "phases": [
+      "command"
+    ],
+    "description": "Once per battle, per unit: in your Command phase, select one friendly <strong>BEAST SNAGGA</strong> unit within 6\" of this unit. That unit heals 3 wounds. Keep a Grot Orderly token next to the unit and remove it when the ability is used."
+  },
+  "hardy-bioniks": {
+    "name": "Hardy Bioniks",
+    "type": "Ability — Painboss",
+    "description": "Attacks that target this unit with a <strong>S</strong> greater than this unit’s <strong>T</strong> have -1 to Wound rolls."
+  },
+  "runnin-wiv-da-herd": {
+    "name": "Runnin’ wiv da Herd",
+    "type": "Ability — Painboss",
+    "description": "While this model is attached to a <strong>MOUNTED</strong> unit, it:<br>• Does not have <strong>INFANTRY</strong>.<br>• Has <strong>MOBILE</strong> and <strong>MOUNTED</strong>.<br>• Has +4\" <strong>M</strong>."
+  },
+  "crude-surgery": {
+    "name": "Crude Surgery",
+    "type": "Ability — Painboy",
+    "phases": [
+      "command"
+    ],
+    "description": "In your Command phase, this unit heals 3 wounds."
+  },
+  "catch-dat-red-bit": {
+    "name": "Catch Dat Red Bit",
+    "type": "Ability — Painboy",
+    "phases": [
+      "command"
+    ],
+    "description": "Once per battle, per unit: when this model uses Crude Surgery, you can add D3 to the number of wounds healed. Keep a Grot Orderly token next to the unit and remove it when the ability is used."
+  },
+  "thatll-learn-ya": {
+    "name": "That’ll Learn Ya",
+    "type": "Ability — Runtherd",
+    "description": "Once per battle round, per unit: when this unit becomes Battle-shocked, if it contains 4 or more Gretchin models, you can roll one D3:<br>• That many Gretchin models in this unit are destroyed.<br>• This unit is no longer Battle-shocked."
+  },
+  "boss-ammo-runt": {
+    "name": "Boss’ Ammo Runt",
+    "type": "Ability — Warboss",
+    "phases": [
+      "shooting"
+    ],
+    "description": "Once per battle, per unit: in your Shooting phase, when this unit is selected to shoot, you can use this ability. If you do, this model’s ranged attacks have +1 to Hit rolls. Keep a Boss’ Ammo Runt token next to the unit and remove it when the ability is used."
+  },
+  "might-is-right": {
+    "name": "Might Is Right",
+    "type": "Ability — Warboss",
+    "phases": [
+      "fight"
+    ],
+    "description": "If this unit made a Charge move this turn, this model’s melee attacks have:<br>• +3 <strong>A</strong>.<br>• +2 <strong>S</strong>."
+  },
+  "krushin-impetus": {
+    "name": "Krushin’ Impetus",
+    "type": "Ability — Warboss in Mega Armour",
+    "phases": [
+      "charge"
+    ],
+    "description": "When this unit ends a Charge move, you can select one enemy unit engaged with it. If you do, roll one D6 for each model in this unit that is engaged with that enemy unit: for each 3+, that enemy unit suffers 1 mortal wound."
+  },
+  "waaagh-energy": {
+    "name": "Waaagh! Energy (psyker level 1)",
+    "type": "Ability — Weirdboy",
+    "description": "This model has the psychic abilities Da Jump and Warpath. Its psyker level limits how many psychic levels it can use each battle round — see Unstable Energies."
+  },
+  "da-jump": {
+    "name": "Da Jump (Psychic, level 1)",
+    "type": "Psychic Ability — Weirdboy",
+    "phases": [
+      "movement"
+    ],
+    "description": "Once per army, per battle round: in your Movement phase, if this unit is not Battle-shocked, you can make a psychic roll for it (one D6). If you do:<br>• On a 1, this unit is Battle-shocked.<br>• Place this unit into Strategic Reserves.<br>• This unit has <strong>Deep Strike</strong>."
+  },
+  "warpath": {
+    "name": "Warpath (Psychic, level 1)",
+    "type": "Psychic Ability — Weirdboy",
+    "phases": [
+      "fight"
+    ],
+    "description": "In the Fight phase, when this unit is selected to fight, if it is not Battle-shocked, you can make a psychic roll for it (one D6). If you do:<br>• On a 1, this unit is Battle-shocked.<br>• This unit’s melee attacks can re-roll Wound rolls of 1.<br>• This unit’s melee attacks have <strong>[PSYCHIC]</strong>."
+  },
+  "thundering-stampede": {
+    "name": "Thundering Stampede (Aura)",
+    "type": "Ability — Beastboss on Squigosaur",
+    "phases": [
+      "charge"
+    ],
+    "description": "Friendly <strong>BEAST SNAGGA</strong> units within 6\" of this unit have +1 to Charge rolls."
+  },
+  "boss-of-da-hunt": {
+    "name": "Boss of da Hunt",
+    "type": "Ability — Beastboss on Squigosaur",
+    "description": "While this unit is within 3\" of a friendly <strong>BEAST SNAGGA</strong> unit (excluding <strong>MONSTER CHARACTER</strong> units), it has <strong>Lone Operative</strong>."
+  },
+  "get-back-in-da-race": {
+    "name": "Get Back in da Race!",
+    "type": "Ability — Deffkilla Wartrike",
+    "phases": [
+      "movement"
+    ],
+    "description": "Once per battle round, per army. In your Movement phase, at the start or end of this unit’s move, you can select one friendly <strong>SPEED FREEKS</strong> unit within 6\" of this unit. That unit, and any units embarked within it:<br>• Is no longer Battle-shocked.<br>• Is <strong>riled up</strong> until the start of your next turn."
+  },
+  "fuel-mixa-grot": {
+    "name": "Fuel-mixa Grot",
+    "type": "Ability — Deffkilla Wartrike",
+    "phases": [
+      "movement"
+    ],
+    "description": "This unit has +1 to Advance rolls."
+  },
+  "even-more-dakka": {
+    "name": "Even More Dakka",
+    "type": "Ability — Big Mek Dakkarig",
+    "phases": [
+      "shooting"
+    ],
+    "description": "While this unit is <strong>riled up</strong>, its ranged attacks have <strong>[SUSTAINED HITS 1]</strong>."
+  },
+  "blitz-dem-gitz": {
+    "name": "Blitz Dem Gitz!",
+    "type": "Ability — Big Mek Dakkarig",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, if this unit’s Blitzkannon targets a unit that is not a <strong>MONSTER</strong> or <strong>VEHICLE</strong>, that weapon has +6 <strong>A</strong>."
   }
 }

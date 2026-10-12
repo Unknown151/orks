@@ -35,7 +35,7 @@ datasheets have not started yet. Guide §8 build order:
 | 8 | Stratagems tab — phase/turn filter, detachment grouping | done |
 | 9 | Enhancements & Upgrades — cap logic, overview grid | done |
 | 10 | Persistence — saved lists, share URL, text export | done |
-| 11 | Advanced wargear — exclusive choices, fixed loadouts | partial — guided wargear panels (§5.5c) land per-unit, as datasheets that need them arrive |
+| 11 | Advanced wargear — exclusive choices, fixed loadouts, wargear options | done — options are data-driven, see *Datasheet extras* |
 | 12 | Faction oddities — splitting, resource tracking | not needed yet — add if an Ork datasheet calls for it |
 | + | **Combat Patrol tab** — separate game mode, read-only force view | done, data landing |
 | + | Collapsible unit cards | done |
@@ -52,7 +52,7 @@ A **faction call button** is pinned to the bottom of the Army and Combat Patrol 
 
 | File | Holds |
 |---|---|
-| `data/units/` | 1 datasheet so far — Ghazghkull Thraka |
+| `data/units/` | 22 datasheets — every CHARACTER (Warhammer Legends datasheets are left out) |
 | `data/detachments.json` | all 15 Ork detachments, plus the battle-size table |
 | `data/enhancements.json` | their 38 Enhancements and Upgrades |
 | `data/stratagems.json` | the 10 core stratagems, 40 detachment stratagems, and the 3 Combat Patrol ones |
@@ -183,6 +183,82 @@ improves each of them independently, so a 4+ is left alone while a 6+ becomes 5+
 may add its own `keywords` for a model-specific list; `factionKeywords` is the
 separate FACTION KEYWORDS line. Each scope renders as a labelled row. A unit with a
 plain flat list — every Combat Patrol datasheet so far — renders unlabelled as before.
+
+## Datasheet extras
+
+Everything a datasheet needs beyond stats and weapons is a key on its JSON file, all of
+it optional. `data/units/_TEMPLATE.json` shows each one in place.
+
+### Leaders and Support units
+
+A Bodyguard unit can have **one Leader and one Support unit** attached (core rules
+19.01). A datasheet is one or the other — `isLeader` or `isSupport` — and `canLead`
+lists the units it can join either way:
+
+```jsonc
+"isSupport": true,
+"canLead": ["boyz", "nobz"]
+```
+
+- The Builder card of a unit that can take one shows a **Led by** and a **Support**
+  picker; the leader's or support unit's own card says where it currently sits.
+- The Army view folds all three into **one card** — Leader, Support, Unit — with one
+  combined cost.
+- A **Support unit must be attached** (25.04). One that is not carries a ⚠, like every
+  other broken rule, and is not removed.
+- The one-Enhancement-per-unit rule counts the whole Attached unit, Support included.
+
+### Wargear options
+
+"This model's Kustom Shoota can be replaced with one of the following" is one
+**decision** with named choices. The first choice is the printed loadout:
+
+```jsonc
+"wargearOptions": [
+  { "id": "ranged", "label": "Kustom Shoota", "choices": [
+      { "id": "kustom-shoota", "name": "Kustom Shoota", "weapons": ["Kustom Shoota"] },
+      { "id": "kombi-rokkit",  "name": "Kombi-rokkit",  "weapons": ["Kombi-rokkit"] } ] },
+  { "id": "extra", "label": "Also takes", "choices": [
+      { "id": "none", "name": "— nothing —" },
+      { "id": "kustom-force-field", "name": "Kustom Force Field", "abilities": ["kustom-force-field"] } ] }
+]
+```
+
+- `weapons` names a weapon **or a `weaponGroup`**, so a multi-profile weapon swaps in
+  and out as one item.
+- A weapon named by any choice is carried **only while that choice is picked**; a weapon
+  no option mentions is simply always carried. The loadout is derived from the picks,
+  so it can never hold both halves of a swap, or neither.
+- `abilities` on a choice are wargear abilities that come with it.
+- Only a non-default pick is stored on the list entry (in `slots`), so it travels
+  through saved lists, share links and the text export with no extra plumbing.
+
+### Abilities that reach the weapon rows
+
+"This unit's ranged attacks have [IGNORES COVER]" applies to every model in the unit —
+the datasheet's own, and in an Attached unit everyone else's too:
+
+```jsonc
+"unitWeaponAbilities": [
+  { "appliesTo": "ranged", "abilityId": "ignores-cover", "display": "Ignores Cover" },
+  { "appliesTo": "ranged", "abilityId": "sustained-hits", "display": "Sustained Hits 1", "whileCalled": true }
+]
+```
+
+They show as dashed badges on the weapon rows. An entry marked `whileCalled` only
+appears while the unit is under the faction call. A badge is not repeated when the
+weapon already says the same thing — compared by what the badge says, so a
+detachment's [SUSTAINED HITS 1] still shows next to a weapon's own
+[SUSTAINED HITS 2: MONSTER/VEHICLE].
+
+### Other keys
+
+| Key | Does |
+|---|---|
+| `coreAbilities` | An id, or `{ "id": "deadly-demise", "display": "Deadly Demise D3" }` when the datasheet prints a value. |
+| `costing` | Escalating cost — "1st to 2nd unit 100 pts, 3rd+ unit 115 pts" is `escalationAfter: 2` with one tier each. |
+| `whileCalled` | `[{ "text", "from" }]` — what the datasheet's own abilities add while it is riled up, listed in the card note. |
+| `alwaysCalled` | The unit is riled up permanently (Zodgrod's Super Runts). Works on an Enhancement too (Mekwaaagh! Mastermind), and covers the whole Attached unit. |
 
 ## Weapon sections
 
@@ -339,9 +415,13 @@ it is data, and all of it appears only while the call is active:
 A detachment `whileCalled` entry matches units with `keyword` (all) or `anyKeyword`
 (one), exactly like a grant, and only reaches units that carry the call ability.
 
-**Not tracked:** rules that rile up a *single* unit outside the army-wide call — Da
-Boss is Watchin', Makari, Hoist Dat Banner!, Dread Power, Flyboss, Mekwaaagh!
-Mastermind. The app has no per-unit game state, so those stay in their rule text.
+**Permanent** riled-up states are shown: a datasheet or Enhancement marked
+`alwaysCalled` (Zodgrod's Super Runts, Mekwaaagh! Mastermind) has the call's effects
+on its card at all times, and so does the rest of its Attached unit.
+
+**Not tracked:** rules that rile up a *single* unit for a turn — Intimidating
+Motivation, Keep Huntin'!, Da Boss is Watchin', Makari, Hoist Dat Banner!, Dread
+Power, Flyboss. The app has no per-unit game state, so those stay in their rule text.
 
 ### The background flourish
 
@@ -469,7 +549,8 @@ traps: escalating costs, non-linear multi-size pricing, the Enhancement/Upgrade 
 and its distinct-Upgrade folding, multi-profile weapon merging in summaries,
 `count: 0` options staying off, the call button on the Army tab and everything a call
 switches on (detachment, Enhancement and stratagem bonuses), DP budget + unique-group
-blocking, battle sizes (DP
+blocking, Support units (own slot, merged card, must be attached), wargear options,
+unit-wide weapon abilities, permanently riled-up units, battle sizes (DP
 budget, Enhancement limit and unit limit by points limit, the lone 3 DP detachment at
 Incursion), one Enhancement per Attached unit, datasheet names as keywords,
 orphaned-enhancement cleanup on detachment removal, leader attachment/merged

@@ -1,0 +1,39 @@
+{
+  "id": "painboy",
+  "name": "Painboy",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER"],
+  "factionKeywords": ["ORKS"],
+
+  "isSupport": true,
+  "isEpicHero": false,
+
+  "points": 45,
+  "models": 1,
+  "modelBreakdown": "1 Painboy",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 3, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Dok’s Toolz; 1 ’Urty Syringe.",
+
+  "weapons": {
+    "ranged": [],
+    "melee": [
+      { "name": "’Urty Syringe", "count": 1, "a": "1", "ws": "3+", "s": "2", "ap": "0", "d": "D6",
+        "abilities": [{"id": "anti", "display": "Anti-Infantry 4+"}, {"id": "devastating-wounds", "display": "Devastating Wounds: Infantry"}, "extra-attacks"] },
+      { "name": "Dok’s Toolz", "count": 1, "a": "3", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": [] }
+    ]
+  },
+
+  "abilities": ["crude-surgery", "catch-dat-red-bit"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["support"],
+  "wargear": [],
+
+  "canLead": ["boyz", "breaka-boyz", "flash-gitz", "nobz", "tankbustas"]
+}

@@ -1,0 +1,68 @@
+{
+  "id": "big-mek",
+  "name": "Big Mek",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER", "EXPLOSIVES"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": true,
+  "isEpicHero": false,
+
+  "points": 100,
+  "models": 1,
+  "modelBreakdown": "1 Big Mek",
+  "_costing_note": "Printed as: 1st to 2nd unit 100 pts, 3rd+ unit 115 pts.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 1, "points": 100 }],
+      [{ "models": 1, "points": 115 }]
+    ]
+  },
+
+  "stats": { "m": "6\"", "t": 5, "sv": "3+", "w": 6, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Kustom Mega-blasta; 1 Power Klaw.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kustom Mega-blasta", "count": 1, "range": "24\"", "a": "3", "bs": "4+", "s": "9", "ap": "-2", "d": "3",
+        "abilities": ["hazardous"] },
+      { "name": "Traktor Blasta", "count": 1, "range": "24\"", "a": "3", "bs": "4+", "s": "6", "ap": "-2", "d": "D3+3",
+        "abilities": [{"id": "anti", "display": "Anti-Fly 2+"}] }
+    ],
+    "melee": [
+      { "name": "Drilla", "count": 1, "a": "3", "ws": "3+", "s": "12", "ap": "-3", "d": "3",
+        "abilities": [] },
+      { "name": "Power Klaw", "count": 1, "a": "5", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": [] }
+    ]
+  },
+
+  "_wargearOptions_note": "Each option is one decision; the first choice is the printed loadout. `weapons` names a weapon or a weaponGroup; a weapon named by any choice is carried only while that choice is picked.",
+  "wargearOptions": [
+    { "id": "melee", "label": "Power Klaw", "choices": [
+        { "id": "power-klaw", "name": "Power Klaw", "weapons": ["Power Klaw"] },
+        { "id": "drilla", "name": "Drilla", "weapons": ["Drilla"] } ] },
+    { "id": "ranged", "label": "Mega-blasta", "choices": [
+        { "id": "kustom-mega-blasta", "name": "Kustom Mega-blasta", "weapons": ["Kustom Mega-blasta"] },
+        { "id": "traktor-blasta", "name": "Traktor Blasta", "weapons": ["Traktor Blasta"] } ] }
+  ],
+
+  "_unitWeaponAbilities_note": "\"This unit's ranged attacks have …\" reaches every model in the unit, so these show on this datasheet's own weapon rows and on the rest of an Attached unit. whileCalled entries only apply while the unit is riled up.",
+  "unitWeaponAbilities": [
+    { "appliesTo": "ranged", "abilityId": "ignores-cover", "display": "Ignores Cover" },
+    { "appliesTo": "ranged", "abilityId": "sustained-hits", "display": "Sustained Hits 1", "whileCalled": true }
+  ],
+
+  "abilities": ["more-dakka", "shokk-boosta"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["leader"],
+  "wargear": [],
+
+  "canLead": ["boyz", "breaka-boyz", "flash-gitz", "mek-gunz", "nobz", "tankbustas"]
+}

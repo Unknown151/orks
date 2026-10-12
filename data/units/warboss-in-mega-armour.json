@@ -1,0 +1,48 @@
+{
+  "id": "warboss-in-mega-armour",
+  "name": "Warboss in Mega Armour",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER", "MEGA ARMOUR", "WARBOSS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": true,
+  "isEpicHero": false,
+
+  "points": 115,
+  "models": 1,
+  "modelBreakdown": "1 Warboss in Mega Armour",
+  "_costing_note": "Printed as: 1st to 2nd unit 115 pts, 3rd+ unit 130 pts.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 1, "points": 115 }],
+      [{ "models": 1, "points": 130 }]
+    ]
+  },
+
+  "stats": { "m": "5\"", "t": 7, "sv": "2+", "w": 7, "ld": "6+", "oc": 1 },
+
+  "invulnerableSave": "5+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Big Shoota; 1 ’Uge Choppa.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Big Shoota", "count": 1, "range": "36\"", "a": "3", "bs": "4+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}] }
+    ],
+    "melee": [
+      { "name": "’Uge Choppa", "count": 1, "a": "5", "ws": "2+", "s": "12", "ap": "-2", "d": "3",
+        "abilities": [{"id": "cleave", "display": "Cleave 2"}] }
+    ]
+  },
+
+  "abilities": ["krushin-impetus", "intimidating-motivation"],
+  "factionAbilities": ["da-boss", "waaagh"],
+  "coreAbilities": ["leader"],
+  "wargear": [],
+
+  "canLead": ["meganobz"]
+}

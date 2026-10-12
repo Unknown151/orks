@@ -1,0 +1,40 @@
+{
+  "id": "bigboss",
+  "name": "Bigboss",
+  "type": ["Infantry", "Character"],
+  "_source_note": "Stats, weapons, keywords and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-12. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "CHARACTER"],
+  "factionKeywords": ["ORKS"],
+
+  "isSupport": true,
+  "isEpicHero": false,
+
+  "points": 50,
+  "models": 1,
+  "modelBreakdown": "1 Bigboss",
+
+  "stats": { "m": "6\"", "t": 5, "sv": "4+", "w": 5, "ld": "7+", "oc": 1 },
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Big Choppa; 1 Slugga.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Slugga", "count": 1, "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}] }
+    ],
+    "melee": [
+      { "name": "Big Choppa", "count": 1, "a": "5", "ws": "3+", "s": "7", "ap": "-2", "d": "2",
+        "abilities": ["precision"] }
+    ]
+  },
+
+  "abilities": ["sumfin-to-prove"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["support"],
+  "wargear": [],
+
+  "canLead": ["boyz", "breaka-boyz", "nobz"]
+}

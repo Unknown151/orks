@@ -398,6 +398,144 @@ t('an enhancement that carries a weapon shows its profile', await p.evaluate(()=
       && [...el.querySelectorAll('.pill')].map(x=>x.textContent).join()==='Rapid Fire 6,Lethal Hits'
       && enhancementWeaponHtml({})==='';}));
 
+// --- Support units (core rules 19.01): a Bodyguard unit takes one Leader AND one
+//     Support unit. Here armyList[0] is still led by the warboss.
+await p.evaluate(()=>{
+  DATA.units['tmp-doc']={id:'tmp-doc',name:'Tmp Doc',keywords:['INFANTRY','CHARACTER','ORKS'],isSupport:true,points:45,models:1,
+    stats:{},weapons:{melee:[{name:'Saw',count:1,a:'1',ws:'3+',s:'4',ap:'0',d:'1',abilities:[]}]},canLead:['demo-boyz'],
+    unitWeaponAbilities:[{appliesTo:'melee',abilityId:'lethal-hits',display:'Lethal Hits (doc)'}]};
+  addUnit('tmp-doc');
+});
+const doc=await p.evaluate(()=>armyList.find(i=>i.unitId==='tmp-doc').uid);
+t('a Support unit is offered in its own slot, not as a leader', await p.evaluate(u=>
+  availableLeadersFor(armyList[0],'supportId').map(x=>x.uid).join()===u
+  && !availableLeadersFor(armyList[0]).some(x=>x.uid===u)
+  && availableLeadersFor(armyList.find(i=>i.unitId==='demo-buggy'),'supportId').length===0,doc));
+t('an unattached Support unit is flagged', await p.evaluate(u=>{
+  renderBuilder();
+  return isLooseSupport(armyList.find(x=>x.uid===u))
+      && [...document.querySelectorAll('#view-builder .rulewarn')].some(x=>x.textContent.includes('Support unit must be attached'));},doc));
+t('a unit can have a Leader and a Support unit at once', await p.evaluate(u=>{
+  renderAll();
+  const sel=document.querySelector(`[data-support="${armyList[0].uid}"]`);
+  sel.value=u; sel.dispatchEvent(new Event('change',{bubbles:true}));
+  return armyList[0].supportId===u && armyList[0].leaderId!==null && !isLooseSupport(armyList.find(x=>x.uid===u))
+      && ![...document.querySelectorAll('#view-builder .rulewarn')].some(x=>x.textContent.includes('Support unit must be attached'));},doc));
+const merged3=`[...document.querySelectorAll('#view-army .unit')].find(x=>x.querySelectorAll('.leader-band').length===3)`;
+t('the merged card has a section each for Leader, Support and Unit', await p.evaluate(sel=>{
+  renderArmy(); const c=eval(sel);
+  return !!c && [...c.querySelectorAll('.leader-band')].map(b=>b.textContent.split(' — ')[0]).join()==='Leader,Support,Unit';},merged3));
+t('...and its points are the sum of all three', await p.evaluate(([sel,u])=>{
+  const c=eval(sel), l=armyList.find(i=>i.uid===armyList[0].leaderId), s=armyList.find(i=>i.uid===u);
+  return parseInt(c.querySelector('.pts').textContent,10)===instancePoints(armyList[0])+instancePoints(l)+instancePoints(s);},[merged3,doc]));
+t('an attached Support unit is not a card of its own', await p.evaluate(()=>
+  ![...document.querySelectorAll('#view-army .unit-hd h3')].some(h=>h.firstChild.textContent.includes('Tmp Doc'))));
+t('a unit-wide weapon ability reaches every weapon row in the Attached unit', await p.evaluate(sel=>{
+  const rows=[...eval(sel).querySelectorAll('.wrow.melee')];
+  const hit=rows.filter(r=>[...r.querySelectorAll('.pill.inh')].some(p=>p.textContent==='Lethal Hits (doc)')).length;
+  return rows.length>=3 && hit===rows.length;},merged3));
+t('the one-Enhancement rule reaches the Support unit too', await p.evaluate(u=>{
+  DATA.enhancements['tmp-upg']={name:'Tmp',points:1,upgrade:true,detachment:'other'};
+  const r=enhancementBlockReason('tmp-upg',armyList.find(i=>i.uid===u));
+  delete DATA.enhancements['tmp-upg']; return r;},doc)==='attached unit already has one');
+t('share pack and instance shape carry the Support attachment', await p.evaluate(u=>
+  packList().a[0].S===armyList.findIndex(i=>i.uid===u)
+  && normalizeInstance({unitId:'demo-boyz',supportId:'x'}).supportId==='x'
+  && normalizeInstance({unitId:'demo-boyz'}).supportId===null,doc));
+t('a share link restores the Support attachment', await p.evaluate(async u=>{
+  const keepA=JSON.stringify(armyList), keepD=selectedDetachments.slice(), keepN=listName, keepL=pointsLimit;
+  const ok=unpackList(await decodeShare(await encodeShare()));
+  const s=armyList[0].supportId, r=ok && s!==null && armyList.find(i=>i.uid===s)?.unitId==='tmp-doc';
+  armyList=JSON.parse(keepA); selectedDetachments=keepD; listName=keepN; pointsLimit=keepL; save(); renderAll();
+  return r;},doc));
+t('text export names the Support unit', await p.evaluate(()=>exportText().includes('Support: Tmp Doc')));
+t('duplicating a unit does not copy its Support attachment', await p.evaluate(()=>{
+  duplicateInstance(armyList[0].uid); const copy=armyList[1];
+  const r=copy.unitId==='demo-boyz' && copy.supportId===null && copy.leaderId===null;
+  removeInstance(copy.uid); return r;}));
+t('removing a Support unit clears the link and leaves the leader', await p.evaluate(u=>{
+  removeInstance(u); delete DATA.units['tmp-doc']; renderAll();
+  return armyList[0].supportId===null && armyList[0].leaderId!==null && !armyList.some(i=>i.unitId==='tmp-doc');},doc));
+
+// --- wargear options: one decision each, the loadout is derived from the picks
+t('a wargear option swaps weapons instead of adding them', await p.evaluate(()=>{
+  const u={id:'x',name:'X',weapons:{ranged:[
+      {name:'Gun',count:1,abilities:[]},
+      {name:'Kombi - A',count:1,abilities:[],weaponGroup:'Kombi'},{name:'Kombi - B',count:1,abilities:[],weaponGroup:'Kombi'}],
+    melee:[{name:'Choppa',count:1,abilities:[]},{name:'Klaw',count:1,abilities:[]},{name:'Fist',count:1,abilities:[]}]},
+    wargearOptions:[
+      {id:'r',label:'Gun',choices:[{id:'gun',name:'Gun',weapons:['Gun']},{id:'kombi',name:'Kombi',weapons:['Kombi']}]},
+      {id:'m',label:'Choppa',choices:[{id:'choppa',name:'Choppa',weapons:['Choppa']},{id:'klaw',name:'Klaw',weapons:['Klaw']}]},
+      {id:'x',label:'Also',choices:[{id:'none',name:'none'},{id:'ff',name:'Field',abilities:['stealth']}]}]};
+  const sum=slots=>weaponSummaryText(u,{slots});
+  return sum({})==='Gun, Choppa, Fist'                       // printed loadout; Fist is in no option, so always carried
+      && sum({r:'kombi'})==='Kombi, Choppa, Fist'            // a weaponGroup swaps in as one item
+      && sum({r:'kombi',m:'klaw'})==='Kombi, Klaw, Fist'
+      && sum({r:'nonsense'})==='Gun, Choppa, Fist'           // an unknown pick falls back to the default
+      && optionAbilities(u,{slots:{x:'ff'}}).join()==='stealth' && optionAbilities(u,{slots:{}}).length===0
+      && nonDefaultChoices(u,{slots:{m:'klaw'}}).map(c=>c.name).join()==='Klaw'
+      && nonDefaultChoices(u,{slots:{}}).length===0;}));
+t('the Builder has one picker per option; only a non-default pick is stored', await p.evaluate(()=>{
+  DATA.units['tmp-boss']={id:'tmp-boss',name:'Tmp Boss',keywords:['INFANTRY','ORKS'],points:10,models:1,stats:{},fixedWeapons:true,
+    weapons:{melee:[{name:'Choppa',count:1,abilities:[]},{name:'Klaw',count:1,abilities:[]}]},
+    wargearOptions:[{id:'m',label:'Choppa',choices:[{id:'choppa',name:'Choppa',weapons:['Choppa']},{id:'klaw',name:'Klaw',weapons:['Klaw']}]}]};
+  addUnit('tmp-boss'); const i=armyList[armyList.length-1];
+  const pick=v=>{const s=document.querySelector(`[data-opt="${i.uid}:m"]`); s.value=v; s.dispatchEvent(new Event('change',{bubbles:true}));};
+  const card=()=>[...document.querySelectorAll('#view-army .unit')].find(c=>c.querySelector('h3').textContent.includes('Tmp Boss'));
+  const before=[...card().querySelectorAll('.wn')].map(x=>x.textContent).join();
+  pick('klaw');
+  const stored=JSON.stringify(i.slots), sum=weaponSummaryText(DATA.units['tmp-boss'],i);
+  const after=[...card().querySelectorAll('.wn')].map(x=>x.textContent).join(), exp=exportText().includes('Options: Klaw');
+  pick('choppa'); const cleared=JSON.stringify(i.slots);
+  removeInstance(i.uid); delete DATA.units['tmp-boss']; renderAll();
+  return before==='Choppa' && stored==='{"m":"klaw"}' && sum==='Klaw' && after==='Klaw' && exp && cleared==='{}';}));
+
+// --- datasheet abilities that reach the weapon rows, and permanent calls
+t('a core ability can carry its printed value', await p.evaluate(()=>{
+  const el=document.createElement('div');
+  el.innerHTML=unitBody({id:'x',name:'X',stats:{},coreAbilities:['stealth',{id:'deadly-demise',display:'Deadly Demise D3'}]},null,{noGrants:true});
+  return [...el.querySelectorAll('.pill.core')].map(x=>x.textContent).join()==='Stealth,Deadly Demise D3';}));
+t('a unit-wide weapon ability shows on its own rows; a riled-up one only under the call', await p.evaluate(()=>{
+  const keep=game.waaagh;
+  const u={id:'x',name:'X',stats:{},factionAbilities:['waaagh'],
+    weapons:{ranged:[{name:'gun',count:1,abilities:[]}],melee:[{name:'fist',count:1,abilities:[]}]},
+    unitWeaponAbilities:[{appliesTo:'ranged',abilityId:'ignores-cover',display:'Ignores Cover'},
+                         {appliesTo:'ranged',abilityId:'sustained-hits',display:'Sustained Hits 1',whileCalled:true}]};
+  const pills=()=>{const el=document.createElement('div'); el.innerHTML=unitBody(u,null,{noGrants:true});
+    return [...el.querySelectorAll('.wrow')].map(r=>[...r.querySelectorAll('.pill.inh')]
+      .map(p=>p.textContent+(p.classList.contains('call')?'*':'')).join('+')).join('|');};
+  game.waaagh=false; const off=pills(); game.waaagh=true; const on=pills(); game.waaagh=keep;
+  return off==='Ignores Cover|' && on==='Ignores Cover+Sustained Hits 1*|';}));
+t('a granted ability is hidden only when the weapon already says the same thing', await p.evaluate(()=>{
+  const u={id:'x',name:'X',_callWeaponAbilities:[{abilityId:'sustained-hits',display:'Sustained Hits 1'}],
+    weapons:{melee:[{name:'a',count:1,abilities:[{id:'sustained-hits',display:'Sustained Hits 2: Monster'}]},
+                    {name:'b',count:1,abilities:[{id:'sustained-hits',display:'Sustained Hits 1'}]}]}};
+  const el=document.createElement('div'); el.innerHTML=weaponRows(u,null,'melee',{noGrants:true});
+  return [...el.querySelectorAll('.wrow')].map(r=>r.querySelectorAll('.pill.call').length).join()==='1,0';}));
+t('an always-riled-up datasheet or Enhancement shows the call without the button', await p.evaluate(()=>{
+  const keep=game.waaagh; game.waaagh=false;
+  const u={id:'x',name:'X',factionAbilities:['waaagh'],invulnerableSave:'6+'};
+  const marked=applyCallEffects({...u,alwaysCalled:true}).invulnerableSave, plain=applyCallEffects(u).invulnerableSave;
+  DATA.enhancements['tmp-riled']={name:'R',points:1,alwaysCalled:true,detachment:'other'};
+  const viaEnh=applyCallEffects(u,{},{enhancementId:'tmp-riled'}).invulnerableSave;
+  delete DATA.enhancements['tmp-riled']; game.waaagh=keep;
+  return marked==='5+' && plain==='6+' && viaEnh==='5+';}));
+t('...and a marked leader covers the unit it leads, but no other', await p.evaluate(()=>{
+  DATA.units['demo-warboss'].alwaysCalled=true;
+  const led=alwaysUnderCall(DATA.units['demo-boyz'],armyList[0]), other=alwaysUnderCall(DATA.units['demo-boyz'],armyList[1]);
+  delete DATA.units['demo-warboss'].alwaysCalled; return led===true && other===false;}));
+t("a datasheet's own riled-up clause is listed in the card note", await p.evaluate(()=>{
+  const keep=game.waaagh; game.waaagh=true;
+  const d=applyCallEffects({id:'x',name:'X',factionAbilities:['waaagh'],whileCalled:[{text:'Move 5 inches',from:'Kunnin'}]});
+  game.waaagh=keep; return d._callNotes.some(n=>n.text==='Move 5 inches' && n.from==='Kunnin');}));
+t('Epic Heroes get their own group in the unit picker', await p.evaluate(()=>{
+  DATA.units['tmp-epic']={id:'tmp-epic',name:'Tmp Epic',keywords:['CHARACTER'],isEpicHero:true,points:1,models:1,stats:{}};
+  DATA.unitOrder.push('tmp-epic'); renderBuilder();
+  const g=l=>[...(document.querySelector(`#addSel optgroup[label="${l}"]`)?.querySelectorAll('option')||[])].map(o=>o.value).join();
+  const r=g('Epic Heroes')==='tmp-epic' && g('Characters')==='demo-warboss';
+  DATA.unitOrder.splice(-1); delete DATA.units['tmp-epic']; renderBuilder();
+  return r;}));
+
 // --- multi-profile weapon summary
 t('multi-profile merged in summary',
   (await p.evaluate(()=>weaponSummaryText(DATA.units['demo-boyz'],armyList[0]))).length>0);

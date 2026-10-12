@@ -76,6 +76,77 @@ t('DP spent = 3, budget full', await p.evaluate(()=>dpSpent())===3);
 t('DP chip shows 3/3', (await p.textContent('#dpChip'))==='3/3');
 t('blocked cards dimmed', await p.evaluate(()=>document.querySelectorAll('.dcard.blocked').length)===1);
 
+// --- battle size (core rules 25.03): the points limit picks the size, the size
+//     sets the DP budget, the Enhancement limit and the unit limit
+t('2000 pts is Strike Force: 3 DP, 4 enhancements',
+  await p.evaluate(()=>battleSize().name==='Strike Force' && dpBudget()===3 && enhancementLimit()===4));
+const sizeAt=n=>p.evaluate(n=>{const keep=pointsLimit; pointsLimit=n;
+  const r=[battleSize().name,dpBudget(),enhancementLimit()].join(); pointsLimit=keep; return r;},n);
+t('1000 pts is Incursion: 2 DP, 2 enhancements', (await sizeAt(1000))==='Incursion,2,2');
+t('500 pts is still Incursion', (await sizeAt(500))==='Incursion,2,2');
+t('1001 pts is already Strike Force', (await sizeAt(1001))==='Strike Force,3,4');
+t('no limit (0) plays as the largest size', (await sizeAt(0))==='Strike Force,3,4');
+t('a list that was legal at Strike Force is flagged at Incursion, not trimmed', await p.evaluate(()=>{
+  const keep=pointsLimit; pointsLimit=1000; renderAll();
+  const chip=document.querySelector('#dpChip');
+  const r=dpOverBudget() && selectedDetachments.length===2 && chip.textContent==='3/2' && chip.classList.contains('over')
+       && !!document.querySelector('#pDet .rulewarn');
+  pointsLimit=keep; renderAll();
+  return r && !dpOverBudget() && !chip.classList.contains('over') && !document.querySelector('#pDet .rulewarn');}));
+t('changing the points limit in the Builder refreshes the DP chip', await p.evaluate(()=>{
+  const set=v=>{const i=document.querySelector('#limitIn'); i.value=v; i.dispatchEvent(new Event('change',{bubbles:true}));};
+  set('1000'); const small=document.querySelector('#dpChip').textContent;
+  set('2000'); return small==='3/2' && document.querySelector('#dpChip').textContent==='3/3' && pointsLimit===2000;}));
+t('Incursion: one 3 DP detachment is allowed, but only on its own', await p.evaluate(()=>{
+  const keepL=pointsLimit, keepS=selectedDetachments.slice(), d=DATA.detachments['big-one'], keepDp=d.dp;
+  pointsLimit=1000; d.dp=3;
+  selectedDetachments=[];          const alone=canAddDetachment('big-one');      // 3 > 2, but it would be the only one
+  selectedDetachments=['other'];   const second=canAddDetachment('big-one');     // not alongside another
+  selectedDetachments=['big-one']; const legal=!dpOverBudget(), full=!canAddDetachment('other');
+  d.dp=keepDp; pointsLimit=keepL; selectedDetachments=keepS;
+  return alone && !second && legal && full;}));
+t('Strike Force has no lone-detachment exception', await p.evaluate(()=>{
+  const keepS=selectedDetachments.slice(), d=DATA.detachments['big-one'], keepDp=d.dp;
+  d.dp=4; selectedDetachments=[]; const r=canAddDetachment('big-one');
+  d.dp=keepDp; selectedDetachments=keepS; return r===false;}));
+
+// --- a detachment can carry two Force Dispositions (War Horde does)
+t('two Force Dispositions: both named, bar split between their colours', await p.evaluate(()=>{
+  const d=DATA.detachments['other'], keep=d.category;
+  d.category=['Take and Hold','Purge the Foe']; renderBuilder();
+  const card=document.querySelector('[data-det="other"]');
+  const r=card.querySelector('.m').textContent.includes('Take and Hold / Purge the Foe')
+       && card.querySelector('.bar').style.background.includes('gradient');
+  d.category=keep; renderBuilder();
+  return r && !document.querySelector('[data-det="other"] .bar').style.background.includes('gradient');}));
+
+// --- a datasheet's own name is a keyword too (core rules 02.01.01)
+t("a datasheet's name counts as a keyword without being listed",
+  await p.evaluate(()=>unitHasKeyword(DATA.units['demo-boyz'],'DEMO BOYZ') && !DATA.units['demo-boyz'].keywords.includes('DEMO BOYZ')));
+t('...the whole name only, not a word inside it',
+  await p.evaluate(()=>unitHasKeyword(DATA.units['demo-boyz'],'BOYZ'))===false);
+t('...whichever apostrophe the name is typed with',
+  await p.evaluate(()=>unitHasKeyword({name:'’Ard Ladz'},"'ARD LADZ")));
+t('...and it can gate an enhancement', await p.evaluate(()=>{
+  const e=DATA.enhancements['extra-armour'], was=e.restrictedToKeyword; e.restrictedToKeyword='DEMO BUGGY';
+  const a=eligibleEnhancements({unitId:'demo-buggy'}).map(x=>x.id).includes('extra-armour');
+  const b=eligibleEnhancements({unitId:'demo-boyz'}).map(x=>x.id).includes('extra-armour');
+  e.restrictedToKeyword=was; return a && !b;}));
+
+// --- a grant can ask for any one of several keywords ("MEGANOBZ/NOBZ units")
+t('anyKeyword on an ability grant is OR', await p.evaluate(()=>{
+  const d=DATA.detachments['big-one'], keep=d.grants;
+  d.grants=[{anyKeyword:['NOPE','VEHICLE'],abilityId:'stealth'}];
+  const r=getDetachmentGrantedAbilities(DATA.units['demo-buggy']).length===1
+       && getDetachmentGrantedAbilities(DATA.units['demo-boyz']).length===0;
+  d.grants=keep; return r;}));
+t('anyKeyword on a weapon grant is OR', await p.evaluate(()=>{
+  const d=DATA.detachments['big-one'], keep=d.grantsWeaponAbilities;
+  d.grantsWeaponAbilities=[{anyKeyword:['MOB','NOPE'],appliesTo:'melee',abilityId:'lethal-hits'}];
+  const r=getDetachmentWeaponGrants(DATA.units['demo-boyz'],'melee').length===1
+       && getDetachmentWeaponGrants(DATA.units['demo-buggy'],'melee').length===0;
+  d.grantsWeaponAbilities=keep; return r;}));
+
 // --- add units + costing
 await p.evaluate(()=>{addUnit('demo-boyz');addUnit('demo-boyz');addUnit('demo-boyz');});
 t('3 instances', await p.evaluate(()=>armyList.length)===3);
@@ -91,6 +162,32 @@ t('army total', await p.evaluate(()=>armyPoints())===185+100+110);
 await p.evaluate(()=>{for(let i=0;i<4;i++)addUnit('demo-buggy');});
 t('buggy 3rd copy = 70', await p.evaluate(()=>instancePoints(armyList.filter(i=>i.unitId==='demo-buggy')[2]))===70);
 t('buggy 4th copy = 80', await p.evaluate(()=>instancePoints(armyList.filter(i=>i.unitId==='demo-buggy')[3]))===80);
+
+// --- unit limit (25.03): flagged on the card, never blocked
+t('unit limit: 3 at Strike Force, doubled for Battleline',
+  await p.evaluate(()=>unitLimitFor(DATA.units['demo-buggy'])===3 && unitLimitFor(DATA.units['demo-boyz'])===6));
+t('unit limit: 2 at Incursion, doubled for Battleline', await p.evaluate(()=>{
+  const keep=pointsLimit; pointsLimit=1000;
+  const r=unitLimitFor(DATA.units['demo-buggy'])===2 && unitLimitFor(DATA.units['demo-boyz'])===4;
+  pointsLimit=keep; return r;}));
+t('unit limit: an Epic Hero is always 1, a Dedicated Transport is doubled', await p.evaluate(()=>
+  unitLimitFor({name:'a',isEpicHero:true})===1 && unitLimitFor({name:'b',keywords:['EPIC HERO']})===1
+  && unitLimitFor({name:'c',keywords:['DEDICATED TRANSPORT']})===6));
+t('a keyword granted by a detachment counts towards the limit', await p.evaluate(()=>{
+  DATA.detachments['big-one'].grantsKeywords=[{keyword:'VEHICLE',add:'BATTLELINE'}];
+  const r=unitLimitFor(DATA.units['demo-buggy']);
+  delete DATA.detachments['big-one'].grantsKeywords; return r===6;}));
+t('the 4th buggy is over the limit, the 3rd is not', await p.evaluate(()=>{
+  const b=armyList.filter(i=>i.unitId==='demo-buggy');
+  return b.length===4 && !isOverUnitLimit(b[2]) && isOverUnitLimit(b[3]);}));
+t('...and only that card carries the warning', await p.evaluate(()=>{
+  renderBuilder();
+  const cards=[...document.querySelectorAll('#view-builder .unit')].filter(c=>c.querySelector('h3').textContent.includes('Demo Buggy'));
+  return cards.map(c=>(c.querySelector('.rulewarn')?1:0)+(c.querySelector('.unit-hd .rulemark')?1:0)).join()==='0,0,0,2';}));
+t('data without a unit limit never warns', await p.evaluate(()=>{
+  const keep=DATA.battleSizes; DATA.battleSizes=[{name:'Strike Force',dp:3,enhancements:4}];
+  const r=unitLimitFor(DATA.units['demo-buggy'])===Infinity && dpBudget()===3 && enhancementLimit()===4;
+  DATA.battleSizes=keep; return r;}));
 
 // --- leaders
 await p.evaluate(()=>addUnit('demo-warboss'));
@@ -247,6 +344,59 @@ t('upgrades charged per copy', await p.evaluate(()=>instancePoints(armyList[1]))
 t('cap counts distinct upgrade once (1 enh + 1 upg = 2)', await p.evaluate(()=>countArmyEnhancements())===2);
 const bg=await p.evaluate(()=>armyList.filter(i=>i.unitId==='demo-buggy')[0].uid);
 t('4th upgrade copy blocked', await p.evaluate(u=>enhancementBlockReason('extra-armour',armyList.find(i=>i.uid===u)),bg)==='max 3');
+
+// --- one Enhancement per unit, Attached units included (25.04). At this point the
+//     warboss (Shiny Bit) leads armyList[0], which was handed Extra Armour directly.
+const ONE='attached unit already has one';
+t('a unit led by an enhanced leader cannot take an Upgrade of its own', await p.evaluate(()=>{
+  const keep=armyList[0].enhancementId; armyList[0].enhancementId=null;
+  const r=enhancementBlockReason('extra-armour',armyList[0]); armyList[0].enhancementId=keep; return r;})===ONE);
+t('...and the leader cannot take one while its unit has one', await p.evaluate(u=>{
+  const w=armyList.find(i=>i.uid===u), keep=w.enhancementId; w.enhancementId=null;
+  const r=enhancementBlockReason('shiny-bit',w); w.enhancementId=keep; return r;},wb)===ONE);
+t('...but either can once the other gives its own up', await p.evaluate(u=>{
+  const w=armyList.find(i=>i.uid===u), kw=w.enhancementId, k0=armyList[0].enhancementId;
+  w.enhancementId=null; armyList[0].enhancementId=null;
+  const r=enhancementBlockReason('shiny-bit',w)===null && enhancementBlockReason('extra-armour',armyList[0])===null;
+  w.enhancementId=kw; armyList[0].enhancementId=k0; return r;},wb));
+t('a clash already in the list is flagged on both cards, not removed', await p.evaluate(u=>{
+  renderBuilder();
+  const n=[...document.querySelectorAll('#view-builder .rulewarn')].filter(x=>x.textContent.includes('only one Enhancement')).length;
+  return n===2 && armyList[0].enhancementId==='extra-armour' && armyList.find(i=>i.uid===u).enhancementId==='shiny-bit';},wb));
+t('the Led by control refuses an attachment that would double up', await p.evaluate(u=>{
+  armyList[0].leaderId=null; renderAll();                       // detach, so the leader is on offer again
+  const sel=document.querySelector(`[data-leader="${armyList[0].uid}"]`);
+  const disabled=[...sel.options].find(o=>o.value===u).disabled;
+  sel.value=u; sel.dispatchEvent(new Event('change',{bubbles:true}));   // push past the disabled option
+  const refused=armyList[0].leaderId===null;
+  armyList[0].leaderId=u; renderAll();
+  return disabled && refused;},wb));
+t('the Enhancement control refuses a pick the rules block', await p.evaluate(u=>{
+  const k0=armyList[0].enhancementId; armyList[0].enhancementId=null; renderAll();
+  const sel=document.querySelector(`[data-enhsel="${armyList[0].uid}"]`);
+  const disabled=[...sel.options].find(o=>o.value==='extra-armour').disabled;
+  sel.value='extra-armour'; sel.dispatchEvent(new Event('change',{bubbles:true}));
+  const refused=armyList[0].enhancementId===null;
+  armyList[0].enhancementId=k0; renderAll();
+  return disabled && refused;},wb));
+t('the Enhancement limit follows the battle size', await p.evaluate(u=>{
+  const keep=pointsLimit, bug=armyList.find(i=>i.uid===u);
+  DATA.enhancements['tmp-upg']={name:'Tmp',points:1,upgrade:true,detachment:'other'};
+  const strike=enhancementBlockReason('tmp-upg',bug);            // 2 in use + 1 = 3 of 4
+  pointsLimit=1000; const incursion=enhancementBlockReason('tmp-upg',bug);   // 3 of 2
+  pointsLimit=keep; delete DATA.enhancements['tmp-upg'];
+  return strike===null && incursion==='cap';},bg));
+t('the overview shows the limit for the current battle size', await p.evaluate(()=>{
+  renderBuilder(); const a=document.querySelector('#pEnh .tag').textContent;
+  const keep=pointsLimit; pointsLimit=1000; renderBuilder(); const b=document.querySelector('#pEnh .tag').textContent;
+  pointsLimit=keep; renderBuilder(); return a==='2/4 used' && b==='2/2 used';}));
+t('an enhancement that carries a weapon shows its profile', await p.evaluate(()=>{
+  const el=document.createElement('div');
+  el.innerHTML=enhancementWeaponHtml({weapon:{name:'Boomstick',range:'24"',a:'6',bs:'4+',s:'7',ap:'-2',d:'2',
+    abilities:[{id:'rapid-fire',display:'Rapid Fire 6'},'lethal-hits']}});
+  return el.querySelector('.wn').textContent==='Boomstick' && el.querySelectorAll('.wst').length===6
+      && [...el.querySelectorAll('.pill')].map(x=>x.textContent).join()==='Rapid Fire 6,Lethal Hits'
+      && enhancementWeaponHtml({})==='';}));
 
 // --- multi-profile weapon summary
 t('multi-profile merged in summary',
@@ -457,6 +607,24 @@ t('a unit-level save still works when no profile carries one', await p.evaluate(
   const u={id:'x',factionAbilities:['waaagh'],invulnerableSave:'6+',modelProfiles:[{name:'a',count:1,stats:{}}]};
   const r=applyCallEffects(u).invulnerableSave; game.waaagh=keep;
   return r==='5+';}));
+t('each unit answers to the call ability it carries, not a global one', await p.evaluate(()=>{
+  const keep=game.waaagh; game.waaagh=true;
+  DATA.abilities['other-call']={name:'Other',callEffects:{invulnerableSave:'3+',
+    weaponAbilities:[{appliesTo:'ranged',abilityId:'assault',display:'Assault'}]}};
+  const a=applyCallEffects({id:'a',factionAbilities:['waaagh'],invulnerableSave:'6+'});
+  const b=applyCallEffects({id:'b',factionAbilities:['other-call'],invulnerableSave:'6+'});
+  const c=applyCallEffects({id:'c',factionAbilities:['fixture-faction'],invulnerableSave:'6+'});
+  delete DATA.abilities['other-call']; game.waaagh=keep;
+  return a.invulnerableSave==='5+' && !a._callWeaponAbilities
+      && b.invulnerableSave==='3+' && b._callWeaponAbilities.length===1
+      && c.invulnerableSave==='6+';}));
+t('a called weapon ability lands on matching rows only, and never twice', await p.evaluate(()=>{
+  const u={id:'x',name:'X',_callWeaponAbilities:[{appliesTo:'ranged',abilityId:'assault',display:'Assault'}],
+    weapons:{ranged:[{name:'gun',count:1,abilities:[]},{name:'fast gun',count:1,abilities:['assault']}],
+             melee:[{name:'fist',count:1,abilities:[]}]}};
+  const el=document.createElement('div');
+  el.innerHTML=weaponRows(u,null,'ranged',{noGrants:true})+weaponRows(u,null,'melee',{noGrants:true});
+  return [...el.querySelectorAll('.wrow')].map(r=>r.querySelectorAll('.pill.call').length).join()==='1,0,0';}));
 t('a leader can name units whose datasheets are missing', await p.evaluate(()=>
   unitDisplayName('breaka-boyz')==='Breaka Boyz' && unitDisplayName('cp-boyz')==='CP Boyz'));
 
@@ -611,9 +779,11 @@ t('dock is fixed to the screen',
   await p.evaluate(()=>getComputedStyle(document.querySelector('#dock')).position)==='fixed');
 t('dock shown on Combat Patrol', await p.evaluate(()=>{
   setTab('cp'); return document.querySelector('#dock').style.display!=='none';}));
+t('dock shown on Army too', await p.evaluate(()=>{
+  setTab('army'); const r=document.querySelector('#dock').style.display!=='none'; setTab('cp'); return r;}));
 t('dock hidden on every other tab', await p.evaluate(()=>{
   const hidden=t=>{setTab(t);return document.querySelector('#dock').style.display==='none';};
-  const r=['army','builder','strats','points'].every(hidden); setTab('cp'); return r;}));
+  const r=['builder','strats','points'].every(hidden); setTab('cp'); return r;}));
 t('hidden dock reclaims its page padding', await p.evaluate(()=>{
   setTab('builder'); const pad=parseInt(getComputedStyle(document.querySelector('main')).paddingBottom,10);
   setTab('cp'); return pad<30;}));
@@ -769,11 +939,104 @@ t('a missing gif is given up on rather than retried', await p.evaluate(async()=>
   return flagged;}));
 await p.evaluate(()=>{game.waaagh=false;save();renderDock();});
 
+// ---- the matched-play side of the call: the button on the Army tab, and
+//      everything that keys off the call being active
+t('a Range in inches is added to, not appended to', await p.evaluate(()=>
+  bumpStat('36"',3)==='39"' && bumpStat('4',1)==='5' && bumpStat('D6+2',1)==='D6+2+1'));
+t('a detachment can add to the call for the units it names', await p.evaluate(()=>{
+  const keep=game.waaagh, keepS=selectedDetachments.slice(), d=DATA.detachments['big-one'];
+  if(!selectedDetachments.includes('big-one')) selectedDetachments.push('big-one');
+  game.waaagh=true;
+  d.whileCalled=[{keyword:'MOB',who:'MOB units',text:'+3" Range',rangedWeapon:{range:3}}];
+  const mk=kw=>({id:'x',name:'X',keywords:kw,factionAbilities:['waaagh'],
+    weapons:{ranged:[{name:'gun',count:1,range:'18"',a:'2',abilities:[]}],melee:[{name:'fist',count:1,a:'2',s:'4',abilities:[]}]}});
+  const hit=applyCallEffects(mk(['MOB'])), miss=applyCallEffects(mk(['VEHICLE'])), cp=applyCallEffects(mk(['MOB']),{noGrants:true});
+  delete d.whileCalled; game.waaagh=keep; selectedDetachments=keepS;
+  return hit.weapons.ranged[0].range==='21"' && hit.weapons.ranged[0]._mods.range==='mod-call'
+      && hit._callNotes.some(n=>n.text==='+3" Range' && n.from==='Big One')
+      && hit.weapons.melee[0].a==='3'                                  // the call's own melee bump still lands
+      && miss.weapons.ranged[0].range==='18"' && !(miss._callNotes||[]).length
+      && cp.weapons.ranged[0].range==='18"' && !(cp._callNotes||[]).length;}));
+t('...and only while its detachment is selected', await p.evaluate(()=>{
+  const keep=game.waaagh, keepS=selectedDetachments.slice(), d=DATA.detachments['big-one'];
+  game.waaagh=true; d.whileCalled=[{keyword:'MOB',text:'x',rangedWeapon:{range:3}}];
+  selectedDetachments=selectedDetachments.filter(x=>x!=='big-one');
+  const u=applyCallEffects({id:'x',name:'X',keywords:['MOB'],factionAbilities:['waaagh'],weapons:{ranged:[{name:'gun',count:1,range:'18"',abilities:[]}]}});
+  delete d.whileCalled; game.waaagh=keep; selectedDetachments=keepS;
+  return u.weapons.ranged[0].range==='18"';}));
+t('the card lists what the call does beyond the numbers, and where each line comes from', await p.evaluate(()=>{
+  const keep=game.waaagh, a=DATA.abilities.waaagh; game.waaagh=true;
+  a.callState='Riled up'; a.callNotes=['Can charge after Advancing'];
+  DATA.enhancements['shiny-bit'].whileCalled='Re-roll the dice';
+  const u={id:'x',name:'X',keywords:[],factionAbilities:['waaagh'],stats:{}};
+  const on=document.createElement('div'); on.innerHTML=unitBody(u,{enhancementId:'shiny-bit'},{noGrants:true});
+  const plain=document.createElement('div'); plain.innerHTML=unitBody(u,null,{noGrants:true});
+  game.waaagh=false;
+  const off=document.createElement('div'); off.innerHTML=unitBody(u,{enhancementId:'shiny-bit'},{noGrants:true});
+  delete a.callState; delete a.callNotes; delete DATA.enhancements['shiny-bit'].whileCalled; game.waaagh=keep;
+  const txt=on.querySelector('.callnote')?.textContent||'', txt2=plain.querySelector('.callnote')?.textContent||'';
+  return txt.includes('RILED UP') && txt.includes('Can charge after Advancing')
+      && txt.includes('Re-roll the dice') && txt.includes('(Shiny Bit)')
+      && txt2.includes('Can charge after Advancing') && !txt2.includes('Re-roll')    // no enhancement, no enhancement line
+      && !off.querySelector('.callnote');}));
+t('a call with nothing beyond its numbers adds no note row', await p.evaluate(()=>{
+  const keep=game.waaagh; game.waaagh=true;
+  const el=document.createElement('div');
+  el.innerHTML=unitBody({id:'x',name:'X',keywords:[],factionAbilities:['waaagh'],stats:{}},null,{noGrants:true});
+  game.waaagh=keep; return !el.querySelector('.callnote');}));
+t('a stratagem with a stronger mode is marked only while the call is active', await p.evaluate(()=>{
+  const keep=game.waaagh, a=DATA.abilities.waaagh; a.callState='Riled up';
+  DATA.stratagems['core-a'].whileCalled='+1 to the roll'; ui.stratPhase='all';
+  game.waaagh=false; renderStrats(); const off=document.querySelectorAll('#view-strats .sb.call').length;
+  game.waaagh=true;  renderStrats();
+  const on=[...document.querySelectorAll('#view-strats .scard.called')].map(c=>c.querySelector('.sb.call').textContent).join();
+  showStratagem('core-a'); const pop=document.querySelector('#mBody .scall')?.textContent||''; document.querySelector('#mClose').click();
+  game.waaagh=false; showStratagem('core-a'); const popOff=!!document.querySelector('#mBody .scall'); document.querySelector('#mClose').click();
+  delete DATA.stratagems['core-a'].whileCalled; delete a.callState; game.waaagh=keep; renderStrats();
+  return off===0 && on==='Riled up' && pop.includes('RILED UP NOW') && pop.includes('+1 to the roll') && !popOff;}));
+t('toggling the call refreshes the Stratagems tab', await p.evaluate(()=>{
+  DATA.stratagems['core-a'].whileCalled='x'; ui.stratPhase='all'; game.waaagh=false; refreshCall();
+  const before=document.querySelectorAll('#view-strats .sb.call').length;
+  game.waaagh=true; refreshCall(); const after=document.querySelectorAll('#view-strats .sb.call').length;
+  game.waaagh=false; delete DATA.stratagems['core-a'].whileCalled; refreshCall();
+  return before===0 && after===1;}));
+t('the Army banner adds what detachments and stratagems contribute; Combat Patrol does not', await p.evaluate(()=>{
+  const keepS=selectedDetachments.slice(); if(!selectedDetachments.includes('big-one')) selectedDetachments.push('big-one');
+  DATA.detachments['big-one'].whileCalled=[{keyword:'MOB',who:'MOB units',text:'+3" Range'}];
+  DATA.stratagems['core-a'].whileCalled='x';
+  game.waaagh=true; setTab('army');
+  const army=document.querySelector('#dockBanner .more')?.textContent||'';
+  setTab('cp'); const cp=!!document.querySelector('#dockBanner .more');
+  delete DATA.detachments['big-one'].whileCalled; setTab('army'); const one=document.querySelector('#dockBanner .more')?.textContent||'';
+  delete DATA.stratagems['core-a'].whileCalled; setTab('army'); const none=!!document.querySelector('#dockBanner .more');
+  game.waaagh=false; selectedDetachments=keepS; save(); setTab('cp'); renderAll();
+  return army.includes('Big One:') && army.includes('MOB units') && army.includes('+3" Range') && army.includes('1 stratagem is stronger')
+      && !cp && one.includes('1 stratagem is stronger') && !one.includes('Big One') && !none;}));
+t('pressing the button on the Army tab changes matched-play cards, End restores them', await p.evaluate(async()=>{
+  DATA.units['demo-boyz'].factionAbilities=['waaagh']; game.waaagh=false; save(); setTab('army'); renderAll();
+  const before=document.querySelectorAll('#view-army .mod-call').length;
+  document.querySelector('#dockBtn').click(); await new Promise(r=>setTimeout(r,450));
+  const after=document.querySelectorAll('#view-army .mod-call').length, on=game.waaagh;
+  document.querySelector('#dockEnd').click(); await new Promise(r=>setTimeout(r,120));
+  const ended=document.querySelectorAll('#view-army .mod-call').length;
+  delete DATA.units['demo-boyz'].factionAbilities; setTab('cp'); renderAll();
+  return before===0 && on===true && after>0 && ended===0 && game.waaagh===false;}));
+await p.waitForTimeout(900);   // let the press animation finish before the next dock tests
+
 // data-driven: no call* keys => no dock at all
 t('adding a tab to FACTION_CALL_TABS is all it takes', await p.evaluate(()=>{
-  FACTION_CALL_TABS.push('army'); setTab('army');
+  FACTION_CALL_TABS.push('strats'); setTab('strats');
   const shown=document.querySelector('#dock').style.display!=='none';
-  FACTION_CALL_TABS.pop(); setTab('cp'); return shown;}));
+  FACTION_CALL_TABS.pop(); setTab('strats');
+  const gone=document.querySelector('#dock').style.display==='none';
+  setTab('cp'); return shown && gone;}));
+t('Combat Patrol can name its own wording of the call; other tabs keep the default', await p.evaluate(()=>{
+  DATA.abilities['cp-call']={...DATA.abilities.waaagh,name:'CP Call'};
+  DATA.combatPatrol.factionCall='cp-call'; setTab('cp');
+  const onCp=factionCall().name, label=document.querySelector('#dockBtn').textContent;
+  setTab('army'); const onArmy=factionCall().name;
+  delete DATA.combatPatrol.factionCall; delete DATA.abilities['cp-call']; setTab('cp');
+  return onCp==='CP Call' && label==='CP CALL' && onArmy==='Waaagh!' && factionCall().name==='Waaagh!';}));
 t('dock hides when the ability has no call data', await p.evaluate(()=>{
   const keep=DATA.abilities.waaagh; delete DATA.abilities.waaagh; renderDock();
   const hidden=document.querySelector('#dock').style.display==='none';

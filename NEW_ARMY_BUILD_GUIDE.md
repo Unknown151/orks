@@ -214,7 +214,8 @@ Total = Σ over instances of: size price + attached leader's points + enhancemen
 
 ### 5.2 Detachment Points (DP)
 
-The army gets a **budget (3 DP)** and spends it across *multiple* simultaneous detachments,
+The army gets a **DP budget set by the battle size** — 2 at Incursion (1000 pts), 3 at Strike
+Force (2000 pts), core rules 25.03 — and spends it across *multiple* simultaneous detachments,
 each contributing its rule, stratagems and enhancements. Some detachments share a **unique
 group** and are mutually exclusive.
 
@@ -239,8 +240,11 @@ Two sub-types with different rules — get this right or list-building breaks:
 | Counts toward army cap | every one counts | only the **first** copy of each distinct Upgrade |
 | Points | charged once | charged **per copy** |
 
-- Army cap is a constant (`MAX_ENHANCEMENTS`) — verify the current edition's number; it has changed.
-- **One enhancement/upgrade per unit.** To field two different Upgrades you need two units.
+- The army cap comes from the **battle size** (2 at Incursion, 4 at Strike Force), not a constant —
+  keep it in data next to the DP budget, and re-read it whenever the points limit changes.
+- **One enhancement/upgrade per unit.** To field two different Upgrades you need two units. An
+  *Attached* unit is one unit: a leader and the unit it leads cannot both hold one, so check
+  across the pair if you store them as separate instances.
 - Epic Heroes can take neither.
 - Two helpers do the work: `getEnhancementUsage(excludeId)` → `{id: countElsewhere}`, and
   `countArmyEnhancements(excludeId, extraId)` → cap count with distinct-Upgrade folding.

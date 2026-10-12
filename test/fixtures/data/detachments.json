@@ -1,5 +1,20 @@
 {
- "budget": 3,
+ "battleSizes": [
+  {
+   "name": "Incursion",
+   "maxPoints": 1000,
+   "dp": 2,
+   "enhancements": 2,
+   "unitLimit": 2,
+   "soloDp": 3
+  },
+  {
+   "name": "Strike Force",
+   "dp": 3,
+   "enhancements": 4,
+   "unitLimit": 3
+  }
+ ],
  "categories": {
   "Take and Hold": "#3a7d44",
   "Purge the Foe": "#9e2f2f"
@@ -11,7 +26,7 @@
    "category": "Take and Hold",
    "unique": "greentide",
    "ruleId": "r1",
-   "ruleType": "Detachment Rule \u2014 Big One",
+   "ruleType": "Detachment Rule — Big One",
    "ruleDescription": "<strong>Rule text.</strong>",
    "grants": [
     {

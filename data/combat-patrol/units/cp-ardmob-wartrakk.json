@@ -28,7 +28,7 @@
   },
 
   "abilities": ["indiscriminate-detonations"],
-  "factionAbilities": ["waaagh"],
+  "factionAbilities": ["waaagh-combat-patrol"],
   "coreAbilities": [],
   "wargear": []
 }

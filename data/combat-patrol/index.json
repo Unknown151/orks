@@ -1,6 +1,9 @@
 {
   "_note": "Combat Patrol force definition. This is a SEPARATE game mode: a fixed force with its own datasheets (in data/combat-patrol/units/) and its own stratagems, which deliberately never mix with the matched-play data in data/units/ and data/stratagems.json. Keys starting with an underscore are ignored by the loader.",
 
+  "_factionCall_help": "Which ability in data/abilities.json is this force's faction call — it labels the call button on this tab and supplies the banner text. Combat Patrol keeps its own wording of the Waaagh! (waaagh-combat-patrol), separate from the matched-play army rule (waaagh). Wahapedia has no Combat Patrol pages, so nothing in this file could be re-checked in the 11th edition sync of 2026-10-12.",
+  "factionCall": "waaagh-combat-patrol",
+
   "name": "Orks Combat Patrol",
   "notes": "",
 

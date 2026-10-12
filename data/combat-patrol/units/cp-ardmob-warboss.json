@@ -30,7 +30,7 @@
   },
 
   "abilities": ["smash-em-up"],
-  "factionAbilities": ["waaagh"],
+  "factionAbilities": ["waaagh-combat-patrol"],
   "coreAbilities": [],
   "wargear": [],
 

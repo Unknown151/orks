@@ -9,7 +9,8 @@ plain JS, but the model and rules apply to any stack.
 ## 1. Concept
 
 Instead of choosing a **single** detachment, the army is given a fixed pool of
-**Detachment Points (DP)** — default **3**. The player toggles on any combination of
+**Detachment Points (DP)** — **3** at Strike Force (2000 pts), **2** at Incursion (1000 pts);
+see §7.6. The player toggles on any combination of
 detachments whose DP costs sum to **≤ the budget**. Every selected detachment
 contributes its **rule**, its **stratagems**, and its **enhancements** simultaneously.
 
@@ -247,5 +248,11 @@ Also provide:
    in *every* load path: localStorage, saved lists, and shareable URLs.
 5. **Empty selection is valid** (0 DP spent). Don't force a default at runtime except when
    there is genuinely no stored value to migrate.
-6. **DP budget is a constant** here (3). If it ever needs to vary (per game size, per
-   faction), make `DETACHMENT_POINTS` a value on the list/army object instead of a global.
+6. **The DP budget depends on the battle size** (core rules 25.03): 2 DP at Incursion, 3 DP at
+   Strike Force. The snippets above use a constant for brevity; in a real app derive it from
+   the list's points limit (`dpBudget()`), keep the table in data, and note two consequences:
+   - **Lone detachment.** At Incursion one **3 DP** detachment may be taken as the army's *only*
+     detachment even though it is over the 2 DP budget. `canAddDetachment` has to allow that
+     one case, and the over-budget check has to exempt it.
+   - **Shrinking the limit.** Dropping from 2000 to 1000 pts can leave a legal list over
+     budget. Flag it (red counter) and let the player choose what to remove; do not trim.

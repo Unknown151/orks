@@ -5,7 +5,7 @@
   "name": "Unit Name",
   "type": ["Infantry", "Character"],
   "role": "Character",
-  "_keywords_note": "The printed KEYWORDS line can be scoped. `keywords` is what ALL MODELS carry; a modelProfile may add its own `keywords` for a model-specific list. `factionKeywords` is the separate FACTION KEYWORDS line.",
+  "_keywords_note": "The printed KEYWORDS line can be scoped. `keywords` is what ALL MODELS carry; a modelProfile may add its own `keywords` for a model-specific list. `factionKeywords` is the separate FACTION KEYWORDS line. Copy the lines exactly as printed: the datasheet's own name is a keyword as well (core rules 02.01.01), but the app adds that from `name`, so do not list it here.",
   "keywords": ["INFANTRY", "CHARACTER"],
   "factionKeywords": ["ORKS"],
   "isLeader": false,

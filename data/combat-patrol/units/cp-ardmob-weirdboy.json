@@ -39,7 +39,7 @@
   },
 
   "abilities": ["totem-of-mork"],
-  "factionAbilities": ["waaagh"],
+  "factionAbilities": ["waaagh-combat-patrol"],
   "coreAbilities": [],
   "wargear": [],
 

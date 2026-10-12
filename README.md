@@ -42,21 +42,30 @@ datasheets have not started yet. Guide §8 build order:
 
 The nav is **Army · Builder · Stratagems · Combat Patrol**. The in-game tracker
 (CP / battle round / VP / WAAAGH!) moved into the ☰ menu — nothing was removed.
-A **faction call button** is pinned to the bottom of the Combat Patrol tab (see below).
+A **faction call button** is pinned to the bottom of the Army and Combat Patrol tabs (see below).
 
 **Combat Patrol** is complete (`data/combat-patrol/`) — 6 units, 33 models, the
-'Ard As Nails detachment and both enhancements. **Matched play has started**:
-`data/units/` holds its first datasheet, and `data/detachments.json` /
-`data/enhancements.json` hold the War Horde detachment and its four enhancements.
-Its stratagems are still to come. `data/stratagems.json` holds the
-11th-ed core stratagems, shown on the Stratagems tab. Still empty, awaiting
-matched-play data: `data/detachments.json`, `data/enhancements.json`,
-`data/units/`.
-`data/abilities.json` holds every ability. **Everything the Ork data actually
-references is verified** — no ⚠ appears anywhere in the current force. The remaining
-25 entries are unused edition-core scaffolding still flagged `needsVerification`,
-which shows a ⚠ in their popup until their wording is checked. They cost nothing
-until a datasheet references one.
+'Ard As Nails detachment and both enhancements.
+
+**Matched play** was synced with Wahapedia's 11th edition pages (Orks app v2.7.1) on
+2026-10-12:
+
+| File | Holds |
+|---|---|
+| `data/units/` | 1 datasheet so far — Ghazghkull Thraka |
+| `data/detachments.json` | all 15 Ork detachments, plus the battle-size table |
+| `data/enhancements.json` | their 38 Enhancements and Upgrades |
+| `data/stratagems.json` | the 10 core stratagems, 40 detachment stratagems, and the 3 Combat Patrol ones |
+| `data/abilities.json` | army rules, datasheet abilities and the core/weapon ability glossary |
+
+Stats, points, keywords, DP and CP costs match the source exactly; rules text is
+written as short summaries rather than copied. No entry is flagged
+`needsVerification` any more, so no ⚠ appears in any popup.
+
+**Wahapedia does not carry Combat Patrol content**, so the 'Ardmob datasheets, their
+detachment, enhancements and stratagems were *not* re-checked in that sync. They keep
+their own wording of the Waaagh! (`waaagh-combat-patrol` in `data/abilities.json`),
+separate from the matched-play army rule (`waaagh`).
 
 ## Adding data
 
@@ -66,7 +75,7 @@ data/
   abilities.json        every ability/keyword, keyed by id
   enhancements.json     enhancements + upgrades, keyed by id
   stratagems.json       core + detachment stratagems, keyed by id
-  detachments.json      { budget, categories, detachments{} }
+  detachments.json      { battleSizes, categories, detachments{} }
   units/
     index.json          MANIFEST — every unit id must be listed here
     _TEMPLATE.json      annotated copy of the unit schema (not loaded)
@@ -88,7 +97,39 @@ Two rules that will bite otherwise:
    `_comment` keys are safe to leave in the data files as inline documentation.
 
 Copy `data/units/_TEMPLATE.json` to start a new datasheet. `data/detachments.json`
-carries the DP budget (default 3) and the category → colour map.
+carries the battle-size table and the category → colour map.
+
+**A datasheet's own name is a keyword** (core rules 02.01.01) even though it is not
+printed in the keyword list. The app adds it itself, so copy the KEYWORDS line exactly
+as printed — "BOYZ unit only" will still match a datasheet named Boyz.
+
+## List-building rules the app enforces
+
+All of it comes from core rules section 25, and all the numbers live in the
+`battleSizes` table in `data/detachments.json`:
+
+```jsonc
+"battleSizes": [
+  { "name": "Incursion",    "maxPoints": 1000, "dp": 2, "enhancements": 2, "unitLimit": 2, "soloDp": 3 },
+  { "name": "Strike Force",                    "dp": 3, "enhancements": 4, "unitLimit": 3 }
+]
+```
+
+The **points limit picks the battle size** — the first entry whose `maxPoints` is not
+below it, else the last one (a limit of 0 means "no limit" and plays as the largest).
+
+| Rule | Behaviour |
+|---|---|
+| **Detachment Points** | Budget is the size's `dp`. A detachment that does not fit is dimmed and refused. |
+| **Lone detachment** | `soloDp`: at that size one detachment of exactly that cost may be taken as the *only* detachment, over budget — a 3 DP one at Incursion. |
+| **Enhancement limit** | The size's `enhancements`. The 2nd and 3rd copy of an Upgrade do not count towards it, but still cost points. |
+| **One per unit** | No unit — an Attached unit included — can have more than one Enhancement, and an Upgrade is an Enhancement. A leader and the unit it leads cannot both hold one; the pickers disable the second. |
+| **Upgrade copies** | Up to three of the same Upgrade. |
+| **Unit limit** | `unitLimit` copies of one datasheet, doubled for BATTLELINE and DEDICATED TRANSPORT, always 1 for an EPIC HERO. Going over is **flagged, not blocked**. |
+
+Lowering the points limit under a list that was legal at the bigger size never
+removes anything: the DP counter turns red and the affected cards carry a ⚠ until you
+fix the list yourself. The same goes for a list saved under older rules.
 
 ## Detachment grants
 
@@ -107,6 +148,21 @@ every ORKS melee weapon [SUSTAINED HITS 1] — shown as a dashed badge on the we
 rows, the same signal already used for an ability a leader confers. Both are
 suppressed on Combat Patrol cards, which run their own detachment.
 
+`keyword` needs **every** keyword listed; use `anyKeyword` instead when **one** is
+enough — Bully Boyz's rule covers "MEGANOBZ/NOBZ units":
+
+```jsonc
+"grantsWeaponAbilities":[ { "anyKeyword": ["MEGANOBZ", "NOBZ"], "appliesTo": "melee",
+                            "abilityId": "sustained-hits", "display": "Sustained Hits 1" } ]
+```
+
+Only grant what is **unconditional**. A rule that depends on having charged, on the
+target, or on being riled up stays in the rule text, which is always one tap away on
+the 📜 button.
+
+`category` is a detachment's Force Disposition. It may be an **array** — War Horde
+carries two — in which case both are named and the colour bar is split between them.
+
 Keyword matching checks **all three scopes**: the shared list, a profile's own list,
 and the Faction Keywords line. Ghazghkull's ORKS lives on the faction line, so a rule
 matching ORKS would silently miss him otherwise.
@@ -114,10 +170,11 @@ matching ORKS would silently miss him otherwise.
 ## Model profiles
 
 A unit with two or more statlines lists them under `modelProfiles`. A profile may
-carry its **own `invulnerableSave`** — Ghazghkull Thraka is 4+ while Makari is 2+, so
+carry its **own `invulnerableSave`** for a unit whose models do not share one, where
 the save cannot live on the unit — plus an optional `invulnerableNote` for an
 asterisked footnote. Units where every model shares one save keep using the
-unit-level `invulnerableSave`.
+unit-level `invulnerableSave`. (No current Ork datasheet needs this: Ghazghkull
+Thraka used to, when Makari was a model of his own, and is now a single model.)
 
 The faction call follows the same structure: where profiles carry their own saves it
 improves each of them independently, so a 4+ is left alone while a 6+ becomes 5+.
@@ -156,8 +213,24 @@ and what is a response.
 shows the short form (`+1 CP`) to stay compact, with the full note in the tooltip and
 the popup, so the cost is never under-reported.
 
+`phases` follows the **phase icons on the stratagem card**, which can list more than
+the phase named in WHEN: Mow ’Em Down is used in the Fight phase but also carries the
+Charge icon, because it only works for a unit that charged. It therefore shows under
+both filters. "Any phase" is stored as all five.
+
 Combat Patrol's detachment counts as active for content gating, so its stratagems
 appear without having to select anything in the Builder's DP picker.
+
+## Enhancements that carry a weapon
+
+A few Enhancements hand the bearer a weapon of its own (Da Gobshot Thunderbuss, Da
+Krunch, ’Eadbanger). Put the profile on the entry as `weapon`, in the same shape as a
+datasheet weapon, and it is drawn in the Enhancement's popup and on the unit's card:
+
+```jsonc
+"weapon": { "name": "Da Krunch", "range": "24\"", "a": "3", "bs": "4+", "s": "5", "ap": "-1", "d": "1",
+            "abilities": [{ "id": "blast", "display": "Blast 3" }, "hazardous", "lethal-hits", "psychic"] }
+```
 
 ## Unit cards are an accordion
 
@@ -183,15 +256,19 @@ stays a usable index of the force.
 ## The faction call button
 
 A button fixed to the bottom of the screen, for the faction's once-per-battle call.
-It currently shows on the **Combat Patrol** tab only — which tabs it appears on is the
-`FACTION_CALL_TABS` array in `index.html`, so adding `'army'` to it is the whole change. Pressing it plays a shake + ring + screen-flash effect (and a
+It shows on the two tabs you play a game from, **Army** and **Combat Patrol** — which
+tabs is the `FACTION_CALL_TABS` array in `index.html`. Pressing it plays a shake + ring + screen-flash effect (and a
 haptic buzz where supported), then an **ongoing banner** rises above it naming the
 effect you just gained and how long it lasts. It stays there until you press **End**
 on the banner.
 
 It is **entirely data-driven** — nothing about Waaagh! is written in the code. The
-button renders only if the ability named by `FACTION_CALL_ID` exists in
-`data/abilities.json` *and* carries these keys:
+button renders only if the call ability exists in `data/abilities.json` *and* carries
+the keys below. Which ability that is: `FACTION_CALL_ID` (`waaagh`, the matched-play
+army rule), except on the Combat Patrol tab, where the force can name its own with
+`"factionCall"` in `data/combat-patrol/index.json`. The Orks one does
+(`waaagh-combat-patrol`), because the Combat Patrol rules are written against a
+different wording of the Waaagh! than the current army rule.
 
 ```jsonc
 "waaagh": {
@@ -214,17 +291,57 @@ value **pulses green** — distinct from the amber used for a change an enhancem
 ```jsonc
 "callEffects": {
   "meleeWeapon": { "s": 1, "a": 1 },   // added to each melee weapon's stats
-  "invulnerableSave": "5+"             // granted, or improved if the unit's is worse
+  "invulnerableSave": "5+",            // granted, or improved if the unit's is worse
+  "weaponAbilities": [                 // a badge on matching weapon rows
+    { "appliesTo": "ranged", "abilityId": "assault", "display": "Assault" }
+  ]
 }
 ```
 
+- **Each unit follows the call ability it carries**, not a global one. A matched-play
+  datasheet lists `waaagh` and gets *riled up* (5+ invulnerable save, ranged
+  [ASSAULT]); a Combat Patrol datasheet lists `waaagh-combat-patrol` and gets that
+  version's +1 S / +1 A and 5+ invulnerable save. One WAAAGH! toggle drives both.
+- A called weapon ability is **not shown twice** — a weapon that already has [ASSAULT]
+  from its profile or a detachment gets no second badge.
 - An invulnerable save is **improved, never downgraded** — a Wartrakk's printed 6+
   becomes 5+ and pulses, but with Extra Platin' at 4+ it stays 4+ and does not pulse.
 - A stat the app can't add to (`D6+2`) is **expressed** as `D6+2+1` rather than
   silently miscalculated.
 - Datasheets are never mutated; ending the call restores the printed values.
-- Effects with no stat to change (being eligible to charge after Advancing) live in
-  the rule text only.
+- Effects with no stat to change (being eligible to charge after Advancing) are
+  listed on the card instead — see below.
+
+### Everything else the call switches on
+
+Being under the call is a *state* other rules key off — for Orks, "riled up". All of
+it is data, and all of it appears only while the call is active:
+
+```jsonc
+// data/abilities.json — on the call ability
+"callState": "Riled up",                               // labels the card note and the stratagem badge
+"callNotes": ["Can declare a charge after Advancing"], // the call's own effects that change no number
+
+// data/detachments.json — a rule with a "while riled up" clause
+"whileCalled": [ { "keyword": ["ORKS", "INFANTRY"], "who": "ORKS INFANTRY",
+                   "text": "+3\" Range on ranged attacks", "rangedWeapon": { "range": 3 } } ]
+
+// data/enhancements.json and data/stratagems.json — the bonus, as one line
+"whileCalled": "+1 to the roll"
+```
+
+| Where | What you see while the call is active |
+|---|---|
+| **Unit card** | A pulsing note under the statline headed with `callState`, listing `callNotes`, each active detachment's `whileCalled` text that matches the unit, and its own Enhancement's `whileCalled` — every line naming where it comes from. `rangedWeapon` / `meleeWeapon` add to the weapon stats on the card (a Range in inches is added to: 36" becomes 39"). |
+| **Banner** | Below the call's own effects: one line per active detachment `whileCalled` (`who` names the units), and how many of the stratagems on offer have a stronger mode. Matched play only — Combat Patrol's banner is unchanged. |
+| **Stratagems tab** | A stratagem with `whileCalled` gets a `callState` badge and an accent border, and its popup gains a "RILED UP NOW" line. |
+
+A detachment `whileCalled` entry matches units with `keyword` (all) or `anyKeyword`
+(one), exactly like a grant, and only reaches units that carry the call ability.
+
+**Not tracked:** rules that rile up a *single* unit outside the army-wide call — Da
+Boss is Watchin', Makari, Hoist Dat Banner!, Dread Power, Flyboss, Mekwaaagh!
+Mastermind. The app has no per-unit game state, so those stay in their rule text.
 
 ### The background flourish
 
@@ -350,8 +467,13 @@ Boots the real `index.html` in headless Chromium against deliberately fake fixtu
 datasheets in `test/fixtures/data`, and asserts the mechanics the guide flags as
 traps: escalating costs, non-linear multi-size pricing, the Enhancement/Upgrade cap
 and its distinct-Upgrade folding, multi-profile weapon merging in summaries,
-`count: 0` options staying off, DP budget + unique-group blocking, orphaned-enhancement
-cleanup on detachment removal, leader attachment/merged cards/inherited abilities,
+`count: 0` options staying off, the call button on the Army tab and everything a call
+switches on (detachment, Enhancement and stratagem bonuses), DP budget + unique-group
+blocking, battle sizes (DP
+budget, Enhancement limit and unit limit by points limit, the lone 3 DP detachment at
+Incursion), one Enhancement per Attached unit, datasheet names as keywords,
+orphaned-enhancement cleanup on detachment removal, leader attachment/merged
+cards/inherited abilities,
 localStorage + legacy single-detachment migration, share-link round trip, text export,
 and the Combat Patrol tab (roster rendering, merged `ledBy` cards, missing-datasheet
 placeholders, and matched-play detachment grants *not* leaking into Combat Patrol cards).

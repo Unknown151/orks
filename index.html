@@ -66,6 +66,7 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .pill.tap:active{background:var(--accent2)}
 .pill.core{border-color:var(--accent2);color:var(--accent)}
 .pill.inh{border-style:dashed;border-color:var(--warn);color:var(--warn)}
+.pill.inh.call{border-color:var(--accent);color:var(--accent)}
 .pill.kw{font-size:10.5px;letter-spacing:.5px;color:var(--dim);text-transform:uppercase}
 /* Keywords can be scoped: some apply to all models, others to one profile. */
 .kwrow{margin-top:7px}
@@ -119,12 +120,17 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .stat.mod-call span,.wst.mod-call span,.inv.mod-call b{color:var(--accent)}
 .stat.mod-call{border-color:var(--accent)}
 .inv.mod-call{padding:3px 7px;margin-left:-7px}
+/* What the call does to this unit beyond the numbers it changes. */
+.callnote{margin:7px 0 0 -8px;padding:5px 8px;border-radius:7px;font-size:12.5px;line-height:1.5;
+  animation:callPulse 1.5s ease-in-out infinite}
+.callnote b{color:var(--accent);letter-spacing:.4px}
+.callnote em{color:var(--dim);font-style:normal;font-size:11px}
 @keyframes callPulse{
   0%,100%{background:rgba(127,180,63,.10);box-shadow:0 0 0 0 rgba(127,180,63,0)}
   50%    {background:rgba(127,180,63,.28);box-shadow:0 0 0 2px rgba(127,180,63,.30)}
 }
 @media (prefers-reduced-motion: reduce){
-  .stat.mod-call,.wst.mod-call,.inv.mod-call{animation:none;background:rgba(127,180,63,.22)}
+  .stat.mod-call,.wst.mod-call,.inv.mod-call,.callnote{animation:none;background:rgba(127,180,63,.22)}
 }
 .stat span{font-size:14px;font-weight:700}
 .prof-n{font-size:11.5px;color:var(--dim);margin:7px 0 3px}
@@ -168,7 +174,10 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
 .dcard.on .m{color:#dfeacd}
 .dcard.blocked{opacity:.38}
 .dp{font-weight:700}
-.dp.over{color:var(--bad)}
+.dp.over,#dpChip.over{color:var(--bad)}
+.rulewarn{font-size:11.5px;color:var(--warn);margin-top:8px}
+.rulemark{color:var(--warn)}
+.tag.over{background:var(--bad)}
 
 /* ---------- enhancement overview ---------- */
 .egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
@@ -209,6 +218,10 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
   padding:2px 6px;border-radius:5px;border:1px solid}
 .sb.cost{border-color:var(--ranged-bd);color:var(--ranged);background:var(--ranged-bg)}
 .sb.alt{border-style:dashed;border-color:var(--warn);color:var(--warn)}
+/* A stratagem that is stronger while the faction call is active. */
+.sb.call{border-color:var(--accent);color:#fff;background:var(--accent2)}
+.scard.called{border-color:var(--accent)}
+.scall{border-left:3px solid var(--accent);padding:5px 9px;background:rgba(127,180,63,.14);border-radius:0 7px 7px 0}
 .sb.t-either{border-color:var(--accent);color:var(--accent);background:rgba(127,180,63,.14)}
 .sb.t-your{border-color:var(--ranged-bd);color:var(--ranged);background:var(--ranged-bg)}
 .sb.t-opponent{border-color:var(--melee-bd);color:var(--melee);background:var(--melee-bg)}
@@ -258,6 +271,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
 #dockBanner .hd{display:flex;align-items:center;gap:8px;margin-bottom:4px}
 #dockBanner .hd b{color:var(--accent);letter-spacing:.6px;font-size:12px;flex:1}
 #dockBanner .dur{font-size:11px;color:var(--dim);display:block;margin-top:4px}
+#dockBanner .more{margin-top:5px;padding-top:5px;border-top:1px solid var(--line)}
 #dockEnd{background:transparent;border:1px solid var(--line);border-radius:7px;padding:2px 9px;font-size:11px;color:var(--dim)}
 #dockBtn{pointer-events:auto;position:relative;border:0;border-radius:99px;padding:12px 30px;
   font-weight:900;letter-spacing:1.2px;font-size:17px;color:#0d1408;
@@ -339,11 +353,12 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.24.0';
+const VERSION = '0.26.0';
 
-// Army-wide cap on enhancements/upgrades. VERIFY against the current edition —
-// this number has changed between editions (guide §5.3).
-const MAX_ENHANCEMENTS = 3;
+// The army-wide Enhancement limit comes from the battle size (core rules 25.03),
+// which lives in data/detachments.json — see battleSize(). This is only the
+// fallback for data that carries no battleSizes table.
+const DEFAULT_ENHANCEMENT_LIMIT = 4;
 const MAX_UPGRADE_COPIES = 3;
 
 const LS = {
@@ -355,7 +370,8 @@ const LS = {
 /* ---------------------------------- data --------------------------------- */
 const DATA = {
   abilities:{}, enhancements:{}, stratagems:{},
-  detachments:{}, detCategories:{}, dpBudget:3,
+  detachments:{}, detCategories:{},
+  battleSizes:[{ name:'Strike Force', dp:3, enhancements:DEFAULT_ENHANCEMENT_LIMIT }],
   units:{}, unitOrder:[],
   // Combat Patrol is a separate game mode with its own fixed force, its own
   // datasheets and its own stratagems — kept in its own namespace so it can
@@ -424,7 +440,11 @@ async function loadData(){
   DATA.enhancements = stripMeta(enh);
   DATA.stratagems   = stripMeta(str);
   DATA.detCategories= det.categories || {};
-  DATA.dpBudget     = det.budget ?? 3;
+  // Battle sizes, smallest first; the last one is the catch-all. Data without the
+  // table (an older file with just `budget`) gets a single size built from it.
+  const sizes = (Array.isArray(det.battleSizes) ? det.battleSizes : []).filter(s => s && s.dp != null);
+  DATA.battleSizes  = sizes.length ? sizes
+    : [{ name:'Strike Force', dp: det.budget ?? 3, enhancements: DEFAULT_ENHANCEMENT_LIMIT }];
   DATA.detachments  = stripMeta(det.detachments || {});
   for(const [id,d] of Object.entries(DATA.detachments)) d.id = id;
 
@@ -479,11 +499,44 @@ function cpRosterEntries(){
     typeof r === 'string' ? { unit:r, count:1 } : { count:1, ...r });
 }
 
+/* =============================== BATTLE SIZE ============================== */
+/* Core rules 25.03 — the points limit picks the battle size, and the battle size
+   sets the DP budget, the Enhancement limit and the unit limit. A limit of 0
+   means "no limit", which is played as the largest size. */
+function battleSize(){
+  const t = DATA.battleSizes;
+  return t.find(s => s.maxPoints != null && pointsLimit > 0 && pointsLimit <= s.maxPoints) || t[t.length - 1];
+}
+const dpBudget = () => battleSize().dp;
+const enhancementLimit = () => battleSize().enhancements ?? DEFAULT_ENHANCEMENT_LIMIT;
+
 /* ============================ DETACHMENT POINTS =========================== */
 /* DETACHMENT_POINTS_SPEC.md §3 */
 const isDetachmentActive = id => selectedDetachments.includes(id);
 const dpSpent = () => selectedDetachments.reduce((s,id)=> s + (DATA.detachments[id]?.dp || 0), 0);
-const dpRemaining = () => DATA.dpBudget - dpSpent();
+const dpRemaining = () => dpBudget() - dpSpent();
+// 25.04: some battle sizes let ONE detachment of a set cost stand as the army's
+// only detachment even though it is over budget (a 3 DP one at Incursion).
+function soloDetachmentAllowed(dp, others){
+  const s = battleSize();
+  return s.soloDp != null && dp === s.soloDp && others === 0;
+}
+const fitsDpBudget = d => (d.dp||0) <= dpRemaining() || soloDetachmentAllowed(d.dp||0, selectedDetachments.length);
+// Over budget can only arise by lowering the points limit under a list that
+// was legal at the bigger size; it is flagged, never silently "fixed".
+function dpOverBudget(){
+  const spent = dpSpent();
+  return spent > dpBudget() && !soloDetachmentAllowed(spent, selectedDetachments.length - 1);
+}
+// A detachment can carry more than one Force Disposition (War Horde has two).
+const detCategoryList = d => [].concat(d?.category || []).filter(Boolean);
+const detCategoryLabel = d => detCategoryList(d).join(' / ') || '—';
+function detCategoryColour(d){
+  const cols = detCategoryList(d).map(c => DATA.detCategories[c]).filter(Boolean);
+  if(cols.length < 2) return cols[0] || 'var(--dim)';
+  const step = 100 / cols.length;
+  return `linear-gradient(90deg, ${cols.map((c,i) => `${c} ${i*step}% ${(i+1)*step}%`).join(', ')})`;
+}
 
 function uniqueGroupTaken(group, exceptId){
   if(!group) return false;
@@ -492,7 +545,7 @@ function uniqueGroupTaken(group, exceptId){
 function canAddDetachment(id){
   const d = DATA.detachments[id];
   if(!d || isDetachmentActive(id)) return false;
-  if((d.dp||0) > dpRemaining()) return false;
+  if(!fitsDpBudget(d)) return false;
   if(uniqueGroupTaken(d.unique)) return false;
   return true;
 }
@@ -503,8 +556,8 @@ function toggleDetachment(id){
     selectedDetachments = selectedDetachments.filter(x => x !== id);
     clearOrphanedEnhancements();
   } else {
-    if((d.dp||0) > dpRemaining()){
-      toast(`Not enough DP — ${d.name} costs ${d.dp}, ${dpRemaining()} left.`); return;
+    if(!fitsDpBudget(d)){
+      toast(`Not enough DP — ${d.name} costs ${d.dp}, ${Math.max(0, dpRemaining())} left (${battleSize().name}: ${dpBudget()} DP).`); return;
     }
     if(uniqueGroupTaken(d.unique)){
       toast(`${d.name} can't be combined with another selected detachment.`); return;
@@ -537,9 +590,9 @@ function clearOrphanedEnhancements(){
 function showDetachmentRules(){
   const active = selectedDetachments.map(id => DATA.detachments[id]).filter(Boolean);
   const body = active.length
-    ? active.map(d => `<p><span class="cdot" style="background:${esc(DATA.detCategories[d.category] || 'var(--dim)')}"></span><strong>${esc(d.name)}</strong> <span class="muted">(${d.dp} DP · ${esc(d.category||'—')})</span><br>${d.ruleDescription || '<em>Rule to be added.</em>'}</p>`).join('')
+    ? active.map(d => `<p><span class="cdot" style="background:${esc(detCategoryColour(d))}"></span><strong>${esc(d.name)}</strong> <span class="muted">(${d.dp} DP · ${esc(detCategoryLabel(d))})</span><br>${d.ruleDescription || '<em>Rule to be added.</em>'}</p>`).join('')
     : '<p class="muted">No detachments selected. Pick them on the Builder tab.</p>';
-  openModal('Detachment Rules', `${dpSpent()} / ${DATA.dpBudget} DP used`, body);
+  openModal('Detachment Rules', `${dpSpent()} / ${dpBudget()} DP used · ${battleSize().name}`, body);
 }
 // Keywords live in three places now — the shared list, a profile's own list, and
 // the Faction Keywords line. A rule that matches on one must see all of them.
@@ -554,10 +607,14 @@ function unitHasKeyword(unit, kw){
 // The keywords actually printed on the datasheet, before any detachment adds to
 // them. Grants are matched against THIS only, so a granted keyword can never
 // feed another grant and the two functions below cannot recurse.
+// A datasheet's own name is a keyword too (core rules 02.01.01) even though it is
+// not printed in the keyword list — "BOYZ unit only" means the Boyz datasheet.
+const keywordForm = s => String(s == null ? '' : s).toUpperCase().replace(/[‘’]/g, "'").trim();
 function intrinsicKeyword(unit, kw){
   return (unit.keywords || []).includes(kw)
       || (unit.factionKeywords || []).includes(kw)
-      || (unit.modelProfiles || []).some(p => (p.keywords || []).includes(kw));
+      || (unit.modelProfiles || []).some(p => (p.keywords || []).includes(kw))
+      || (!!unit.name && keywordForm(unit.name) === keywordForm(kw));
 }
 // Some detachment rules hand a unit an extra keyword — Rollin' Deff gives WAGON
 // to BATTLEWAGON/HUNTA RIG/KILL RIG, and its Upgrades are "WAGON unit only".
@@ -584,6 +641,10 @@ function unitHasAnyKeyword(unit, kw){
 }
 // A detachment rule that grants an ability to keyword-matched units (guide §5.8).
 // Table-driven: put `grants:[{keyword,abilityId}]` on the detachment in data.
+// `keyword` needs every entry; `anyKeyword` needs one of them ("MEGANOBZ/NOBZ units").
+const grantApplies = (unit, g) => g.anyKeyword
+  ? unitHasAnyKeyword(unit, [].concat(g.anyKeyword))
+  : unitHasKeyword(unit, g.keyword);
 // Some detachment rules grant an ability to weapons rather than to the unit —
 // War Horde gives every ORKS melee weapon [SUSTAINED HITS 1].
 function getDetachmentWeaponGrants(unit, kind){
@@ -591,7 +652,7 @@ function getDetachmentWeaponGrants(unit, kind){
   selectedDetachments.forEach(id => {
     (DATA.detachments[id]?.grantsWeaponAbilities || []).forEach(g => {
       if(g.appliesTo && g.appliesTo !== kind) return;
-      if(!unitHasKeyword(unit, g.keyword)) return;
+      if(!grantApplies(unit, g)) return;
       out.push(g);
     });
   });
@@ -602,7 +663,7 @@ function getDetachmentGrantedAbilities(unit){
   selectedDetachments.forEach(id => {
     const d = DATA.detachments[id];
     (d?.grants || []).forEach(g => {
-      if(!unitHasKeyword(unit, g.keyword)) return;
+      if(!grantApplies(unit, g)) return;
       out.push({ id:g.abilityId, name: DATA.abilities[g.abilityId]?.name || g.abilityId, from:d.name });
     });
   });
@@ -689,6 +750,22 @@ function eligibleEnhancements(inst){
     return true;
   }).map(([id,e]) => ({ id, ...e }));
 }
+// 25.04: no unit — including an Attached unit — can have more than one
+// Enhancement, and an Upgrade is an Enhancement. A leader and the unit it leads
+// are separate instances here, so the check has to look across the pair.
+function attachedPartners(inst){
+  const out = [];
+  const l = leaderInstOf(inst);
+  if(l) out.push(l);
+  armyList.forEach(x => { if(x.leaderId === inst.uid) out.push(x); });
+  return out;
+}
+const partnerWithEnhancement = inst =>
+  attachedPartners(inst).find(x => x.enhancementId && DATA.enhancements[x.enhancementId]) || null;
+// Would attaching this leader to this unit put two Enhancements in one Attached unit?
+const attachWouldClash = (inst, leader) =>
+  !!(inst?.enhancementId && DATA.enhancements[inst.enhancementId] &&
+     leader?.enhancementId && DATA.enhancements[leader.enhancementId]);
 // Why this enhancement can't be picked for this instance — or null if it can.
 function enhancementBlockReason(id, inst){
   const e = DATA.enhancements[id];
@@ -696,9 +773,24 @@ function enhancementBlockReason(id, inst){
   const used = getEnhancementUsage(inst.uid)[id] || 0;
   if(e.upgrade){ if(used >= MAX_UPGRADE_COPIES) return `max ${MAX_UPGRADE_COPIES}`; }
   else if(used >= 1) return 'taken';
-  if(countArmyEnhancements(inst.uid, id) > MAX_ENHANCEMENTS) return 'cap';
+  if(partnerWithEnhancement(inst)) return 'attached unit already has one';
+  if(countArmyEnhancements(inst.uid, id) > enhancementLimit()) return 'cap';
   return null;
 }
+
+/* =============================== UNIT LIMIT =============================== */
+/* 25.03: how many units with the same datasheet name an army may hold — doubled
+   for BATTLELINE and DEDICATED TRANSPORT, and always 1 for an EPIC HERO. Going
+   over is flagged on the card rather than blocked. */
+function unitLimitFor(unit){
+  if(!unit) return Infinity;
+  if(unit.isEpicHero || unitHasKeyword(unit, 'EPIC HERO')) return 1;
+  const base = battleSize().unitLimit;
+  if(base == null) return Infinity;
+  const doubled = unit.isBattleline || unitHasKeyword(unit, 'BATTLELINE') || unitHasKeyword(unit, 'DEDICATED TRANSPORT');
+  return base * (doubled ? 2 : 1);
+}
+const isOverUnitLimit = inst => unitCopyIndex(inst) > unitLimitFor(DATA.units[inst.unitId]);
 
 /* ================================ WEAPONS ================================ */
 const weaponCount = (inst, w) => inst?.weaponCounts?.[w.name] ?? (w.count ?? 1);  // ?? not || (guide §9)
@@ -773,9 +865,12 @@ function makeInstance(unitId){
   };
 }
 function addUnit(unitId){
-  if(!DATA.units[unitId]) return;
-  armyList.push(makeInstance(unitId));
+  const u = DATA.units[unitId];
+  if(!u) return;
+  const inst = makeInstance(unitId);
+  armyList.push(inst);
   save(); renderAll();
+  if(isOverUnitLimit(inst)) toast(`${u.name}: over the unit limit of ${unitLimitFor(u)}.`);
 }
 function removeInstance(uidToRemove){
   armyList.forEach(i => { if(i.leaderId === uidToRemove) i.leaderId = null; });
@@ -948,7 +1043,7 @@ function exportText(){
   lines.push(listName);
   lines.push(`${armyPoints()} / ${pointsLimit} pts · ${EDITION}`);
   const dets = selectedDetachments.map(id => `${DATA.detachments[id].name} (${DATA.detachments[id].dp} DP)`);
-  lines.push(`Detachments (${dpSpent()}/${DATA.dpBudget} DP): ` + (dets.join(', ') || 'none'));
+  lines.push(`Detachments (${dpSpent()}/${dpBudget()} DP, ${battleSize().name}): ` + (dets.join(', ') || 'none'));
   lines.push('');
   armyList.forEach(i => {
     const u = DATA.units[i.unitId]; if(!u) return;
@@ -969,7 +1064,8 @@ function exportText(){
 /* ================================ RENDER ================================= */
 function renderAll(){
   $('#verLine').textContent = `${EDITION} — Version ${VERSION} · ${listName}`;
-  $('#dpChip').textContent = `${dpSpent()}/${DATA.dpBudget}`;
+  $('#dpChip').textContent = `${dpSpent()}/${dpBudget()}`;
+  $('#dpChip').classList.toggle('over', dpOverBudget());
   syncHeader();
   renderArmy(); renderBuilder(); renderStrats(); renderCombatPatrol(); renderPoints(); renderDock();
 }
@@ -1030,6 +1126,20 @@ function abilityPill(id, cls, label){
 function grantPill(g){
   return typeof g === 'string' ? abilityPill(g, 'grant') : abilityPill(g.id, 'grant', g.display);
 }
+// Some Enhancements hand the bearer a weapon of its own; `weapon` on the entry
+// is that profile, in the same shape as a datasheet weapon.
+function enhancementWeaponHtml(e){
+  const w = e?.weapon;
+  if(!w) return '';
+  const cols = [['range','Range'],['a','A'],[w.ws != null ? 'ws' : 'bs', w.ws != null ? 'WS' : 'BS'],['s','S'],['ap','AP'],['d','D']]
+    .filter(([k]) => w[k] != null);
+  const abs = (w.abilities || []).map(a => typeof a === 'string' ? abilityPill(a) : abilityPill(a.id, '', a.display));
+  return `<div class="wrow ${w.ws != null ? 'melee' : 'ranged'}" style="margin-top:10px">
+    <div class="wn">${esc(w.name)}</div>
+    <div class="wstats">${cols.map(([k,l]) => `<div class="wst"><b>${l}</b><span>${esc(w[k])}</span></div>`).join('')}</div>
+    ${abs.length ? `<div class="wab">${abs.join('')}</div>` : ''}
+  </div>`;
+}
 function statBlock(stats, mods){
   const keys = [['m','M'],['t','T'],['sv','SV'],['w','W'],['ld','LD'],['oc','OC']];
   return `<div class="statline">${keys.map(([k,l]) =>
@@ -1045,6 +1155,8 @@ function weaponRows(unit, inst, kind, opts){
   const inherited = inheritedAbilitiesFor(inst, kind).map(id => ({ id }));
   const granted = opts.noGrants ? [] : getDetachmentWeaponGrants(unit, kind);
   const fromElsewhere = inherited.concat(granted);
+  // Weapon abilities an active faction call hands out (riled up: ranged [ASSAULT]).
+  const called = (unit._callWeaponAbilities || []).filter(g => !g.appliesTo || g.appliesTo === kind);
   const ranged = kind === 'ranged';
   const cols = ranged
     ? [['range','Range'],['a','A'],['bs','BS'],['s','S'],['ap','AP'],['d','D']]
@@ -1062,6 +1174,11 @@ function weaponRows(unit, inst, kind, opts){
     const abs = (w.abilities || []).map(a =>
       typeof a === 'string' ? abilityPill(a) : abilityPill(a.id, '', a.display));
     const all = abs.concat(fromElsewhere.map(g => abilityPill(g.abilityId || g.id, 'inh', g.display)));
+    // Skip a called ability the weapon already has from its profile or elsewhere.
+    const have = (w.abilities || []).map(a => typeof a === 'string' ? a : a.id)
+      .concat(fromElsewhere.map(g => g.abilityId || g.id));
+    called.filter(g => !have.includes(g.abilityId))
+      .forEach(g => all.push(abilityPill(g.abilityId, 'inh call', g.display)));
     html += `<div class="wrow ${kindClass}">
       <div class="wn">${n>1?n+'× ':''}${esc(w.name)}</div>
       <div class="wstats">${cols.map(([k,l]) =>
@@ -1072,15 +1189,44 @@ function weaponRows(unit, inst, kind, opts){
   return html + '</div>';
 }
 // ---- live effects of an active faction call ---------------------------------
-const callEffects = () => (game.waaagh && factionCall()?.callEffects) || null;
-const unitHasCall = u => (u?.factionAbilities || []).includes(FACTION_CALL_ID);
+// The call a unit answers to is whichever of its faction abilities carries
+// callEffects, so matched-play and Combat Patrol datasheets each follow the
+// wording they were written against.
+const unitCall = u => (u?.factionAbilities || []).map(id => DATA.abilities[id]).find(a => a?.callEffects) || null;
 // "+1 A" on a plain number is arithmetic; on something like D6+2 it can only be
 // expressed, not computed.
 const bumpStat = (v, by) => {
   if(v == null) return v;
   const t = String(v).trim();
-  return /^\d+$/.test(t) ? String(+t + by) : `${t}+${by}`;
+  if(/^\d+$/.test(t)) return String(+t + by);
+  const inches = /^(\d+)"$/.exec(t);                    // a Range, e.g. 36"
+  return inches ? `${+inches[1] + by}"` : `${t}+${by}`;
 };
+// Add to the stats of every weapon of one kind on a display copy, marking each
+// changed value so it pulses.
+function bumpWeapons(d, kind, delta){
+  if(!delta || !d.weapons?.[kind]?.length) return;
+  d.weapons = { ...d.weapons, [kind]: d.weapons[kind].map(w => {
+    const nw = { ...w, _mods: { ...(w._mods || {}) } };
+    for(const k of Object.keys(delta)){
+      if(nw[k] == null) continue;
+      nw[k] = bumpStat(nw[k], delta[k]);
+      nw._mods[k] = 'mod-call';
+    }
+    return nw;
+  }) };
+}
+// What an active detachment adds for a unit that is under the call — Shoota Boyz
+// gives ORKS INFANTRY +3" Range "while riled up". Table-driven like the grants:
+// `whileCalled:[{keyword|anyKeyword, who, text, rangedWeapon, meleeWeapon, weaponAbilities}]`.
+function getDetachmentCalledEffects(unit){
+  const out = [];
+  selectedDetachments.forEach(id => {
+    const d = DATA.detachments[id];
+    (d?.whileCalled || []).forEach(g => { if(grantApplies(unit, g)) out.push({ ...g, from: d.name }); });
+  });
+  return out;
+}
 // Lower is better for an invulnerable save; an existing better one wins.
 function bestInvuln(a, b){
   const n = x => { const m = /^(\d+)/.exec(String(x ?? '')); return m ? +m[1] : Infinity; };
@@ -1089,10 +1235,20 @@ function bestInvuln(a, b){
   return n(a) <= n(b) ? a : b;
 }
 // Returns a display copy with the call's effects applied, marking what changed.
-function applyCallEffects(unit){
-  const fx = callEffects();
-  if(!unit || !fx || !unitHasCall(unit)) return unit;
-  const d = { ...unit };
+function applyCallEffects(unit, opts){
+  const call = game.waaagh ? unitCall(unit) : null;
+  const fx = call?.callEffects;
+  if(!unit || !fx) return unit;
+  const d = { ...unit, _called: call };
+  // Combat Patrol cards run their own detachment, so they take nothing from the
+  // matched-play ones — the same switch that suppresses the grants.
+  const extras = opts?.noGrants ? [] : getDetachmentCalledEffects(unit);
+  const abilities = (fx.weaponAbilities || []).concat(extras.flatMap(x => x.weaponAbilities || []));
+  if(abilities.length) d._callWeaponAbilities = abilities;
+  // Effects with no number to change are listed on the card instead.
+  const notes = (call.callNotes || []).map(text => ({ text }))
+    .concat(extras.filter(x => x.text).map(x => ({ text: x.text, from: x.from })));
+  if(notes.length) d._callNotes = notes;
 
   if(fx.invulnerableSave){
     // Where profiles carry their own saves, improve each of them; otherwise the
@@ -1111,24 +1267,18 @@ function applyCallEffects(unit){
       }
     }
   }
-  const mw = fx.meleeWeapon;
-  if(mw && unit.weapons?.melee?.length){
-    d.weapons = { ...unit.weapons, melee: unit.weapons.melee.map(w => {
-      const nw = { ...w, _mods: { ...(w._mods || {}) } };
-      for(const k of Object.keys(mw)){
-        if(nw[k] == null) continue;
-        nw[k] = bumpStat(w[k], mw[k]);
-        nw._mods[k] = 'mod-call';
-      }
-      return nw;
-    }) };
-  }
+  [fx].concat(extras).forEach(src => {
+    bumpWeapons(d, 'ranged', src.rangedWeapon);
+    bumpWeapons(d, 'melee', src.meleeWeapon);
+  });
   return d;
 }
+// The name of the state the call puts a unit in ("Riled up"), for labels.
+const callStateName = a => a?.callState || a?.name || '';
 
 function unitBody(unit, inst, opts){
   opts = opts || {};
-  unit = applyCallEffects(unit);
+  unit = applyCallEffects(unit, opts);
   let h = '';
   const mods = unit._statMods;
   if(unit.modelProfiles?.length){
@@ -1152,6 +1302,16 @@ function unitBody(unit, inst, opts){
   const granted = opts.noGrants ? [] : getDetachmentGrantedAbilities(unit);
   if(granted.length){
     h += `<div class="inv">✦ ${granted.map(g => abilityPill(g.id, 'grant', g.name)).join('')}</div>`;
+  }
+  // Under the call: what it does that has no number to change, plus whatever an
+  // active detachment or this unit's own Enhancement adds to it.
+  if(unit._called){
+    const e = inst?.enhancementId && DATA.enhancements[inst.enhancementId];
+    const notes = (unit._callNotes || []).concat(e?.whileCalled ? [{ text: e.whileCalled, from: e.name }] : []);
+    if(notes.length){
+      h += `<div class="callnote"><b>${esc(callStateName(unit._called).toUpperCase())}</b>${notes.map(n =>
+        `<br>• ${esc(n.text)}${n.from ? ` <em>(${esc(n.from)})</em>` : ''}`).join('')}</div>`;
+    }
   }
   if(unit.transportCapacity) h += `<div class="inv">🚚 Transport capacity ${esc(unit.transportCapacity)}</div>`;
   h += weaponRows(unit, inst, 'ranged', opts);
@@ -1180,7 +1340,7 @@ function unitBody(unit, inst, opts){
   if(enh){
     h += `<div class="sec"><div class="sec-t">${enh.upgrade?'Upgrade':'Enhancement'}</div>
       <span class="pill tap" data-enh="${esc(inst.enhancementId)}">★ ${esc(enh.name)} (${enh.points||0} pts)</span>
-      ${(enh.grantsAbilities||[]).map(grantPill).join('')}</div>`;
+      ${(enh.grantsAbilities||[]).map(grantPill).join('')}${enhancementWeaponHtml(enh)}</div>`;
   }
   // Keywords may be scoped: a shared list plus per-profile ones, and the
   // separate Faction Keywords line. A unit with only a flat list renders as before.
@@ -1282,18 +1442,20 @@ function detachmentPanel(){
     (DATA.detachments[a].name||'').localeCompare(DATA.detachments[b].name||''));
   const body = ids.length ? `
     <div class="row" style="margin-bottom:9px">
-      <span class="dp ${dpSpent()>DATA.dpBudget?'over':''}">${dpSpent()} / ${DATA.dpBudget} DP</span>
+      <span class="dp ${dpOverBudget()?'over':''}">${dpSpent()} / ${dpBudget()} DP</span>
+      <span class="muted" style="font-size:11.5px">${esc(battleSize().name)}${
+        dpSpent() > dpBudget() && !dpOverBudget() ? ` · one ${battleSize().soloDp} DP detachment allowed on its own` : ''}</span>
       <span class="grow"></span>
       <button class="btn mini" id="btnRules">Detachment rules</button>
     </div>
+    ${dpOverBudget() ? `<div class="rulewarn" style="margin:0 0 9px">⚠ Over the ${dpBudget()} DP budget for ${esc(battleSize().name)} — remove a detachment.</div>` : ''}
     <div class="dgrid">${ids.map(id => {
       const d = DATA.detachments[id], on = isDetachmentActive(id);
       const blocked = !on && !canAddDetachment(id);
-      const colour = DATA.detCategories[d.category] || 'var(--dim)';
       return `<button class="dcard ${on?'on':''} ${blocked?'blocked':''}" data-det="${esc(id)}" ${blocked?'disabled':''}>
-        <div class="bar" style="background:${esc(colour)}"></div>
+        <div class="bar" style="background:${esc(detCategoryColour(d))}"></div>
         <div class="in"><div class="n">${esc(d.name)}</div>
-        <div class="m">${on?'✓ ':''}${d.dp} DP · ${esc(d.category||'—')}${d.unique?`<br>Unique: ${esc(d.unique)}`:''}</div></div>
+        <div class="m">${on?'✓ ':''}${d.dp} DP · ${esc(detCategoryLabel(d))}${d.unique?`<br>Unique: ${esc(d.unique)}`:''}</div></div>
       </button>`;
     }).join('')}</div>`
     : `<div class="empty">No detachments yet.<br>Add them to <code>data/detachments.json</code>.</div>`;
@@ -1324,7 +1486,7 @@ function enhancementOverview(){
         : 'Add them to <code>data/enhancements.json</code>.'}</div>`;
   const used = countArmyEnhancements();
   return panel('pEnh', 'Available enhancements',
-    `<span class="tag">${used}/${MAX_ENHANCEMENTS} used</span>`, body, ui.enhOpen);
+    `<span class="tag ${used > enhancementLimit() ? 'over' : ''}" title="${esc(battleSize().name)} Enhancement limit">${used}/${enhancementLimit()} used</span>`, body, ui.enhOpen);
 }
 function addUnitControl(){
   if(!DATA.unitOrder.length){
@@ -1357,8 +1519,10 @@ function builderCard(inst){
   const summary = weaponSummaryText(u, inst);
 
   const ck = 'b:' + inst.uid;
+  // Cards start collapsed, so a broken rule has to show on the header too.
+  const flagged = (enh && partnerWithEnhancement(inst)) || isOverUnitLimit(inst);
   let h = `<div class="unit${collapseClass(ck)}"><div class="unit-hd" data-ucol="${ck}">
-    <h3>${enh?'<span class="star">★</span> ':''}${esc(u.name)}
+    <h3>${flagged?'<span class="rulemark" title="Breaks a list-building rule — open the card">⚠</span> ':''}${enh?'<span class="star">★</span> ':''}${esc(u.name)}
       <span class="sub">${esc(u.modelBreakdown||'')}${summary?(u.modelBreakdown?' · ':'')+esc(summary):''}</span></h3>
     <span class="pts">${instancePoints(inst)}${isEscalated(u,ci)?` <span class="esc" title="Copy #${ci} — escalated cost">↑</span>`:''}</span>
     ${collapseChevron()}
@@ -1390,7 +1554,10 @@ function builderCard(inst){
   if(leaders.length){
     h += `<div class="ctl"><label>Led by</label><select class="sel grow" data-leader="${inst.uid}">
       <option value="">— no leader —</option>
-      ${leaders.map(l => `<option value="${esc(l.uid)}" ${inst.leaderId===l.uid?'selected':''}>${esc(DATA.units[l.unitId].name)}</option>`).join('')}
+      ${leaders.map(l => {
+        const clash = inst.leaderId !== l.uid && attachWouldClash(inst, l);
+        return `<option value="${esc(l.uid)}" ${inst.leaderId===l.uid?'selected':''} ${clash?'disabled':''}>${esc(DATA.units[l.unitId].name)}${clash?' — both have an enhancement':''}</option>`;
+      }).join('')}
     </select></div>`;
   }
   if(elig.length){
@@ -1401,6 +1568,16 @@ function builderCard(inst){
         return `<option value="${esc(e.id)}" ${inst.enhancementId===e.id?'selected':''} ${block?'disabled':''}>${esc(e.name)} (+${e.points||0})${e.upgrade?' [Upgrade]':''}${block?' — '+block:''}</option>`;
       }).join('')}
     </select></div>`;
+  }
+  // Rules the list currently breaks. Reached by lowering the points limit, or by
+  // loading a list saved under older rules — flagged here, never silently changed.
+  if(enh && partnerWithEnhancement(inst)){
+    h += `<div class="rulewarn">⚠ An Attached unit can have only one Enhancement or Upgrade — this unit and its ${
+      leaderInstOf(inst) ? 'leader' : 'bodyguard'} both have one.</div>`;
+  }
+  if(isOverUnitLimit(inst)){
+    h += `<div class="rulewarn">⚠ Over the unit limit — ${esc(u.name)} is limited to ${unitLimitFor(u)} in ${
+      u.isEpicHero ? 'any army (Epic Hero)' : 'a ' + esc(battleSize().name) + ' army'}.</div>`;
   }
   h += `<div class="ctl"><span class="grow"></span>
     <button class="btn mini" data-dup="${inst.uid}">Duplicate</button>
@@ -1436,16 +1613,24 @@ function stratCard(s){
   // "+1 CP for Into the Fray" is too wide for a card badge; show just the cost
   // and keep the full note for the popup.
   const short = s.cpCostNote ? (s.cpCostNote.match(/^\+\s*\d+\s*CP/i)?.[0] || s.cpCostNote) : null;
-  return `<button class="scard" data-strat="${esc(s.id)}">
+  // A stratagem with a stronger mode under the faction call is marked while the
+  // call is active, so it stands out in the grid.
+  const called = stratCalledNote(s);
+  return `<button class="scard${called ? ' called' : ''}" data-strat="${esc(s.id)}">
     <div class="sn">${esc(s.name)}</div>
     <div class="sbs">
       <span class="sb cost">${s.cpCost ?? 0} CP</span>
       ${short ? `<span class="sb alt" title="${esc(s.cpCostNote)}">${esc(short)}</span>` : ''}
       <span class="sb t-${esc(turn)}">${esc(TURN_LABEL[turn] || turn)}</span>
+      ${called ? `<span class="sb call" title="${esc(called)}">${esc(matchedCallState())}</span>` : ''}
     </div>
     ${s.summary ? `<div class="ss">${esc(s.summary)}</div>` : ''}
   </button>`;
 }
+// `whileCalled` on a stratagem is what it gains under the matched-play call
+// ("+1 to the roll if your unit is riled up"); null unless the call is active.
+const matchedCallState = () => callStateName(DATA.abilities[FACTION_CALL_ID]);
+const stratCalledNote = s => (game.waaagh && s?.whileCalled && DATA.abilities[FACTION_CALL_ID]) ? s.whileCalled : null;
 function showStratagem(id){
   const s = DATA.stratagems[id];
   if(!s) return;
@@ -1456,6 +1641,7 @@ function showStratagem(id){
      ${s.when?`<p><b>WHEN:</b> ${s.when}</p>`:''}
      ${s.target?`<p><b>TARGET:</b> ${s.target}</p>`:''}
      ${s.effect?`<p><b>EFFECT:</b> ${s.effect}</p>`:''}
+     ${stratCalledNote(s)?`<p class="scall"><b>${esc(matchedCallState().toUpperCase())} NOW:</b> ${esc(stratCalledNote(s))}</p>`:''}
      ${s.restrictions?`<p><b>RESTRICTIONS:</b> ${s.restrictions}</p>`:''}`);
 }
 function renderStrats(){
@@ -1610,9 +1796,9 @@ function renderCombatPatrol(){
   const rules = [].concat(cp.rule || cp.rules || []).filter(Boolean);
   const det = cp.detachment;
   const detBody = det ? `<div class="dcard" style="cursor:default">
-      <div class="bar" style="background:${esc(DATA.detCategories[det.category] || 'var(--dim)')}"></div>
+      <div class="bar" style="background:${esc(detCategoryColour(det))}"></div>
       <div class="in"><div class="n">${esc(det.name)}</div>
-      <div class="m">${det.dp != null ? det.dp + ' DP · ' : ''}${esc(det.category || '')}</div></div></div>
+      <div class="m">${det.dp != null ? det.dp + ' DP · ' : ''}${esc(detCategoryList(det).join(' / '))}</div></div></div>
     <p style="margin:9px 0 0">${det.ruleDescription || '<em>Rule to be added.</em>'}</p>` : '';
   const rulesBody = detBody + rules.map(r =>
     `<p><strong>${esc(r.name || '')}</strong><br>${r.description || '<em>Rule to be added.</em>'}</p>`).join('');
@@ -1694,12 +1880,29 @@ function renderCombatPatrol(){
    it renders only if the ability below exists AND carries the call* keys, so
    another faction just needs a different id and its own data. */
 const FACTION_CALL_ID = 'waaagh';
-// Which tabs the call button appears on. Add 'army' here to surface it there too.
-const FACTION_CALL_TABS = ['cp'];
+// Which tabs the call button appears on: the two you play a game from.
+const FACTION_CALL_TABS = ['army', 'cp'];
+// Combat Patrol can name its own wording of the call (`factionCall` in its
+// index.json) — its printed rules are not the matched-play army rule. Every
+// other tab uses FACTION_CALL_ID.
+const factionCallId = () => (ui.tab === 'cp' && DATA.combatPatrol?.factionCall) || FACTION_CALL_ID;
 const factionCall = () => {
-  const a = DATA.abilities[FACTION_CALL_ID];
+  const a = DATA.abilities[factionCallId()];
   return (a && a.callEffect) ? a : null;
 };
+// Everything else in the list that the call switches on, for the banner: what
+// each active detachment adds, and how many of the stratagems on offer have a
+// stronger mode. The unit cards and the Stratagems tab carry the detail.
+function calledExtraLines(){
+  const lines = selectedDetachments.flatMap(id => {
+    const d = DATA.detachments[id];
+    return (d?.whileCalled || []).filter(g => g.text).map(g =>
+      `• <strong>${esc(d.name)}:</strong> ${g.who ? esc(g.who) + ' — ' : ''}${esc(g.text)}`);
+  });
+  const n = Object.values(DATA.stratagems).filter(s => s.whileCalled && isContentDetachmentActive(s)).length;
+  if(n) lines.push(`• ${n} stratagem${n === 1 ? ' is' : 's are'} stronger — marked on the Stratagems tab`);
+  return lines;
+}
 function renderDock(){
   const a = factionCall(), dock = $('#dock');
   if(!a || !FACTION_CALL_TABS.includes(ui.tab)){
@@ -1717,9 +1920,12 @@ function renderDock(){
 
   ban.classList.toggle('on', on);
   if(on){
+    // Combat Patrol runs its own detachment; the matched-play extras are not its.
+    const more = ui.tab === 'cp' ? [] : calledExtraLines();
     ban.innerHTML = `<div class="hd"><b>${esc(a.callLabel || a.name.toUpperCase())}</b>
         <button id="dockEnd">End</button></div>
       <div>${a.callEffect}</div>
+      ${more.length ? `<div class="more">${more.join('<br>')}</div>` : ''}
       ${a.callDuration ? `<span class="dur">${esc(a.callDuration)}</span>` : ''}`;
   } else {
     ban.innerHTML = '';
@@ -1789,7 +1995,7 @@ function fireDock(){
   setTimeout(() => { btn.classList.remove('fire'); flash.classList.remove('on'); }, 800);
 }
 // Cards show the call's live effects, so they refresh with it.
-function refreshCall(){ renderDock(); renderPoints(); renderArmy(); renderCombatPatrol(); }
+function refreshCall(){ renderDock(); renderPoints(); renderArmy(); renderStrats(); renderCombatPatrol(); }
 function callFaction(){
   fireDock();
   playCallGif();
@@ -1816,7 +2022,7 @@ function renderPoints(){
     `<div class="track"><div class="lbl"><b>WAAAGH!</b><small>Once per battle</small></div>
       <button class="btn ${game.waaagh?'pri':''}" id="btnWaaagh" style="width:auto;padding:8px 14px;font-size:14px">${game.waaagh?'CALLED':'Call it'}</button></div>
     <div class="panel open"><div class="panel-bd row">
-      <span class="muted grow" style="font-size:12px">${armyPoints()} / ${pointsLimit} pts · ${dpSpent()}/${DATA.dpBudget} DP</span>
+      <span class="muted grow" style="font-size:12px">${armyPoints()} / ${pointsLimit} pts · ${dpSpent()}/${dpBudget()} DP</span>
       <button class="btn mini" id="btnResetGame">Reset game state</button>
     </div></div>`;
 }
@@ -1851,7 +2057,7 @@ document.addEventListener('click', e => {
     const x = DATA.enhancements[en.dataset.enh];
     if(x) openModal(x.name, x.type || (x.upgrade?'Upgrade':'Enhancement'),
       `<p class="muted">Goes on: ${esc(x.restriction || (x.upgrade?'any non-Epic-Hero unit':'CHARACTER model'))} · ${x.points||0} pts</p>` +
-      (x.description || '<em>Rule to be added.</em>'));
+      (x.description || '<em>Rule to be added.</em>') + enhancementWeaponHtml(x));
     return;
   }
   const cep = el('[data-cpenhpick]');
@@ -1933,12 +2139,26 @@ document.addEventListener('change', e => {
   if(t.id === 'cpTgtSel'){ cpChoice.target = t.value === '' ? null : +t.value; save(); renderCombatPatrol(); return; }
 
   if(t.id === 'addSel' && t.value){ addUnit(t.value); return; }
-  if(t.id === 'limitIn'){ pointsLimit = parseInt(t.value,10) || 0; save(); renderBuilder(); return; }
+  // The limit picks the battle size, which moves the DP budget and the
+  // Enhancement limit — so everything that shows them has to refresh.
+  if(t.id === 'limitIn'){ pointsLimit = parseInt(t.value,10) || 0; save(); renderAll(); return; }
 
   if(t.dataset.excl){ const i = find(t.dataset.excl); i.exclusive = t.value || null; save(); renderAll(); return; }
-  if(t.dataset.leader){ const i = find(t.dataset.leader); i.leaderId = t.value || null; save(); renderAll(); return; }
+  if(t.dataset.leader){
+    const i = find(t.dataset.leader), l = t.value ? find(t.value) : null;
+    if(l && attachWouldClash(i, l)){
+      toast('An Attached unit can have only one Enhancement or Upgrade.');
+      renderAll(); return;
+    }
+    i.leaderId = t.value || null; save(); renderAll(); return;
+  }
   if(t.dataset.enhsel){
     const i = find(t.dataset.enhsel);
+    const why = t.value && t.value !== i.enhancementId ? enhancementBlockReason(t.value, i) : null;
+    if(why){
+      toast(`Can't take ${DATA.enhancements[t.value]?.name || 'that'} — ${why === 'cap' ? 'Enhancement limit reached' : why}.`);
+      renderAll(); return;
+    }
     i.enhancementId = t.value || null;
     save(); renderAll(); return;
   }

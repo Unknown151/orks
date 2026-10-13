@@ -490,6 +490,109 @@ t('the Builder has one picker per option; only a non-default pick is stored', aw
   removeInstance(i.uid); delete DATA.units['tmp-boss']; renderAll();
   return before==='Choppa' && stored==='{"m":"klaw"}' && sum==='Klaw' && after==='Klaw' && exp && cleared==='{}';}));
 
+// --- squads: the model mix follows the unit's size, and wargear options are
+//     decided per model ("any number of Nobz can each...", "1 Boy per 10 models...")
+const SQUAD=`({id:'tmp-mob',name:'Tmp Mob',keywords:['INFANTRY','ORKS'],points:80,models:10,stats:{},fixedWeapons:true,
+  costing:{escalationAfter:3,tiers:[[{models:10,points:80},{models:20,points:160}],[{models:10,points:90},{models:20,points:170}]]},
+  composition:{'10':{Nob:1,Boy:9},'20':{Nob:2,Boy:18}},
+  modelProfiles:[{name:'Boy',plural:'Boyz',stats:{}},{name:'Nob',plural:'Nobz',stats:{}}],
+  weapons:{ranged:[{name:'Shoota',carriedBy:'Boy',abilities:[]},{name:'Slugga',carriedBy:['Nob','Boy'],abilities:[]},
+                   {name:'Big Shoota',abilities:[]},
+                   {name:'Kombi - A',weaponGroup:'Kombi',abilities:[]},{name:'Kombi - B',weaponGroup:'Kombi',abilities:[]}],
+           melee:[{name:'Choppa',carriedBy:'Boy',abilities:[]},{name:'Klaw',carriedBy:'Nob',abilities:[]},{name:'Big Choppa',abilities:[]}]},
+  wargearOptions:[
+    {id:'nob',label:'Nob',model:'Nob',choices:[{id:'klaw',name:'Klaw',weapons:['Klaw']},
+      {id:'klaw-kombi',name:'Klaw + Kombi',weapons:['Klaw','Kombi']},{id:'big',name:'Big Choppa',weapons:['Big Choppa']}]},
+    {id:'big-shoota',label:'Big Shoota',per:10,choices:[{id:'shoota',name:'Shoota',weapons:['Shoota']},
+      {id:'big-shoota',name:'Big Shoota',weapons:['Big Shoota']}]}]})`;
+t('a squad starts with one of each weapon per model that carries it', await p.evaluate(s=>{
+  const u=eval(s), sum=models=>weaponSummaryText(u,{models,slots:{}});
+  return sum(10)==='9× Shoota, 10× Slugga, 9× Choppa, Klaw' && sum(20)==='18× Shoota, 20× Slugga, 18× Choppa, 2× Klaw';},SQUAD));
+t('a "1 per 10 models" option is a count, and each one swaps a single weapon', await p.evaluate(s=>{
+  const u=eval(s), sum=(models,slots)=>weaponSummaryText(u,{models,slots});
+  return sum(10,{'big-shoota':1})==='8× Shoota, 10× Slugga, Big Shoota, 9× Choppa, Klaw'
+      && sum(20,{'big-shoota':2})==='16× Shoota, 20× Slugga, 2× Big Shoota, 18× Choppa, 2× Klaw'
+      && sum(10,{'big-shoota':2})==='8× Shoota, 10× Slugga, Big Shoota, 9× Choppa, Klaw';}, SQUAD));   // only one model may at 10
+t('an "any number of models can each" option is one pick per model', await p.evaluate(s=>{
+  const u=eval(s), sum=(models,slots)=>weaponSummaryText(u,{models,slots});
+  return sum(20,{nob:['big','klaw-kombi']})==='18× Shoota, 20× Slugga, Kombi, 18× Choppa, Klaw, Big Choppa'
+      && sum(20,{nob:'big'})==='18× Shoota, 20× Slugga, 18× Choppa, Klaw, Big Choppa'      // a lone id is the first model's pick
+      && sum(10,{nob:['klaw','big']})==='9× Shoota, 10× Slugga, 9× Choppa, Klaw';}, SQUAD)); // the second Nob is not there at 10
+t('the model mix and the option labels follow the size', await p.evaluate(s=>{
+  const u=eval(s);
+  return breakdownText(u,{models:10})==='1 Nob + 9 Boyz' && breakdownText(u,{models:20})==='2 Nobz + 18 Boyz'
+      && modelCount(u,{models:20},'Boy')===18 && modelCount({},{},'x')===null
+      && breakdownText({modelBreakdown:'1 Warboss'},{})==='1 Warboss'
+      && nonDefaultChoices(u,{models:20,slots:{'big-shoota':2,nob:['big','big']}}).map(c=>c.name).join()==='2× Big Choppa,2× Big Shoota';},SQUAD));
+t('Builder: a stepper for a counted option, a picker per model, and resizing keeps the loadout legal', (await p.evaluate(s=>{
+  DATA.units['tmp-mob']=eval(s); addUnit('tmp-mob'); const i=armyList[armyList.length-1], u=DATA.units['tmp-mob'];
+  const q=sel=>document.querySelector(sel), step=d=>q(`[data-optn="${i.uid}:big-shoota:${d}"]`).click();
+  const size=d=>q(`[data-size="${i.uid}:${d}"]`).click();
+  const pickers=()=>document.querySelectorAll(`[data-opt="${i.uid}:nob"]`).length;
+  const r={};
+  r.at10=pickers()===1 && instancePoints(i)===80;
+  step(1); step(1); r.cap10=i.slots['big-shoota']===1;                       // 1 per 10 models
+  size(1); r.at20=i.models===20 && pickers()===2 && instancePoints(i)===160;
+  step(1); r.two=i.slots['big-shoota']===2;
+  const s2=document.querySelectorAll(`[data-opt="${i.uid}:nob"]`)[1]; s2.value='big'; s2.dispatchEvent(new Event('change',{bubbles:true}));
+  r.second=JSON.stringify(i.slots.nob)==='["klaw","big"]' && weaponSummaryText(u,i).includes('Big Choppa');
+  size(-1); r.shrunk=i.models===10 && i.slots['big-shoota']===1 && i.slots.nob===undefined && !weaponSummaryText(u,i).includes('Big Choppa');
+  step(-1); r.cleared=JSON.stringify(i.slots)==='{}';
+  const card=[...document.querySelectorAll('#view-army .unit')].find(c=>c.querySelector('h3').textContent.includes('Tmp Mob'));
+  r.card=[...card.querySelectorAll('.prof-n')].map(x=>x.textContent).join()==='Boy ×9,Nob ×1' && card.querySelector('.sub').textContent.includes('1 Nob + 9 Boyz');
+  removeInstance(i.uid); delete DATA.units['tmp-mob']; renderAll();
+  return Object.entries(r).filter(([,v])=>!v).map(([k])=>k).join()||true;},SQUAD))===true);
+
+// --- wargear that costs points, fixed pools ("up to 4"), weapons carried several to
+//     a model, and options that share one weapon between them
+const MEGA=`({id:'tmp-mega',name:'Tmp Mega',keywords:['INFANTRY','ORKS'],points:70,models:2,stats:{},fixedWeapons:true,
+  costing:{escalationAfter:2,tiers:[[{models:2,points:70},{models:3,points:105}],[{models:2,points:110},{models:3,points:145}]]},
+  composition:{'2':{Mega:2},'3':{Mega:3}},
+  weapons:{ranged:[{name:'Shoota',carriedBy:'Mega',abilities:[]},{name:'Kombi',abilities:[]},
+                   {name:'Pistol',carriedBy:{Mega:2},abilities:[]},{name:'Big Shoota',abilities:[]}],
+           melee:[{name:'Klaw',carriedBy:'Mega',abilities:[]},{name:'Saw',abilities:[]},{name:'Twin Saws',abilities:[]}]},
+  wargearOptions:[
+    {id:'saw',label:'Saw',per:1,choices:[{id:'klaw',name:'Klaw',weapons:['Klaw']},{id:'saw',name:'Saw',weapons:['Saw'],points:5}]},
+    {id:'kombi',label:'Kombi',per:1,choices:[{id:'shoota',name:'Shoota',weapons:['Shoota']},{id:'kombi',name:'Kombi',weapons:['Kombi']}]},
+    {id:'twin',label:'Twin Saws',per:1,choices:[{id:'both',name:'Klaw + Shoota',weapons:['Klaw','Shoota']},
+      {id:'twin',name:'Twin Saws',weapons:['Twin Saws'],points:5}]},
+    {id:'big',label:'Big Shoota',pool:4,choices:[{id:'none',name:'none'},{id:'big',name:'Big Shoota',weapons:['Big Shoota']}]},
+    {id:'pistol',label:'Pistol',pool:1,choices:[{id:'none',name:'none'},{id:'pistol',name:'Extra Pistol',weapons:['Pistol']}]}]})`;
+t('a model can carry several of a weapon, and add-ons stack on top up to their pool', await p.evaluate(s=>{
+  const u=eval(s), sum=(models,slots)=>weaponSummaryText(u,{models,slots});
+  return sum(2,{})==='2× Shoota, 4× Pistol, 2× Klaw' && sum(3,{})==='3× Shoota, 6× Pistol, 3× Klaw'
+      && sum(2,{pistol:1,big:3})==='2× Shoota, 5× Pistol, 3× Big Shoota, 2× Klaw'
+      && sum(2,{big:9})==='2× Shoota, 4× Pistol, 4× Big Shoota, 2× Klaw';},MEGA));   // "up to 4"
+t('wargear that costs points is paid by every model that takes it', await p.evaluate(s=>{
+  const u=eval(s), pts=slots=>optionPoints(u,{models:3,slots});
+  return pts({})===0 && pts({saw:2})===10 && pts({saw:1,twin:1})===10 && pts({kombi:3})===0;},MEGA));
+t('Builder: options that swap out the same weapon share it, and wargear costs are added', (await p.evaluate(s=>{
+  DATA.units['tmp-mega']=eval(s); addUnit('tmp-mega'); const i=armyList[armyList.length-1], u=DATA.units['tmp-mega'];
+  const q=sel=>document.querySelector(sel), step=(o,d)=>q(`[data-optn="${i.uid}:${o}:${d}"]`).click();
+  const size=d=>q(`[data-size="${i.uid}:${d}"]`).click();
+  const r={};
+  r.base=instancePoints(i)===70;
+  step('saw',1); step('saw',1); r.two=i.slots.saw===2 && instancePoints(i)===80;
+  step('twin',1); r.blocked=i.slots.twin===undefined && instancePoints(i)===80;          // both Klaws are Saws already
+  step('saw',-1); step('twin',1); r.shared=i.slots.saw===1 && i.slots.twin===1 && instancePoints(i)===80;
+  step('kombi',1); step('kombi',1); r.kombi=i.slots.kombi===1;                           // one Shoota went with the Twin Saws
+  r.summary=weaponSummaryText(u,i)==='Kombi, 4× Pistol, Saw, Twin Saws';
+  r.hint=[...document.querySelectorAll('#view-builder .unit')].some(c=>c.textContent.includes('Tmp Mega') && c.textContent.includes('+5 pts each'));
+  r.exported=exportText().includes('Saw (+5 pts), Kombi, Twin Saws (+5 pts)');
+  size(1); r.grown=i.models===3 && instancePoints(i)===115;
+  step('saw',1); r.three=i.slots.saw===2 && instancePoints(i)===120;
+  size(-1); r.pruned=i.models===2 && i.slots.saw===2 && i.slots.twin===undefined && i.slots.kombi===1 && instancePoints(i)===80;
+  removeInstance(i.uid); delete DATA.units['tmp-mega']; renderAll();
+  return Object.entries(r).filter(([,v])=>!v).map(([k])=>k).join()||true;},MEGA))===true);
+t('the add-a-unit list groups datasheets by kind', await p.evaluate(()=>{
+  const ids=['tmp-trukk','tmp-jet','tmp-rig','tmp-kan'];
+  const mk=(id,kw)=>{DATA.units[id]={id,name:id,keywords:kw,points:10,models:1,stats:{},weapons:{}}; DATA.unitOrder.push(id);};
+  mk(ids[0],['VEHICLE','DEDICATED TRANSPORT','TRANSPORT']); mk(ids[1],['VEHICLE','AIRCRAFT','FLY']); mk(ids[2],['MONSTER','TRANSPORT']); mk(ids[3],['VEHICLE','WALKER']);
+  const h=addUnitControl(), grp=id=>{const m=h.slice(0,h.indexOf(`value="${id}"`)).match(/optgroup label="([^"]+)"/g); return m[m.length-1].slice(16,-1);};
+  const ok=grp(ids[0])==='Dedicated Transports' && grp(ids[1])==='Aircraft' && grp(ids[2])==='Monsters' && grp(ids[3])==='Vehicles';
+  ids.forEach(id=>{delete DATA.units[id]; DATA.unitOrder.splice(DATA.unitOrder.indexOf(id),1);});
+  return ok;}));
+
 // --- datasheet abilities that reach the weapon rows, and permanent calls
 t('a core ability can carry its printed value', await p.evaluate(()=>{
   const el=document.createElement('div');

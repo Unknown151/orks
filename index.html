@@ -353,7 +353,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.27.0';
+const VERSION = '0.29.0';
 
 // The army-wide Enhancement limit comes from the battle size (core rules 25.03),
 // which lives in data/detachments.json — see battleSize(). This is only the
@@ -705,7 +705,7 @@ function isEscalated(unit, copyIndex){
 function instancePoints(inst){
   const u = DATA.units[inst.unitId];
   if(!u) return 0;
-  let p = priceFor(u, inst.models, unitCopyIndex(inst));
+  let p = priceFor(u, inst.models, unitCopyIndex(inst)) + optionPoints(u, inst);
   const e = inst.enhancementId && DATA.enhancements[inst.enhancementId];
   if(e) p += e.points || 0;
   return p;
@@ -794,34 +794,145 @@ function unitLimitFor(unit){
 const isOverUnitLimit = inst => unitCopyIndex(inst) > unitLimitFor(DATA.units[inst.unitId]);
 
 /* ================================ WEAPONS ================================ */
+/* Squads. A datasheet whose model mix depends on its size lists it per size —
+     composition:{ "10":{ "Nob":1, "Boy":9 }, "20":{ "Nob":2, "Boy":18 } }
+   keyed by the names of its modelProfiles, and each weapon says who starts with it
+   (`carriedBy`: a profile name, several, or { profile: how many each }). */
+const unitSizeOf = (unit, inst) => inst?.models ?? unit?.models ?? 1;
+// How many models of one profile a unit of this size has; null when the datasheet
+// has no composition table (a single model, or a fixed Combat Patrol unit).
+function modelCount(unit, inst, profile){
+  const comp = unit?.composition?.[unitSizeOf(unit, inst)];
+  return comp ? (comp[profile] || 0) : null;
+}
+// "1 Nob + 9 Boyz" for the unit at its current size.
+function breakdownText(unit, inst){
+  const comp = unit?.composition?.[unitSizeOf(unit, inst)];
+  if(!comp) return unit?.modelBreakdown || '';
+  return Object.entries(comp).filter(([,c]) => c).map(([name, c]) => {
+    const prof = (unit.modelProfiles || []).find(x => x.name === name);
+    return `${c} ${c > 1 && prof?.plural ? prof.plural : name}`;
+  }).join(' + ');
+}
+
 /* Wargear options (guide §5.5c). Each option on a datasheet is one decision with
    named choices; the first choice is the printed default loadout. The instance
-   stores only the decisions (inst.slots), and what the model carries is derived
+   stores only the decisions (inst.slots), and what the unit carries is derived
    from them — so "its Kustom Shoota can be replaced with 1 Kombi-rokkit" can
-   never leave it holding both, or neither.
-     wargearOptions:[{ id, label, choices:[{ id, name, weapons:[name|weaponGroup], abilities:[id] }] }] */
+   never leave a model holding both, or neither.
+     wargearOptions:[{ id, label, model, per, max, pool,
+                       choices:[{ id, name, weapons:[name|weaponGroup], abilities:[id], points }] }]
+   An option is decided once per model in its POOL: one model by default, every
+   model of a profile with `model` ("any number of Nob models can each..."),
+   `max` models (default 1) per `per` models in the unit ("for every 10 models...",
+   or `per: 1` for "any number of models"), or a fixed `pool` ("up to 4 Big Shootas").
+   Stored as a choice id (pool of one), a list of ids (one per model), or a number
+   (how many models take the second choice of a two-way option). */
 const unitOptions = unit => unit?.wargearOptions || [];
-const chosenOption = (inst, opt) => opt.choices.find(c => c.id === inst?.slots?.[opt.id]) || opt.choices[0];
 const weaponInChoice = (w, c) => (c.weapons || []).some(x => x === w.name || (w.weaponGroup && x === w.weaponGroup));
-// How many of this weapon an option says the unit carries — or null if no option
-// mentions the weapon, in which case it is simply part of the fixed loadout.
-function optionCount(unit, inst, w){
-  let governed = false, carried = false;
-  unitOptions(unit).forEach(opt => opt.choices.forEach(c => {
-    if(!weaponInChoice(w, c)) return;
-    governed = true;
-    if(chosenOption(inst, opt) === c) carried = true;
-  }));
-  return governed ? (carried ? (w.count || 1) : 0) : null;
+function optionPool(unit, inst, opt){
+  if(opt.pool) return opt.pool;
+  if(opt.per) return Math.floor(unitSizeOf(unit, inst) / opt.per) * (opt.max || 1);
+  const n = opt.model ? modelCount(unit, inst, opt.model) : null;
+  return n != null ? n : 1;
+}
+// A two-way option over a counted pool is a count ("how many Big Shootas"), shown
+// as a stepper; anything else is one picker per model.
+const isCountedOption = (unit, inst, opt) =>
+  opt.choices.length === 2 && (!!opt.per || !!opt.pool || optionPool(unit, inst, opt) > 1);
+// The choice each model in the pool has made. Anything unrecognised, or beyond
+// the pool after the unit shrank, falls back to the default.
+function optionPicks(unit, inst, opt){
+  const pool = optionPool(unit, inst, opt), raw = inst?.slots?.[opt.id];
+  const byId = id => opt.choices.find(c => c.id === id) || opt.choices[0];
+  if(typeof raw === 'number')
+    return Array.from({ length: pool }, (_, n) => n < raw ? (opt.choices[1] || opt.choices[0]) : opt.choices[0]);
+  return Array.from({ length: pool }, (_, n) => byId(Array.isArray(raw) ? raw[n] : (n === 0 ? raw : undefined)));
+}
+// Store a pool's picks in the smallest shape that holds them; nothing at all when
+// every model keeps the printed loadout, so an untouched unit stays an empty object.
+function storeOptionPicks(unit, inst, opt, picks){
+  const def = opt.choices[0], changed = picks.filter(c => c !== def).length;
+  if(!changed) delete inst.slots[opt.id];
+  else if(isCountedOption(unit, inst, opt)) inst.slots[opt.id] = changed;
+  else if(picks.length === 1) inst.slots[opt.id] = picks[0].id;
+  else inst.slots[opt.id] = picks.map(c => c.id);
+}
+// After a unit changes size its pools may be smaller; drop the picks that no
+// longer have a model to belong to. Options that swap out the same weapon share
+// it, so then hand picks back, last option first, until every swap has a weapon
+// to replace.
+function pruneOptionPicks(unit, inst){
+  const opts = unitOptions(unit);
+  opts.forEach(opt => { if(inst.slots?.[opt.id] != null) storeOptionPicks(unit, inst, opt, optionPicks(unit, inst, opt)); });
+  for(let guard = 0; guard < 500; guard++){
+    const short = overdrawnWeapon(unit, inst);
+    if(!short) break;
+    const opt = [...opts].reverse().find(o => weaponInChoice(short, o.choices[0]) && optionPicks(unit, inst, o).some(c => c !== o.choices[0]));
+    if(!opt) break;
+    const picks = optionPicks(unit, inst, opt);
+    picks[picks.map(c => c !== opt.choices[0]).lastIndexOf(true)] = opt.choices[0];
+    storeOptionPicks(unit, inst, opt, picks);
+  }
 }
 // Wargear abilities (a Kustom Force Field, say) that come with the chosen options.
-const optionAbilities = (unit, inst) => unitOptions(unit).flatMap(opt => chosenOption(inst, opt).abilities || []);
-// Choices that differ from the printed loadout, for labels and the text export.
-const nonDefaultChoices = (unit, inst) => unitOptions(unit)
-  .map(opt => chosenOption(inst, opt)).filter((c, n) => c !== unitOptions(unit)[n].choices[0]);
-function weaponCount(inst, w, unit){
-  const fromOption = unit ? optionCount(unit, inst, w) : null;
-  return fromOption != null ? fromOption : (inst?.weaponCounts?.[w.name] ?? (w.count ?? 1));  // ?? not || (guide §9)
+const optionAbilities = (unit, inst) => [...new Set(unitOptions(unit)
+  .flatMap(opt => optionPicks(unit, inst, opt).flatMap(c => c.abilities || [])))];
+// Some wargear costs points ("per Killsaw: 5"); every model that picked it pays.
+function optionPoints(unit, inst){
+  return unitOptions(unit).reduce((s, opt) =>
+    s + optionPicks(unit, inst, opt).reduce((t, c) => t + (c.points || 0), 0), 0);
+}
+// Choices that differ from the printed loadout, for labels and the text export —
+// one entry per choice, counted when several models made it ("2× Big Shoota").
+function nonDefaultChoices(unit, inst){
+  return unitOptions(unit).flatMap(opt => {
+    const tally = new Map();
+    optionPicks(unit, inst, opt).forEach(c => { if(c !== opt.choices[0]) tally.set(c, (tally.get(c) || 0) + 1); });
+    return [...tally].map(([c, k]) => ({ ...c, n: k, name: (k > 1 ? k + '× ' : '') + c.name }));
+  });
+}
+// How many of a weapon a squad starts with: one (or the number given) per model
+// of each profile that carries it. null when the datasheet has no composition.
+function carriedCount(unit, inst, w){
+  if(!unit?.composition || !w.carriedBy) return null;
+  const by = (typeof w.carriedBy === 'string' || Array.isArray(w.carriedBy))
+    ? [].concat(w.carriedBy).map(p => [p, 1]) : Object.entries(w.carriedBy);
+  return by.reduce((s, [prof, each]) => s + (modelCount(unit, inst, prof) || 0) * each, 0);
+}
+// How many of a weapon the unit carries. It starts from the printed loadout: a
+// squad weapon at what its models carry, a weapon only ever offered as an option
+// at none, anything else at its `count`. Then every model that picked a
+// non-default choice hands back the default's weapons and takes its pick's.
+// Below zero means the picks replace more of a weapon than the unit has.
+function rawWeaponCount(inst, w, unit){
+  const opts = unitOptions(unit);
+  const named = opts.some(o => o.choices.some(c => weaponInChoice(w, c)));
+  const carried = carriedCount(unit, inst, w);
+  if(!named && carried == null) return inst?.weaponCounts?.[w.name] ?? (w.count ?? 1);  // ?? not || (guide §9)
+  let n = carried != null ? carried
+        : opts.some(o => weaponInChoice(w, o.choices[0])) ? (w.count ?? 1) : 0;
+  opts.forEach(o => optionPicks(unit, inst, o).forEach(c => {
+    if(c === o.choices[0]) return;
+    if(weaponInChoice(w, o.choices[0])) n--;
+    if(weaponInChoice(w, c)) n++;
+  }));
+  return n;
+}
+const weaponCount = (inst, w, unit) => Math.max(0, rawWeaponCount(inst, w, unit));
+// Two options that both replace a Kustom Shoota share the unit's Kustom Shootas:
+// the first weapon the picks have swapped out more often than the unit has it.
+const overdrawnWeapon = (unit, inst) => ['ranged','melee'].flatMap(k => unit?.weapons?.[k] || [])
+  .find(w => rawWeaponCount(inst, w, unit) < 0) || null;
+// Apply new picks to one option, unless they would overdraw a weapon.
+function tryOptionPicks(unit, inst, opt, picks){
+  const before = inst.slots[opt.id];
+  storeOptionPicks(unit, inst, opt, picks);
+  const short = overdrawnWeapon(unit, inst);
+  if(!short) return true;
+  if(before == null) delete inst.slots[opt.id]; else inst.slots[opt.id] = before;
+  toast(`No ${short.weaponGroup || short.name} left to swap — another option already replaces it.`);
+  return false;
 }
 // Units live in two namespaces (matched play / Combat Patrol); look in both.
 const lookupUnit = id => DATA.units[id] || DATA.cpUnits[id] || null;
@@ -1120,7 +1231,7 @@ function exportText(){
     const l = leaderInstOf(i), sp = supportInstOf(i);
     if(l) lines.push(`  Led by: ${DATA.units[l.unitId].name}`);
     if(sp) lines.push(`  Support: ${DATA.units[sp.unitId].name}`);
-    const picks = nonDefaultChoices(u, i).map(c => c.name);
+    const picks = nonDefaultChoices(u, i).map(c => c.name + (c.points ? ` (+${c.points * c.n} pts)` : ''));
     if(picks.length) lines.push('  Options: ' + picks.join(', '));
     if(i.enhancementId && DATA.enhancements[i.enhancementId]){
       const e = DATA.enhancements[i.enhancementId];
@@ -1379,7 +1490,8 @@ function unitBody(unit, inst, opts){
     // A profile can carry its own invulnerable save — two models in one unit can
     // have different ones, so it cannot live on the unit.
     h += unit.modelProfiles.map(p => {
-      let b = `<div class="prof-n">${esc(p.name)}${p.count?` ×${p.count}`:''}</div>${statBlock(p.stats, mods)}`;
+      const pc = modelCount(unit, inst, p.name) ?? p.count;     // a squad's mix follows its size
+      let b = `<div class="prof-n">${esc(p.name)}${pc?` ×${pc}`:''}</div>${statBlock(p.stats, mods)}`;
       if(p.invulnerableSave){
         b += `<div class="inv${p._invulnFromCall ? ' mod-call' : ''}">🛡 <b>Invulnerable save ${esc(p.invulnerableSave)}</b></div>`;
         if(p.invulnerableNote) b += `<div class="split-note">${p.invulnerableNote}</div>`;
@@ -1512,7 +1624,7 @@ function renderArmy(){
     const ci = unitCopyIndex(i);
     // An Attached unit is one card, so it shows one combined cost (guide §5.1).
     const pts = instancePoints(i) + joined.reduce((s,j) => s + instancePoints(j.x), 0);
-    const sub = [u.modelBreakdown || (i.models > 1 ? i.models + ' models' : ''), label,
+    const sub = [breakdownText(u, i) || (i.models > 1 ? i.models + ' models' : ''), label,
                  joined.length ? [instancePoints(i)].concat(joined.map(j => instancePoints(j.x))).join(' + ') + ' pts' : '']
                 .filter(Boolean).join(' · ');
     const ck = 'a:' + i.uid;
@@ -1595,12 +1707,17 @@ function addUnitControl(){
     return `<div class="empty">No datasheets loaded yet.<br>
       Add unit files to <code>data/units/</code> and list their ids in <code>data/units/index.json</code>.</div>`;
   }
-  const groups = { 'Epic Heroes':[], 'Characters':[], 'Battleline':[], 'Other':[] };
+  // Grouped the way a codex is: by role first, then by what kind of unit it is.
+  const KINDS = [['DEDICATED TRANSPORT','Dedicated Transports'], ['AIRCRAFT','Aircraft'], ['FORTIFICATION','Fortifications'],
+                 ['INFANTRY','Infantry'], ['MOUNTED','Mounted'], ['MONSTER','Monsters'], ['VEHICLE','Vehicles']];
+  const groups = { 'Epic Heroes':[], 'Characters':[], 'Battleline':[], 'Dedicated Transports':[], 'Infantry':[], 'Mounted':[],
+                   'Vehicles':[], 'Monsters':[], 'Aircraft':[], 'Fortifications':[], 'Other':[] };
   DATA.unitOrder.forEach(id => {
     const u = DATA.units[id];
     const g = u.isEpicHero ? 'Epic Heroes'
             : canAttach(u) || (u.keywords||[]).includes('CHARACTER') ? 'Characters'
-            : u.isBattleline ? 'Battleline' : 'Other';
+            : u.isBattleline ? 'Battleline'
+            : (KINDS.find(([kw]) => (u.keywords||[]).includes(kw)) || [, 'Other'])[1];
     groups[g].push(u);
   });
   return `<div class="row">
@@ -1625,7 +1742,7 @@ function builderCard(inst){
   const flagged = (enh && partnerWithEnhancement(inst)) || isOverUnitLimit(inst) || isLooseSupport(inst);
   let h = `<div class="unit${collapseClass(ck)}"><div class="unit-hd" data-ucol="${ck}">
     <h3>${flagged?'<span class="rulemark" title="Breaks a list-building rule — open the card">⚠</span> ':''}${enh?'<span class="star">★</span> ':''}${esc(u.name)}
-      <span class="sub">${esc(u.modelBreakdown||'')}${summary?(u.modelBreakdown?' · ':'')+esc(summary):''}</span></h3>
+      <span class="sub">${esc(breakdownText(u, inst))}${summary?(breakdownText(u, inst)?' · ':'')+esc(summary):''}</span></h3>
     <span class="pts">${instancePoints(inst)}${isEscalated(u,ci)?` <span class="esc" title="Copy #${ci} — escalated cost">↑</span>`:''}</span>
     ${collapseChevron()}
   </div><div class="unit-bd">`;
@@ -1653,12 +1770,24 @@ function builderCard(inst){
         `<label class="pill" style="cursor:pointer"><input type="checkbox" data-wpn="${inst.uid}:${esc(w.name)}" ${weaponCount(inst,w)>0?'checked':''}> ${esc(w.name)}</label>`).join('')}</div></div>`;
     }
   }
-  // One decision per wargear option; the loadout is derived from the picks.
+  // One decision per model in each wargear option's pool; the loadout is derived
+  // from the picks. A two-way option over several models is a count.
   unitOptions(u).forEach(opt => {
-    const cur = chosenOption(inst, opt);
-    h += `<div class="ctl"><label>${esc(opt.label)}</label><select class="sel grow" data-opt="${inst.uid}:${esc(opt.id)}">
-      ${opt.choices.map(c => `<option value="${esc(c.id)}" ${c===cur?'selected':''}>${esc(c.name)}</option>`).join('')}
-    </select></div>`;
+    const picks = optionPicks(u, inst, opt);
+    if(!picks.length) return;
+    if(isCountedOption(u, inst, opt)){
+      const taken = picks.filter(c => c !== opt.choices[0]).length, cost = opt.choices[1].points;
+      const small = [`of ${picks.length}`, opt.hint, cost ? `+${cost} pts${picks.length > 1 ? ' each' : ''}` : ''].filter(Boolean);
+      h += `<div class="ctl"><label>${esc(opt.label)}</label><div class="bnum">
+        <button data-optn="${inst.uid}:${esc(opt.id)}:-1">−</button><span>${taken}</span><button data-optn="${inst.uid}:${esc(opt.id)}:1">+</button>
+      </div><span class="muted" style="font-size:11.5px">${esc(small.join(' · '))}</span></div>`;
+      return;
+    }
+    picks.forEach((cur, k) => {
+      h += `<div class="ctl"><label>${esc(opt.label)}${picks.length > 1 ? ' ' + (k + 1) : ''}</label><select class="sel grow" data-opt="${inst.uid}:${esc(opt.id)}" data-optidx="${k}">
+        ${opt.choices.map(c => `<option value="${esc(c.id)}" ${c===cur?'selected':''}>${esc(c.name)}${c.points ? ` (+${c.points} pts)` : ''}</option>`).join('')}
+      </select></div>`;
+    });
   });
   // A Bodyguard unit can take one Leader and one Support unit.
   ATTACH_SLOTS.forEach(a => {
@@ -2214,8 +2343,19 @@ document.addEventListener('click', e => {
     const inst = armyList.find(i => i.uid === u), unit = DATA.units[inst.unitId];
     const sizes = sizeOptions(unit), at = sizes.indexOf(inst.models);
     const next = sizes[Math.min(Math.max((at < 0 ? 0 : at) + (+dir), 0), sizes.length - 1)];
-    if(next != null && next !== inst.models){ inst.models = next; save(); renderAll(); }
+    if(next != null && next !== inst.models){ inst.models = next; pruneOptionPicks(unit, inst); save(); renderAll(); }
     return;
+  }
+  const on = el('[data-optn]');
+  if(on){
+    const [u, optId, dir] = on.dataset.optn.split(':');
+    const inst = armyList.find(i => i.uid === u), unit = DATA.units[inst.unitId];
+    const opt = unitOptions(unit).find(o => o.id === optId);
+    if(!opt) return;
+    const picks = optionPicks(unit, inst, opt);
+    const taken = Math.min(Math.max(picks.filter(c => c !== opt.choices[0]).length + (+dir), 0), picks.length);
+    tryOptionPicks(unit, inst, opt, picks.map((_, k) => k < taken ? opt.choices[1] : opt.choices[0]));
+    save(); renderAll(); return;
   }
   const dup = el('[data-dup]'); if(dup){ duplicateInstance(dup.dataset.dup); return; }
   const del = el('[data-del]'); if(del){ removeInstance(del.dataset.del); return; }
@@ -2278,10 +2418,11 @@ document.addEventListener('change', e => {
   if(t.dataset.opt){
     const at = t.dataset.opt.indexOf(':');
     const i = find(t.dataset.opt.slice(0, at)), optId = t.dataset.opt.slice(at + 1);
-    const opt = unitOptions(DATA.units[i.unitId]).find(o => o.id === optId);
+    const unit = DATA.units[i.unitId], opt = unitOptions(unit).find(o => o.id === optId);
     if(!opt) return;
-    // Only a non-default pick is stored, so an untouched unit stays an empty object.
-    if(t.value && t.value !== opt.choices[0].id) i.slots[optId] = t.value; else delete i.slots[optId];
+    const picks = optionPicks(unit, i, opt), k = +(t.dataset.optidx || 0);
+    if(k < picks.length) picks[k] = opt.choices.find(c => c.id === t.value) || opt.choices[0];
+    tryOptionPicks(unit, i, opt, picks);
     save(); renderAll(); return;
   }
   if(t.dataset.enhsel){

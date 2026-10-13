@@ -1,0 +1,66 @@
+{
+  "id": "killa-kans",
+  "name": "Killa Kans",
+  "type": ["Vehicle", "Walker"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["VEHICLE", "GROTS", "WALKER"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 130,
+  "models": 3,
+  "_costing_note": "Printed as: 1st to 2nd unit 130 pts for 3 models / 275 pts for 6 models; 3rd+ unit 170 pts for 3 models / 315 pts for 6 models.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 3, "points": 130 }, { "models": 6, "points": 275 }],
+      [{ "models": 3, "points": 170 }, { "models": 6, "points": 315 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 3-6 Killa Kan models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "3": { "Killa Kan": 3 }, "6": { "Killa Kan": 6 } },
+
+  "stats": { "m": "8\"", "t": 7, "sv": "3+", "w": 5, "ld": "8+", "oc": 2 },
+  "modelProfiles": [
+    { "name": "Killa Kan", "plural": "Killa Kans",
+      "stats": { "m": "8\"", "t": 7, "sv": "3+", "w": 5, "ld": "8+", "oc": 2 } }
+  ],
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "Every model is equipped with: 1 Kan Blasta; 1 Kan Klaw.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kan Blasta - Dakka", "range": "24\"", "a": "4", "bs": "4+", "s": "6", "ap": "-1", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "ignores-cover", {"id": "sustained-hits", "display": "Sustained Hits 1"}],
+        "carriedBy": "Killa Kan",
+        "weaponGroup": "Kan Blasta",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kan Blasta - Kill Shot", "range": "24\"", "a": "2", "bs": "4+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [],
+        "carriedBy": "Killa Kan",
+        "weaponGroup": "Kan Blasta" },
+      { "name": "Kan Blasta - Point Blank", "range": "12\"", "a": "3", "bs": "-", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 2"}, "torrent"],
+        "carriedBy": "Killa Kan",
+        "weaponGroup": "Kan Blasta" }
+    ],
+    "melee": [
+      { "name": "Kan Klaw", "a": "3", "ws": "4+", "s": "8", "ap": "-2", "d": "3",
+        "abilities": [],
+        "carriedBy": "Killa Kan" }
+    ]
+  },
+
+  "abilities": ["spiteful-power-trip"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "deadly-demise", "display": "Deadly Demise 1"}],
+  "wargear": []
+}

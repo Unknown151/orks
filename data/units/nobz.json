@@ -1,0 +1,90 @@
+{
+  "id": "nobz",
+  "name": "Nobz",
+  "type": ["Infantry"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "EXPLOSIVES"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 115,
+  "models": 5,
+  "_costing_note": "Printed as: 1st to 2nd unit 115 pts for 5 models / 230 pts for 10 models; 3rd+ unit 145 pts for 5 models / 260 pts for 10 models.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 5, "points": 115 }, { "models": 10, "points": 230 }],
+      [{ "models": 5, "points": 145 }, { "models": 10, "points": 260 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 5-10 Nob models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "5": { "Nob": 5 }, "10": { "Nob": 10 } },
+
+  "stats": { "m": "6\"", "t": 5, "sv": "4+", "w": 3, "ld": "7+", "oc": 1 },
+  "modelProfiles": [
+    { "name": "Nob", "plural": "Nobz",
+      "stats": { "m": "6\"", "t": 5, "sv": "4+", "w": 3, "ld": "7+", "oc": 1 } }
+  ],
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "Every model is equipped with: 1 Kustom Krumpa; 1 Kustom Shoota.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Big Skorcha", "range": "18\"", "a": "3", "bs": "-", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 2"}, "torrent"] },
+      { "name": "Kustom Big Shoota", "range": "18\"", "a": "8", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}] },
+      { "name": "Kombi-rokkit - Busta Rokkit", "range": "24\"", "a": "1", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [],
+        "weaponGroup": "Kombi-rokkit",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kombi-rokkit - Shoota", "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 1"}],
+        "weaponGroup": "Kombi-rokkit" },
+      { "name": "Kustom Shoota", "range": "18\"", "a": "4", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}],
+        "carriedBy": "Nob" }
+    ],
+    "melee": [
+      { "name": "Big Choppa", "a": "4", "ws": "3+", "s": "7", "ap": "-1", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 2"}] },
+      { "name": "Kustom Choppa", "a": "4", "ws": "3+", "s": "5", "ap": "-2", "d": "2",
+        "abilities": [] },
+      { "name": "Kustom Krumpa", "a": "3", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": [],
+        "carriedBy": "Nob" }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: For every 5 models in this unit, 1 model can have their Kustom Krumpa and Kustom Shoota replaced with 1 Big Skorcha and 1 Kustom Choppa. | For every 5 models in this unit, 1 model can have their Kustom Krumpa and Kustom Shoota replaced with 1 Kustom Big Shoota and 1 Kustom Choppa. | For every 5 models in this unit, 1 model can have their Kustom Krumpa and Kustom Shoota replaced with 1 Big Choppa. | For every 5 models in this unit, 1 model can have their Kustom Shoota replaced with 1 Paired Krumpas. | Any number of models can each have their Kustom Shoota replaced with 1 Kombi-rokkit. Costs: per Paired Krumpas = 5 pts. Every option gives up a Kustom Shoota, so across all five no more models can swap than the unit has. Paired Krumpas is wargear, not a weapon: it comes with the ability of the same name.",
+  "wargearOptions": [
+    { "id": "big-skorcha", "label": "Big Skorcha", "per": 5, "hint": "with a Kustom Choppa", "choices": [
+        { "id": "kustom-krumpa-kustom-shoota", "name": "Kustom Krumpa + Kustom Shoota", "weapons": ["Kustom Krumpa", "Kustom Shoota"] },
+        { "id": "big-skorcha-kustom-choppa", "name": "Big Skorcha + Kustom Choppa", "weapons": ["Big Skorcha", "Kustom Choppa"] } ] },
+    { "id": "kustom-big-shoota", "label": "Kustom Big Shoota", "per": 5, "hint": "with a Kustom Choppa", "choices": [
+        { "id": "kustom-krumpa-kustom-shoota", "name": "Kustom Krumpa + Kustom Shoota", "weapons": ["Kustom Krumpa", "Kustom Shoota"] },
+        { "id": "kustom-big-shoota-kustom-choppa", "name": "Kustom Big Shoota + Kustom Choppa", "weapons": ["Kustom Big Shoota", "Kustom Choppa"] } ] },
+    { "id": "big-choppa", "label": "Big Choppa", "per": 5, "hint": "replaces both weapons", "choices": [
+        { "id": "kustom-krumpa-kustom-shoota", "name": "Kustom Krumpa + Kustom Shoota", "weapons": ["Kustom Krumpa", "Kustom Shoota"] },
+        { "id": "big-choppa", "name": "Big Choppa", "weapons": ["Big Choppa"] } ] },
+    { "id": "paired-krumpas", "label": "Paired Krumpas", "per": 5, "hint": "replaces a Kustom Shoota", "choices": [
+        { "id": "kustom-shoota", "name": "Kustom Shoota", "weapons": ["Kustom Shoota"] },
+        { "id": "paired-krumpas", "name": "Paired Krumpas", "abilities": ["paired-krumpas"], "points": 5 } ] },
+    { "id": "kombi-rokkit", "label": "Kombi-rokkit", "per": 1, "hint": "replaces a Kustom Shoota", "choices": [
+        { "id": "kustom-shoota", "name": "Kustom Shoota", "weapons": ["Kustom Shoota"] },
+        { "id": "kombi-rokkit", "name": "Kombi-rokkit", "weapons": ["Kombi-rokkit"] } ] }
+  ],
+
+  "abilities": ["get-out-da-way", "ammo-runts"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

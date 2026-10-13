@@ -1,0 +1,51 @@
+{
+  "id": "dakkajet",
+  "name": "Dakkajet",
+  "type": ["Vehicle", "Aircraft"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["VEHICLE", "AIRCRAFT", "FLY", "SPEED FREEKS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 125,
+  "models": 1,
+
+  "_composition_note": "Printed as: 1 Dakkajet model. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "1": { "Dakkajet": 1 } },
+
+  "stats": { "m": "-", "t": 9, "sv": "3+", "w": 12, "ld": "7+", "oc": "-" },
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Armoured Impact; 2 Dual Supa-shoota.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Dual Supa-shoota", "range": "36\"", "a": "8", "bs": "5+", "s": "6", "ap": "-1", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 4"}],
+        "carriedBy": {"Dakkajet": 2} }
+    ],
+    "melee": [
+      { "name": "Armoured Impact", "a": "3", "ws": "4+", "s": "6", "ap": "0", "d": "1",
+        "abilities": [],
+        "carriedBy": "Dakkajet" }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: This model can be equipped with 1 Dual Supa-shoota. The model starts with 2 Dual Supa-shootas (carriedBy says so); the option adds a third.",
+  "wargearOptions": [
+    { "id": "dual-supa-shoota", "label": "Dual Supa-shoota", "pool": 1, "hint": "a third one", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "dual-supa-shoota", "name": "Third Dual Supa-shoota", "weapons": ["Dual Supa-shoota"] } ] }
+  ],
+
+  "abilities": ["strafing-run"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "damaged", "display": "Damaged 4"}, {"id": "deadly-demise", "display": "Deadly Demise D3"}],
+  "wargear": []
+}

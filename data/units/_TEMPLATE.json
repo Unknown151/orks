@@ -19,6 +19,8 @@
   "baseModels": 5,
   "maxModels": 10,
   "modelBreakdown": "1 Boss Nob + 9 Boyz",
+  "_composition_note": "For a squad of different models: keyed by unit size, then by modelProfile name. The model mix on the card and the number of each weapon follow it as the size changes, so it replaces modelBreakdown and a profile's fixed count. Give each profile a `plural`.",
+  "composition": { "10": { "Boss Nob": 1, "Boy": 9 }, "20": { "Boss Nob": 1, "Boy": 19 } },
 
   "costing": {
     "_comment": "escalationAfter = copies up to and including this index use tiers[0]; later copies use the next/last tier. List EVERY size explicitly — 10 models is often not 2x the 5-model price.",
@@ -32,9 +34,9 @@
   "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 1, "ld": "6+", "oc": 2 },
   "_modelProfiles_note": "A profile may carry its own invulnerableSave (and an optional invulnerableNote for an asterisked footnote) when models in the unit have different ones. Use the unit-level invulnerableSave below when they all share one.",
   "modelProfiles": [
-    { "name": "Boss Nob", "count": 1, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 2, "ld": "6+", "oc": 2 },
+    { "name": "Boss Nob", "plural": "Boss Nobz", "count": 1, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 2, "ld": "6+", "oc": 2 },
       "invulnerableSave": null, "invulnerableNote": null, "keywords": [] },
-    { "name": "Boy", "count": 9, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 1, "ld": "6+", "oc": 2 } }
+    { "name": "Boy", "plural": "Boyz", "count": 9, "stats": { "m": "6\"", "t": 5, "sv": "6+", "w": 1, "ld": "6+", "oc": 2 } }
   ],
 
   "invulnerableSave": null,
@@ -48,6 +50,8 @@
       {
         "name": "Weapon Name",
         "count": 8,
+        "_carriedBy_note": "In a unit with `composition`, use carriedBy instead of count: the model name(s) that start with this weapon, or { \"Boss Nob\": 2 } when a model starts with several. Leave both off a weapon that is only taken through a wargear option.",
+        "carriedBy": "Boy",
         "range": "18\"",
         "a": "2",
         "bs": "5+",
@@ -88,7 +92,19 @@
         { "id": "other-weapon", "name": "Other Weapon", "weapons": ["Other Weapon"] } ] },
     { "id": "extra", "label": "Also takes", "choices": [
         { "id": "none", "name": "— nothing —" },
-        { "id": "force-field", "name": "Force Field", "abilities": ["force-field-ability-id"] } ] }
+        { "id": "force-field", "name": "Force Field", "abilities": ["force-field-ability-id"] } ] },
+    { "_note": "'Any number of Boss Nob models can each...': model = one pick for every model of that profile. When one option replaces two weapons at once, write the choices as whole loadouts.",
+      "id": "nob", "label": "Boss Nob", "model": "Boss Nob", "choices": [
+        { "id": "melee-weapon", "name": "Melee Weapon", "weapons": ["Melee Weapon"] },
+        { "id": "big-weapon", "name": "Big Weapon", "weapons": ["Big Weapon"] } ] },
+    { "_note": "'For every 10 models in this unit, 1 model can...': per = one pick per that many models (max = how many each, default 1); per: 1 is 'any number of models can each'. Two choices make it a - / + count; hint is its small print. `points` on a choice is the datasheet's 'per Special Weapon: 5', paid by every model that takes it. Options that replace the same weapon share it automatically.",
+      "id": "special", "label": "Special Weapon", "per": 10, "hint": "replaces a Weapon Name", "choices": [
+        { "id": "weapon-name", "name": "Weapon Name", "weapons": ["Weapon Name"] },
+        { "id": "special-weapon", "name": "Special Weapon", "weapons": ["Special Weapon"], "points": 5 } ] },
+    { "_note": "'This model can be equipped with up to 4 Extra Gunz' / '1 Boy model can be equipped with 1 Extra Gun' (pool: 1): pool = a fixed number of picks, whatever the unit's size.",
+      "id": "extra-gun", "label": "Extra Gun", "pool": 4, "hint": "optional", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "extra-gun", "name": "Extra Gun", "weapons": ["Extra Gun"] } ] }
   ],
   "_unitWeaponAbilities_note": "'This unit's ranged attacks have [X]' — shown on this datasheet's weapon rows and on the rest of an Attached unit. whileCalled:true = only while the unit is riled up.",
   "unitWeaponAbilities": [

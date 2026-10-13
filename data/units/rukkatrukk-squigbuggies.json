@@ -1,0 +1,57 @@
+{
+  "id": "rukkatrukk-squigbuggies",
+  "name": "Rukkatrukk Squigbuggies",
+  "type": ["Vehicle"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["VEHICLE", "EXPLOSIVES", "SPEED FREEKS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 85,
+  "models": 1,
+  "_costing_note": "Printed as: 85 pts for 1 model / 160 pts for 2 models. The cost does not go up with more copies.",
+  "costing": {
+    "tiers": [
+      [{ "models": 1, "points": 85 }, { "models": 2, "points": 160 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1-2 Rukkatrukk Squigbuggy models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "1": { "Rukkatrukk Squigbuggy": 1 }, "2": { "Rukkatrukk Squigbuggy": 2 } },
+
+  "stats": { "m": "12\"", "t": 7, "sv": "4+", "w": 9, "ld": "7+", "oc": 3 },
+  "modelProfiles": [
+    { "name": "Rukkatrukk Squigbuggy", "plural": "Rukkatrukk Squigbuggies",
+      "stats": { "m": "12\"", "t": 7, "sv": "4+", "w": 9, "ld": "7+", "oc": 3 } }
+  ],
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "Every model is equipped with: 1 Saw Blades; 1 Sawn-off Shotgun; 1 Squig Launchas.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Sawn-off Shotgun", "range": "12\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["assault", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}],
+        "carriedBy": "Rukkatrukk Squigbuggy" },
+      { "name": "Squig Launchas", "range": "24\"", "a": "D6+6", "bs": "4+", "s": "5", "ap": "-1", "d": "2",
+        "abilities": ["ignores-cover"],
+        "carriedBy": "Rukkatrukk Squigbuggy" }
+    ],
+    "melee": [
+      { "name": "Saw Blades", "a": "4", "ws": "3+", "s": "7", "ap": "-1", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}],
+        "carriedBy": "Rukkatrukk Squigbuggy" }
+    ]
+  },
+
+  "abilities": ["squig-barrage"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "deadly-demise", "display": "Deadly Demise 1"}],
+  "wargear": []
+}

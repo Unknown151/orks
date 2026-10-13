@@ -1,0 +1,92 @@
+{
+  "id": "gunwagon",
+  "name": "Gunwagon",
+  "type": ["Vehicle", "Transport"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["VEHICLE", "FRAME", "TRANSPORT", "WAGON"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 150,
+  "models": 1,
+  "_costing_note": "Printed as: 1st to 2nd unit 150 pts for 1 model; 3rd+ unit 160 pts for 1 model.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 1, "points": 150 }],
+      [{ "models": 1, "points": 160 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1 Gunwagon model. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "1": { "Gunwagon": 1 } },
+
+  "stats": { "m": "10\"", "t": 12, "sv": "3+", "w": 16, "ld": "7+", "oc": 5 },
+
+  "invulnerableSave": "6+",
+  "_transport_note": "Printed as: This model has a transport capacity of 12 ORKS INFANTRY models. Each MEGA ARMOUR/JUMP PACK model takes up the space of 2 models. Each GHAZGHKULL THRAKA model takes up the space of 4 models.",
+  "transportCapacity": "12 ORKS INFANTRY models. Each MEGA ARMOUR or JUMP PACK model counts as 2, and each GHAZGHKULL THRAKA model as 4.",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Crushin’ Bulk; 1 Kannon.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Big Shoota", "range": "36\"", "a": "3", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}] },
+      { "name": "Kannon - Frag", "range": "36\"", "a": "4", "bs": "4+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 3"}, {"id": "rapid-fire", "display": "Rapid Fire 4"}],
+        "carriedBy": "Gunwagon",
+        "weaponGroup": "Kannon",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kannon - Shell", "range": "36\"", "a": "2", "bs": "4+", "s": "10", "ap": "-2", "d": "D6+1",
+        "abilities": [{"id": "rapid-fire", "display": "Rapid Fire 2"}],
+        "carriedBy": "Gunwagon",
+        "weaponGroup": "Kannon" },
+      { "name": "Killkannon", "range": "24\"", "a": "4", "bs": "4+", "s": "6", "ap": "-3", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Infantry 3+"}, {"id": "blast", "display": "Blast 1"}, {"id": "rapid-fire", "display": "Rapid Fire 4"}] },
+      { "name": "Lobba", "range": "48\"", "a": "3", "bs": "4+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 3"}, "indirect-fire"] },
+      { "name": "Zzap Gun", "range": "36\"", "a": "2", "bs": "4+", "s": "8", "ap": "-2", "d": "4",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}, {"id": "devastating-wounds", "display": "Devastating Wounds: Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}, {"id": "sustained-hits", "display": "Sustained Hits 2"}] }
+    ],
+    "melee": [
+      { "name": "Crushin’ Bulk", "a": "6", "ws": "3+", "s": "8", "ap": "-2", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 2"}],
+        "carriedBy": "Gunwagon" },
+      { "name": "Grabbin’ Klaw", "a": "2", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": ["extra-attacks"] },
+      { "name": "Wreckin’ Ball", "a": "1", "ws": "3+", "s": "10", "ap": "0", "d": "D6",
+        "abilities": [{"id": "cleave", "display": "Cleave 2"}, "extra-attacks"] }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: This model can be equipped with 1 Wreckin’ Ball. | This model can be equipped with 1 Grabbin’ Klaw. | This model can be equipped with 1 Lobba. | This model can be equipped with up to 4 Big Shoota. | This model’s Kannon can be replaced with one of the following: ~ 1 Killkannon ~ 1 Zzap Gun Costs: per Zzap Gun = 10 pts.",
+  "wargearOptions": [
+    { "id": "wreckin-ball", "label": "Wreckin’ Ball", "pool": 1, "hint": "optional", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "wreckin-ball", "name": "Wreckin’ Ball", "weapons": ["Wreckin’ Ball"] } ] },
+    { "id": "grabbin-klaw", "label": "Grabbin’ Klaw", "pool": 1, "hint": "optional", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "grabbin-klaw", "name": "Grabbin’ Klaw", "weapons": ["Grabbin’ Klaw"] } ] },
+    { "id": "lobba", "label": "Lobba", "pool": 1, "hint": "optional", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "lobba", "name": "Lobba", "weapons": ["Lobba"] } ] },
+    { "id": "big-shoota", "label": "Big Shoota", "pool": 4, "hint": "optional", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "big-shoota", "name": "Big Shoota", "weapons": ["Big Shoota"] } ] },
+    { "id": "kannon", "label": "Kannon", "choices": [
+        { "id": "kannon", "name": "Kannon", "weapons": ["Kannon"] },
+        { "id": "killkannon", "name": "Killkannon", "weapons": ["Killkannon"] },
+        { "id": "zzap-gun", "name": "Zzap Gun", "weapons": ["Zzap Gun"], "points": 10 } ] }
+  ],
+
+  "abilities": ["mobile-arsenal"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "damaged", "display": "Damaged 6"}, {"id": "deadly-demise", "display": "Deadly Demise D6"}],
+  "wargear": []
+}

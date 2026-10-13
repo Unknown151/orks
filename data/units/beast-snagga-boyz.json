@@ -1,0 +1,76 @@
+{
+  "id": "beast-snagga-boyz",
+  "name": "Beast Snagga Boyz",
+  "type": ["Infantry", "Battleline"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "BATTLELINE", "BEAST SNAGGA", "MOB"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": true,
+
+  "points": 80,
+  "models": 10,
+  "_costing_note": "Printed as: 1st to 3rd unit 80 pts for 10 models / 160 pts for 20 models; 4th+ unit 90 pts for 10 models / 170 pts for 20 models.",
+  "costing": {
+    "escalationAfter": 3,
+    "tiers": [
+      [{ "models": 10, "points": 80 }, { "models": 20, "points": 160 }],
+      [{ "models": 10, "points": 90 }, { "models": 20, "points": 170 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1-2 Nob models, 9-18 Beast Snagga Boy models. Keyed by unit size, then by modelProfile name; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "10": { "Nob": 1, "Beast Snagga Boy": 9 }, "20": { "Nob": 2, "Beast Snagga Boy": 18 } },
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 1, "ld": "7+", "oc": 2 },
+  "modelProfiles": [
+    { "name": "Beast Snagga Boy", "plural": "Beast Snagga Boyz",
+      "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 1, "ld": "7+", "oc": 2 } },
+    { "name": "Nob", "plural": "Nobz",
+      "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 3, "ld": "7+", "oc": 2 } }
+  ],
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "Every Nob is equipped with: 1 Power Snappa; 1 Slugga. Every Beast Snagga Boy is equipped with: 1 Choppa; 1 Slugga.",
+  "_weapons_note": "carriedBy names the modelProfile(s) that start with a weapon, so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Slugga", "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}],
+        "carriedBy": ["Nob", "Beast Snagga Boy"] },
+      { "name": "Thump Gun", "range": "18\"", "a": "3", "bs": "5+", "s": "6", "ap": "0", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}] }
+    ],
+    "melee": [
+      { "name": "Choppa - Standard", "a": "3", "ws": "3+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [],
+        "carriedBy": "Beast Snagga Boy",
+        "weaponGroup": "Choppa",
+        "weaponGroupLabel": "Pick one eligible profile before selecting targets. A Hunter profile can only target units with the keywords it names." },
+      { "name": "Choppa - Hunter", "a": "3", "ws": "3+", "s": "6", "ap": "-2", "d": "1",
+        "abilities": [{"id": "hunter", "display": "Hunter: Monster/Vehicle"}],
+        "carriedBy": "Beast Snagga Boy",
+        "weaponGroup": "Choppa" },
+      { "name": "Power Snappa", "a": "3", "ws": "3+", "s": "8", "ap": "-2", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}],
+        "carriedBy": "Nob" }
+    ]
+  },
+
+  "_wargearOptions_note": "`model` = one pick for every model of that profile; `per` = one pick per that many models in the unit. An add-on rather than a swap: the model keeps its Choppa and Slugga.",
+  "wargearOptions": [
+    { "id": "thump-gun", "label": "Thump Gun", "per": 10, "hint": "an extra weapon", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "thump-gun", "name": "Thump Gun", "weapons": ["Thump Gun"] } ] }
+  ],
+
+  "abilities": ["mobbed"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

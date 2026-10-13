@@ -1,0 +1,54 @@
+{
+  "id": "gretchin",
+  "name": "Gretchin",
+  "type": ["Infantry"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "GROTS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 45,
+  "models": 10,
+  "_costing_note": "Printed as: 45 pts for 10 models / 80 pts for 20 models. The cost does not go up with more copies.",
+  "costing": {
+    "tiers": [
+      [{ "models": 10, "points": 45 }, { "models": 20, "points": 80 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 10-20 Gretchin models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "10": { "Gretchin": 10 }, "20": { "Gretchin": 20 } },
+
+  "stats": { "m": "6\"", "t": 2, "sv": "6+", "w": 1, "ld": "8+", "oc": 1 },
+  "modelProfiles": [
+    { "name": "Gretchin", "plural": "Gretchin",
+      "stats": { "m": "6\"", "t": 2, "sv": "6+", "w": 1, "ld": "8+", "oc": 1 } }
+  ],
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "Every model is equipped with: 1 Scavenged Shivs; 1 Grot Blasta.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Grot Blasta", "range": "12\"", "a": "1", "bs": "4+", "s": "3", "ap": "0", "d": "1",
+        "abilities": ["close-quarters"],
+        "carriedBy": "Gretchin" }
+    ],
+    "melee": [
+      { "name": "Scavenged Shivs", "a": "1", "ws": "5+", "s": "2", "ap": "0", "d": "1",
+        "abilities": [],
+        "carriedBy": "Gretchin" }
+    ]
+  },
+
+  "abilities": ["downtrodden", "thievin-scavengers"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

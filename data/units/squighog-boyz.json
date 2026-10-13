@@ -1,0 +1,70 @@
+{
+  "id": "squighog-boyz",
+  "name": "Squighog Boyz",
+  "type": ["Mounted"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["MOUNTED", "BEAST SNAGGA", "EXPLOSIVES", "MOBILE"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 130,
+  "models": 4,
+  "_costing_note": "Printed as: 1st to 2nd unit 130 pts for 4 models / 260 pts for 8 models; 3rd+ unit 160 pts for 4 models / 290 pts for 8 models.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 4, "points": 130 }, { "models": 8, "points": 260 }],
+      [{ "models": 4, "points": 160 }, { "models": 8, "points": 290 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1-2 Nob on Smasha Squig models, 3-6 Squighog Boy models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "4": { "Nob on Smasha Squig": 1, "Squighog Boy": 3 }, "8": { "Nob on Smasha Squig": 2, "Squighog Boy": 6 } },
+
+  "stats": { "m": "10\"", "t": 6, "sv": "4+", "w": 3, "ld": "7+", "oc": 2 },
+  "modelProfiles": [
+    { "name": "Squighog Boy", "plural": "Squighog Boyz",
+      "stats": { "m": "10\"", "t": 6, "sv": "4+", "w": 3, "ld": "7+", "oc": 2 } },
+    { "name": "Nob on Smasha Squig", "plural": "Nobz on Smasha Squigs",
+      "stats": { "m": "10\"", "t": 6, "sv": "4+", "w": 4, "ld": "7+", "oc": 2 } }
+  ],
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "Every Nob on Smasha Squig is equipped with: 1 Big Choppa; 1 Slugga; 1 Squig’s Jaws. Every Squighog Boy is equipped with: 1 Saddlegit’s Shiv; 1 Squig’s Jaws; 1 Stikka.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Saddlegit’s Shiv", "range": "9\"", "a": "1", "bs": "4+", "s": "3", "ap": "0", "d": "1",
+        "abilities": ["assault"],
+        "carriedBy": "Squighog Boy" },
+      { "name": "Slugga", "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}],
+        "carriedBy": "Nob on Smasha Squig" },
+      { "name": "Stikka", "range": "9\"", "a": "1", "bs": "5+", "s": "5", "ap": "-1", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}, "assault"],
+        "carriedBy": "Squighog Boy" }
+    ],
+    "melee": [
+      { "name": "Big Choppa", "a": "4", "ws": "3+", "s": "7", "ap": "-1", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}, {"id": "cleave", "display": "Cleave 2"}],
+        "carriedBy": "Nob on Smasha Squig" },
+      { "name": "Squig’s Jaws", "a": "3", "ws": "4+", "s": "6", "ap": "-1", "d": "2",
+        "abilities": ["extra-attacks"],
+        "carriedBy": ["Nob on Smasha Squig", "Squighog Boy"] },
+      { "name": "Stikka", "a": "3", "ws": "3+", "s": "5", "ap": "-1", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}],
+        "carriedBy": "Squighog Boy" }
+    ]
+  },
+
+  "abilities": ["bomb-squig", "brutal-impact"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

@@ -1,0 +1,68 @@
+{
+  "id": "warbikers",
+  "name": "Warbikers",
+  "type": ["Mounted"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["MOUNTED", "EXPLOSIVES", "SPEED FREEKS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 75,
+  "models": 3,
+  "_costing_note": "Printed as: 75 pts for 3 models / 140 pts for 6 models. The cost does not go up with more copies.",
+  "costing": {
+    "tiers": [
+      [{ "models": 3, "points": 75 }, { "models": 6, "points": 140 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1 Biker Nob model, 2-5 Warbiker models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "3": { "Biker Nob": 1, "Warbiker": 2 }, "6": { "Biker Nob": 1, "Warbiker": 5 } },
+
+  "stats": { "m": "12\"", "t": 6, "sv": "4+", "w": 3, "ld": "7+", "oc": 2 },
+  "modelProfiles": [
+    { "name": "Warbiker", "plural": "Warbikers",
+      "stats": { "m": "12\"", "t": 6, "sv": "4+", "w": 3, "ld": "7+", "oc": 2 } },
+    { "name": "Biker Nob", "plural": "Biker Nobz",
+      "stats": { "m": "12\"", "t": 6, "sv": "4+", "w": 4, "ld": "7+", "oc": 2 } }
+  ],
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "The Biker Nob is equipped with: 1 Kustom Choppa; 1 Dual Kombi-rokkit. Every Warbiker is equipped with: 1 Choppa; 1 Dual Dakkagun.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Dual Kombi-rokkit - Dakkagun", "range": "18\"", "a": "6", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": ["assault", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}],
+        "carriedBy": "Biker Nob",
+        "weaponGroup": "Dual Kombi-rokkit",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Dual Kombi-rokkit - Busta Rokkit", "range": "24\"", "a": "2", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": ["assault"],
+        "carriedBy": "Biker Nob",
+        "weaponGroup": "Dual Kombi-rokkit" },
+      { "name": "Dual Dakkagun", "range": "18\"", "a": "6", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": ["assault", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}],
+        "carriedBy": "Warbiker" }
+    ],
+    "melee": [
+      { "name": "Choppa", "a": "3", "ws": "3+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [],
+        "carriedBy": "Warbiker" },
+      { "name": "Kustom Choppa", "a": "4", "ws": "3+", "s": "5", "ap": "-2", "d": "2",
+        "abilities": [],
+        "carriedBy": "Biker Nob" }
+    ]
+  },
+
+  "abilities": ["high-speed-carnage"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

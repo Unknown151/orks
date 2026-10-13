@@ -1,0 +1,84 @@
+{
+  "id": "breaka-boyz",
+  "name": "Breaka Boyz",
+  "type": ["Infantry"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "EXPLOSIVES"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 120,
+  "models": 6,
+  "_costing_note": "Printed as: 1st to 2nd unit 120 pts for 6 models; 3rd+ unit 130 pts for 6 models.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 6, "points": 120 }],
+      [{ "models": 6, "points": 130 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1 Nob model, 5 Breaka Boy models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "6": { "Nob": 1, "Breaka Boy": 5 } },
+
+  "stats": { "m": "6\"", "t": 5, "sv": "4+", "w": 2, "ld": "7+", "oc": 1 },
+  "modelProfiles": [
+    { "name": "Breaka Boy", "plural": "Breaka Boyz",
+      "stats": { "m": "6\"", "t": 5, "sv": "4+", "w": 2, "ld": "7+", "oc": 1 } },
+    { "name": "Nob", "plural": "Nobz",
+      "stats": { "m": "6\"", "t": 5, "sv": "4+", "w": 3, "ld": "7+", "oc": 1 } }
+  ],
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "The Nob is equipped with: 1 Choppa; 1 Rokkit Pistol; 1 Smash Hammer. Every Breaka Boy is equipped with: 1 Smash Hammer.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Rokkit Pistol", "range": "12\"", "a": "1", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": ["close-quarters"],
+        "carriedBy": "Nob" }
+    ],
+    "melee": [
+      { "name": "Smash Hammer - Standard", "a": "3", "ws": "3+", "s": "7", "ap": "-2", "d": "2",
+        "abilities": [],
+        "carriedBy": ["Nob", "Breaka Boy"],
+        "weaponGroup": "Smash Hammer",
+        "weaponGroupLabel": "Pick one eligible profile before selecting targets. A Hunter profile can only target units with the keywords it names." },
+      { "name": "Smash Hammer - Hunter", "a": "3", "ws": "3+", "s": "12", "ap": "-2", "d": "3",
+        "abilities": [{"id": "hunter", "display": "Hunter: Monster/Vehicle"}],
+        "carriedBy": ["Nob", "Breaka Boy"],
+        "weaponGroup": "Smash Hammer" },
+      { "name": "Choppa", "a": "4", "ws": "3+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [],
+        "carriedBy": "Nob" },
+      { "name": "Knucklebustas", "a": "4", "ws": "3+", "s": "5", "ap": "-2", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}] },
+      { "name": "Tankhammer", "a": "3", "ws": "4+", "s": "12", "ap": "-2", "d": "3",
+        "abilities": ["devastating-wounds", "hazardous"] }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: The Nob can have their Smash Hammer replaced with 1 Rokkit Pistol. | 1 Breaka Boy model can have their Smash Hammer replaced with 1 Knucklebustas. | 1 Breaka Boy model can have their Smash Hammer replaced with 1 Tankhammer. The Nob already carries one Rokkit Pistol; swapping his Smash Hammer gives him a second.",
+  "wargearOptions": [
+    { "id": "nob", "label": "Nob", "choices": [
+        { "id": "smash-hammer", "name": "Smash Hammer", "weapons": ["Smash Hammer"] },
+        { "id": "second-rokkit-pistol", "name": "Second Rokkit Pistol", "weapons": ["Rokkit Pistol"] } ] },
+    { "id": "knucklebustas", "label": "Knucklebustas", "pool": 1, "hint": "replaces a Smash Hammer", "choices": [
+        { "id": "smash-hammer", "name": "Smash Hammer", "weapons": ["Smash Hammer"] },
+        { "id": "knucklebustas", "name": "Knucklebustas", "weapons": ["Knucklebustas"] } ] },
+    { "id": "tankhammer", "label": "Tankhammer", "pool": 1, "hint": "replaces a Smash Hammer", "choices": [
+        { "id": "smash-hammer", "name": "Smash Hammer", "weapons": ["Smash Hammer"] },
+        { "id": "tankhammer", "name": "Tankhammer", "weapons": ["Tankhammer"] } ] }
+  ],
+
+  "abilities": ["bomb-squigs", "trophy-hunters"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

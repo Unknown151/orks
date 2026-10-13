@@ -1,0 +1,66 @@
+{
+  "id": "kill-rig",
+  "name": "Kill Rig",
+  "type": ["Monster", "Transport", "Psyker"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["MONSTER", "BEAST SNAGGA", "PSYKER", "TRANSPORT", "WAGON"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 175,
+  "models": 1,
+  "_costing_note": "Printed as: 1st to 2nd unit 175 pts for 1 model; 3rd+ unit 195 pts for 1 model.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 1, "points": 175 }],
+      [{ "models": 1, "points": 195 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1 Kill Rig model. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "1": { "Kill Rig": 1 } },
+
+  "stats": { "m": "10\"", "t": 10, "sv": "3+", "w": 16, "ld": "7+", "oc": 5 },
+
+  "invulnerableSave": "6+",
+  "_transport_note": "Printed as: This model has a transport capacity of 12 BEAST SNAGGAS INFANTRY models.",
+  "transportCapacity": "12 BEAST SNAGGAS INFANTRY models.",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Butcha Boyz; 1 ’Eavy Lobba; 1 Savage Horns and Hooves; 1 Saw Blades; 1 Stikka Kannon; 1 Wurrtower.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "’Eavy Lobba", "range": "48\"", "a": "3", "bs": "5+", "s": "6", "ap": "0", "d": "2",
+        "abilities": [{"id": "blast", "display": "Blast 2"}, "indirect-fire"],
+        "carriedBy": "Kill Rig" },
+      { "name": "Stikka Kannon", "range": "12\"", "a": "1", "bs": "5+", "s": "12", "ap": "-2", "d": "3",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 2+"}],
+        "carriedBy": "Kill Rig" },
+      { "name": "Wurrtower", "range": "24\"", "a": "1", "bs": "-", "s": "12", "ap": "-3", "d": "6",
+        "abilities": ["hazardous", "psychic", "torrent"],
+        "carriedBy": "Kill Rig" }
+    ],
+    "melee": [
+      { "name": "Butcha Boyz", "a": "4", "ws": "3+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [{"id": "anti", "display": "Anti-Monster/Vehicle 4+"}, "extra-attacks"],
+        "carriedBy": "Kill Rig" },
+      { "name": "Savage Horns and Hooves", "a": "4", "ws": "4+", "s": "8", "ap": "-1", "d": "3",
+        "abilities": ["extra-attacks", "lance"],
+        "carriedBy": "Kill Rig" },
+      { "name": "Saw Blades", "a": "6", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}, "extra-attacks"],
+        "carriedBy": "Kill Rig" }
+    ]
+  },
+
+  "abilities": ["wurrboy", "beastscent", "warpath-kill-rig"],
+  "factionAbilities": ["unstable-energies", "waaagh"],
+  "coreAbilities": [{"id": "damaged", "display": "Damaged 6"}, {"id": "deadly-demise", "display": "Deadly Demise D6"}, "feel-no-pain-5"],
+  "wargear": []
+}

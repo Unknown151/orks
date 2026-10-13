@@ -706,5 +706,391 @@
       "shooting"
     ],
     "description": "In your Shooting phase, if this unit’s Blitzkannon targets a unit that is not a <strong>MONSTER</strong> or <strong>VEHICLE</strong>, that weapon has +6 <strong>A</strong>."
+  },
+  "ammo-runts": {
+    "name": "Ammo Runts",
+    "type": "Ability — Boyz, Nobz",
+    "phases": [
+      "shooting"
+    ],
+    "description": "Once per battle, per unit: in your Shooting phase, when this unit is selected to shoot, you can use this ability. If you do, the unit’s ranged attacks have +1 to Hit rolls. Keep Ammo Runt tokens next to the unit and remove them when the ability is used."
+  },
+  "tide-of-muscle": {
+    "name": "Tide of Muscle",
+    "type": "Ability — Boyz",
+    "phases": [
+      "fight"
+    ],
+    "description": "In the Fight phase, if this unit made a Charge move this turn, its melee attacks have <strong>[LETHAL HITS]</strong>."
+  },
+  "never-too-busy-to-fight": {
+    "name": "Never Too Busy to Fight",
+    "type": "Ability — Boyz",
+    "description": "Being engaged does not stop this unit from starting an action."
+  },
+  "mobbed": {
+    "name": "Mobbed",
+    "type": "Ability — Beast Snagga Boyz",
+    "phases": [
+      "charge"
+    ],
+    "description": "When this unit ends a Charge move, each enemy <strong>MONSTER</strong> or <strong>VEHICLE</strong> unit engaged with it makes a Battle-shock roll:<br>• With -1 to that roll.<br>• Or: with -2 to that roll if this unit has 13 or more models."
+  },
+  "damaged": {
+    "name": "Damaged",
+    "type": "Core Ability",
+    "description": "<strong>Damaged X</strong>: while this model has X or fewer wounds remaining it is damaged, and its attacks have -1 to Hit rolls."
+  },
+  "super-heavy-walker": {
+    "name": "Super-heavy Walker",
+    "type": "Core Ability",
+    "phases": [
+      "movement"
+    ],
+    "description": "Each time this unit makes a Normal, Advance or Fall Back move:<br>• Its models can move through other models (<strong>MONSTER</strong> and <strong>VEHICLE</strong> models included, <strong>TITANIC</strong> ones not), and horizontally through parts of terrain features that are 4\" or less in height.<br>• Before it moves, you can give all its models the <strong>MOBILE</strong> keyword until the move ends, which lets them cross dense terrain. If you do, roll one D6 when the move ends: on a 1, the unit is Battle-shocked."
+  },
+  "bomb-squig": {
+    "name": "Bomb Squig",
+    "type": "Ability — Kommandos, Squighog Boyz",
+    "phases": [
+      "movement"
+    ],
+    "description": "Once per battle, per unit: in your Movement phase, when this unit ends a Normal move, you can pick one visible enemy unit within 12\" and roll one D6. On a 3+, it suffers D3 mortal wounds. Keep one Bomb Squig token next to the unit and remove it when the ability is used."
+  },
+  "bomb-squigs": {
+    "name": "Bomb Squigs",
+    "type": "Ability — Breaka Boyz, Tankbustas",
+    "phases": [
+      "movement"
+    ],
+    "description": "Once per turn, twice per battle, per unit: in your Movement phase, when this unit ends a Normal move, you can pick one visible enemy unit within 12\" and roll one D6. On a 3+, it suffers D3 mortal wounds. Keep two Bomb Squig tokens next to the unit and remove one each time the ability is used."
+  },
+  "gut-hatch": {
+    "name": "Gut Hatch",
+    "type": "Ability — Gorkanaut, Morkanaut",
+    "phases": [
+      "movement"
+    ],
+    "description": "In your Movement phase, when this unit ends a Normal move, the units embarked within it can make an assault disembark move."
+  },
+  "pilin-out": {
+    "name": "Pilin’ Out",
+    "type": "Ability — Trukk",
+    "phases": [
+      "movement"
+    ],
+    "description": "In your opponent’s Movement phase, when an enemy unit ends a move within 8\" of this model, the units embarked within it can make a disembark move, using the rapid disembark mode."
+  },
+  "boom-bomb": {
+    "name": "Boom Bomb",
+    "type": "Ability — Blitza-bommer",
+    "phases": [
+      "fight"
+    ],
+    "description": "At the end of your opponent’s Fight phase, pick one visible enemy unit within 24\" of this unit (not a Lone Operative unit) and roll one D6:<br>• 1-3: it suffers D3 mortal wounds.<br>• 4-5: it suffers 3 mortal wounds.<br>• 6: it suffers D3+3 mortal wounds."
+  },
+  "burna-bomb": {
+    "name": "Burna Bomb",
+    "type": "Ability — Burna-bommer",
+    "phases": [
+      "fight"
+    ],
+    "description": "At the end of your opponent’s Fight phase, pick one visible enemy unit within 36\" of this unit (not a Lone Operative, <strong>MONSTER</strong> or <strong>VEHICLE</strong> unit) and roll one D6. On a 2+:<br>• It suffers D3 mortal wounds.<br>• It cannot be hidden until the end of your next turn.<br>• Ranged attacks that target it have <strong>[IGNORES COVER]</strong> until the end of your next turn."
+  },
+  "strafing-run": {
+    "name": "Strafing Run",
+    "type": "Ability — Dakkajet",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, this unit’s ranged attacks have +1 to Hit rolls unless the target is a <strong>FLY</strong> unit."
+  },
+  "go-fer-da-weak-spot": {
+    "name": "Go fer da Weak Spot",
+    "type": "Ability — Wazbom Blastajet",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, this unit’s ranged attacks that target a <strong>MONSTER</strong> or <strong>VEHICLE</strong> unit have +1 to Wound rolls."
+  },
+  "blastajet-force-field": {
+    "name": "Blastajet Force Field",
+    "type": "Wargear",
+    "description": "Models in this unit have a 5+ invulnerable save, and do not have the <strong>SMOKE</strong> keyword."
+  },
+  "trophy-hunters": {
+    "name": "Trophy Hunters",
+    "type": "Ability — Breaka Boyz",
+    "phases": [
+      "charge"
+    ],
+    "description": "This unit has +1 to Charge rolls."
+  },
+  "finderz-keeperz": {
+    "name": "Finderz Keeperz",
+    "type": "Ability — Flash Gitz",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, this unit’s ranged attacks have +1 AP while either of these is true:<br>• This unit is within range of an objective.<br>• The target of the attack is within range of an objective."
+  },
+  "downtrodden": {
+    "name": "Downtrodden",
+    "type": "Ability — Gretchin",
+    "description": "When working out transport capacity, every 2 Gretchin models (rounding up) take up the space of 1 model."
+  },
+  "thievin-scavengers": {
+    "name": "Thievin’ Scavengers",
+    "type": "Ability — Gretchin",
+    "phases": [
+      "movement"
+    ],
+    "description": "At the end of your Movement phase, if this unit controls an objective, that objective is secured."
+  },
+  "found-em": {
+    "name": "Found ’Em!",
+    "type": "Ability — Kommandos",
+    "phases": [
+      "movement"
+    ],
+    "description": "In your Movement phase, you can pick one enemy unit within 12\" of this unit: it has +3\" detection range until the end of the turn. Put a Kommando Grot token next to that unit as a reminder."
+  },
+  "taktikal-know-wotz": {
+    "name": "Taktikal Know-wotz",
+    "type": "Ability — Kommandos",
+    "description": "In the Declare Battle Formations step, you can split this unit into two units, each with a starting strength of 5. If you do, choose which of the two has the Bomb Squig ability and which has Found ’Em!."
+  },
+  "nowhere-to-hide": {
+    "name": "Nowhere to Hide",
+    "type": "Ability — Kommandos",
+    "description": "This unit’s attacks that target a hidden unit have +1 to Hit rolls."
+  },
+  "arrogant-invulnerability": {
+    "name": "Arrogant Invulnerability",
+    "type": "Ability — Meganobz",
+    "description": "Each attack that targets this unit has -1 AP."
+  },
+  "krumpin-time": {
+    "name": "Krumpin’ Time",
+    "type": "Ability — Meganobz",
+    "phases": [
+      "fight"
+    ],
+    "description": "In the Fight phase, while this unit is riled up, it has +1 to Hit rolls."
+  },
+  "get-out-da-way": {
+    "name": "Get Out da Way!",
+    "type": "Ability — Nobz",
+    "phases": [
+      "charge"
+    ],
+    "description": "While making a Charge move, this unit can move through models (not <strong>MONSTER</strong> or <strong>VEHICLE</strong> models)."
+  },
+  "paired-krumpas": {
+    "name": "Paired Krumpas",
+    "type": "Wargear",
+    "description": "Attacks made with this model’s Kustom Krumpa can re-roll Hit rolls and Wound rolls."
+  },
+  "rokkit-charge": {
+    "name": "Rokkit Charge",
+    "type": "Ability — Stormboyz",
+    "phases": [
+      "fight"
+    ],
+    "description": "When this unit is selected to fight, if it made a Charge move this turn, you can use this ability. If you do, its melee attacks have +1 Attacks, +1 Strength and <strong>[HAZARDOUS]</strong>."
+  },
+  "rokkit-barrage": {
+    "name": "Rokkit Barrage",
+    "type": "Ability — Tankbustas",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, after this unit has shot, pick one enemy unit hit by those attacks. That unit makes a Battle-shock roll with -1 to the roll."
+  },
+  "pulsa-rokkit": {
+    "name": "Pulsa Rokkit",
+    "type": "Wargear",
+    "phases": [
+      "shooting"
+    ],
+    "description": "Once per battle, per unit: in your Shooting phase, when this unit is selected to shoot, you can pick one enemy <strong>MONSTER</strong> or <strong>VEHICLE</strong> unit within 24\" of it. If you do, this unit’s attacks that target that unit have +1 AP and <strong>[LETHAL HITS]</strong>."
+  },
+  "fully-loaded-butchery": {
+    "name": "Fully Loaded Butchery",
+    "type": "Ability — Hunta Rig",
+    "phases": [
+      "fight"
+    ],
+    "description": "This unit’s Butcha Boyz weapon has +2 Attacks for each model embarked within the unit, up to +22."
+  },
+  "tramplasquig-charge": {
+    "name": "Tramplasquig Charge",
+    "type": "Ability — Hunta Rig",
+    "phases": [
+      "charge"
+    ],
+    "description": "When you target this unit with the Crushing Impact stratagem, it costs 1 CP less."
+  },
+  "wurrboy": {
+    "name": "Wurrboy (psyker level 1)",
+    "type": "Ability — Kill Rig",
+    "description": "This model has the psychic abilities Beastscent and Warpath. Its psyker level limits how many psychic levels it can use each battle round — see Unstable Energies."
+  },
+  "beastscent": {
+    "name": "Beastscent (Psychic, level 1)",
+    "type": "Psychic Ability — Kill Rig",
+    "phases": [
+      "movement"
+    ],
+    "description": "In your Movement phase, when a unit embarked within this unit is selected to make a disembark move, if this unit is not Battle-shocked, you can make a psychic roll for it (one D6). If you do:<br>• On a 1, this unit is Battle-shocked.<br>• Until the end of the turn, the disembarking unit’s attacks that target a <strong>MONSTER</strong> or <strong>VEHICLE</strong> unit have +1 to Wound rolls."
+  },
+  "warpath-kill-rig": {
+    "name": "Warpath (Psychic, level 1)",
+    "type": "Psychic Ability — Kill Rig",
+    "phases": [
+      "fight"
+    ],
+    "description": "In the Fight phase, when this unit is selected to fight, if it is not Battle-shocked, you can make a psychic roll for it (one D6). If you do:<br>• On a 1, this unit is Battle-shocked.<br>• This unit’s melee attacks have <strong>[LETHAL HITS]</strong> and <strong>[PSYCHIC]</strong>."
+  },
+  "walking-bastion": {
+    "name": "Walking Bastion",
+    "type": "Ability — Gargantuan Squiggoth",
+    "description": "This unit’s attacks can ignore modifiers to Ballistic Skill, Weapon Skill and Hit rolls."
+  },
+  "deff-from-above": {
+    "name": "Deff from Above",
+    "type": "Ability — Deffkoptas",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, if this unit made an ingress move this turn, its ranged attacks have +1 to Hit rolls."
+  },
+  "aerial-manoover": {
+    "name": "Aerial Manoover",
+    "type": "Ability — Deffkoptas",
+    "phases": [
+      "fight"
+    ],
+    "description": "At the end of your opponent’s Fight phase, if this unit is unengaged, you can place it into Strategic Reserves."
+  },
+  "brutal-impact": {
+    "name": "Brutal Impact",
+    "type": "Ability — Squighog Boyz",
+    "phases": [
+      "fight"
+    ],
+    "description": "If this unit made a Charge move this turn, its attacks have +1 Damage."
+  },
+  "high-speed-carnage": {
+    "name": "High-speed Carnage",
+    "type": "Ability — Warbikers",
+    "phases": [
+      "fight"
+    ],
+    "description": "If this unit made a Charge move this turn, its melee attacks have +1 Strength and +1 Damage."
+  },
+  "speednob-support": {
+    "name": "Speednob Support",
+    "type": "Ability — Wartrakks",
+    "description": "While every model in this unit is within 3\" of a friendly <strong>SPEED FREEKS</strong> unit (other than a <strong>WARTRAKK</strong> unit), this unit has Lone Operative."
+  },
+  "bust-em": {
+    "name": "Bust ’Em",
+    "type": "Ability — Wartrakks",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, after this unit has shot, pick one enemy unit hit by those attacks. Until the end of the turn that unit is busted: friendly <strong>SPEED FREEKS</strong> units’ attacks that target it have <strong>[LETHAL HITS]</strong>."
+  },
+  "big-an-stompy": {
+    "name": "Big an’ Stompy",
+    "type": "Ability — Gorkanaut",
+    "phases": [
+      "fight"
+    ],
+    "description": "This unit’s melee attacks can re-roll Hit rolls of 1."
+  },
+  "big-an-shooty": {
+    "name": "Big an’ Shooty",
+    "type": "Ability — Morkanaut",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, this unit’s ranged attacks can re-roll Hit rolls of 1."
+  },
+  "idol-of-belligerence": {
+    "name": "Idol of Belligerence",
+    "type": "Ability — Stompa",
+    "phases": [
+      "movement"
+    ],
+    "description": "In your Movement phase, when a unit embarked within this unit is selected to make a disembark move, that unit is riled up until the start of your next turn."
+  },
+  "waaagh-effigy": {
+    "name": "Waaagh! Effigy",
+    "type": "Ability — Stompa",
+    "description": "This unit is always riled up."
+  },
+  "mobile-fortress": {
+    "name": "Mobile Fortress",
+    "type": "Ability — Battlewagon",
+    "description": "Ranged attacks that target this unit have -1 Damage."
+  },
+  "mobile-arsenal": {
+    "name": "Mobile Arsenal",
+    "type": "Ability — Gunwagon",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, this unit’s ranged attacks can re-roll Hit rolls of 1."
+  },
+  "madcap-artillery": {
+    "name": "Madcap Artillery",
+    "type": "Ability — Mek Gunz",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, after this unit has shot, if every Mek Gunz model in it carries the same ranged weapons, pick one enemy unit hit by those attacks. Until the start of your next turn that unit suffers the effect named after the weapon:<br>• <strong>Bubblechukka</strong> — wobbled: while it attacks, its targets have the benefit of cover.<br>• <strong>Kustom Mega-kannon</strong> — zapped: -1 Leadership.<br>• <strong>Smasha Gun</strong> — smashed: -2\" Move.<br>• <strong>Traktor Kannon</strong> — grounded: it cannot take to the skies.<br><br>Keep five Grot Crew tokens next to each Mek Gun and remove one each time it loses a wound; the model itself stands for its last wound."
+  },
+  "squig-barrage": {
+    "name": "Squig Barrage",
+    "type": "Ability — Rukkatrukk Squigbuggies",
+    "phases": [
+      "shooting"
+    ],
+    "description": "In your Shooting phase, after this unit has shot, pick one enemy unit (not a <strong>MONSTER</strong> or <strong>VEHICLE</strong> unit) hit by its Squig Launchas. Until the start of your next turn that unit is covered in Squigs: its attacks have -1 to Hit rolls."
+  },
+  "drive-by-skorchin": {
+    "name": "Drive-by Skorchin’",
+    "type": "Ability — Warbuggies",
+    "phases": [
+      "movement"
+    ],
+    "description": "In your Movement phase, you can pick one visible enemy unit (not a <strong>MONSTER</strong> or <strong>VEHICLE</strong> unit) within 6\" of this unit. Until the end of the turn, that unit cannot be targeted with the Fire Overwatch stratagem."
+  },
+  "dread-ard": {
+    "name": "Dread ’Ard",
+    "type": "Ability — Deff Dread",
+    "description": "Attacks that target this unit have -1 Damage."
+  },
+  "spiteful-power-trip": {
+    "name": "Spiteful Power Trip",
+    "type": "Ability — Killa Kans",
+    "description": "This unit’s attacks have +1 to Hit rolls against a unit in which no model has a Toughness of 7 or more."
+  },
+  "raucous-occupants": {
+    "name": "Raucous Occupants",
+    "type": "Ability — Big’ed Bossbunka",
+    "description": "While this model is within range of your home objective, add the OC of the models embarked within it to its own OC."
+  },
+  "fortification": {
+    "name": "Fortification",
+    "type": "Ability — Big’ed Bossbunka",
+    "description": "While an enemy unit is engaged only with <strong>FORTIFICATION</strong> units:<br>• It can be picked as the target of ranged attacks.<br>• Ranged attacks against it have -1 to Hit rolls (<strong>[CLOSE-QUARTERS]</strong> attacks excepted).<br>• When it is selected to make a Fall Back move and is not Battle-shocked, hazard rolls made for it are passed automatically."
+  },
+  "ramshackle-cover": {
+    "name": "Ramshackle Cover",
+    "type": "Ability — Big’ed Bossbunka",
+    "description": "A unit that is not fully visible to an attacking model because of this unit has the benefit of cover against that attack."
   }
 }

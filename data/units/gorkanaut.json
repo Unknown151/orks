@@ -1,0 +1,75 @@
+{
+  "id": "gorkanaut",
+  "name": "Gorkanaut",
+  "type": ["Vehicle", "Transport", "Walker", "Titanic"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["VEHICLE", "TITANIC", "TOWERING", "TRANSPORT", "WALKER"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 325,
+  "models": 1,
+  "_costing_note": "Printed as: 1st to 2nd unit 325 pts for 1 model; 3rd+ unit 355 pts for 1 model.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 1, "points": 325 }],
+      [{ "models": 1, "points": 355 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1 Gorkanaut model. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "1": { "Gorkanaut": 1 } },
+
+  "stats": { "m": "9\"", "t": 12, "sv": "2+", "w": 20, "ld": "7+", "oc": 8 },
+
+  "invulnerableSave": "6+",
+  "_transport_note": "Printed as: This model has a transport capacity of 12 ORKS INFANTRY models. It cannot transport GHAZGHKULL THRAKA models. Each MEGA ARMOUR/JUMP PACK model takes up the space of 2 models.",
+  "transportCapacity": "12 ORKS INFANTRY models. Each MEGA ARMOUR or JUMP PACK model counts as 2. It cannot carry GHAZGHKULL THRAKA.",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Deffstorm mega-shoota; 2 Dual Big Shoota; 1 Klaw of Gork; 2 Rokkit Launcha; 1 Skorcha.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Deffstorm Mega-shoota - Aimed", "range": "36\"", "a": "20", "bs": "5+", "s": "6", "ap": "-1", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}],
+        "carriedBy": "Gorkanaut",
+        "weaponGroup": "Deffstorm Mega-shoota",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Deffstorm Mega-shoota - Point Blank", "range": "12\"", "a": "3D6", "bs": "-", "s": "6", "ap": "-1", "d": "1",
+        "abilities": ["torrent"],
+        "carriedBy": "Gorkanaut",
+        "weaponGroup": "Deffstorm Mega-shoota" },
+      { "name": "Dual Big Shoota", "range": "36\"", "a": "6", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 4"}],
+        "carriedBy": {"Gorkanaut": 2} },
+      { "name": "Rokkit Launcha - Blasta", "range": "24\"", "a": "2", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 2"}],
+        "carriedBy": {"Gorkanaut": 2},
+        "weaponGroup": "Rokkit Launcha",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Rokkit Launcha - Busta", "range": "24\"", "a": "2", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [],
+        "carriedBy": {"Gorkanaut": 2},
+        "weaponGroup": "Rokkit Launcha" },
+      { "name": "Skorcha", "range": "12\"", "a": "3", "bs": "-", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "torrent"],
+        "carriedBy": "Gorkanaut" }
+    ],
+    "melee": [
+      { "name": "Klaw of Gork", "a": "6", "ws": "3+", "s": "18", "ap": "-3", "d": "6",
+        "abilities": [{"id": "cleave", "display": "Cleave 3"}],
+        "carriedBy": "Gorkanaut" }
+    ]
+  },
+
+  "abilities": ["gut-hatch", "big-an-stompy"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "damaged", "display": "Damaged 7"}, {"id": "deadly-demise", "display": "Deadly Demise D6"}, "super-heavy-walker"],
+  "wargear": []
+}

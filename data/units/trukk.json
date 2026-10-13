@@ -1,0 +1,76 @@
+{
+  "id": "trukk",
+  "name": "Trukk",
+  "type": ["Vehicle", "Dedicated Transport", "Transport"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["VEHICLE", "DEDICATED TRANSPORT", "FRAME", "SPEED FREEKS", "TRANSPORT"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 60,
+  "models": 1,
+  "_costing_note": "Printed as: 1st to 3rd unit 60 pts for 1 model; 4th+ unit 70 pts for 1 model.",
+  "costing": {
+    "escalationAfter": 3,
+    "tiers": [
+      [{ "models": 1, "points": 60 }],
+      [{ "models": 1, "points": 70 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1 Trukk model. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "1": { "Trukk": 1 } },
+
+  "stats": { "m": "12\"", "t": 8, "sv": "4+", "w": 10, "ld": "7+", "oc": 2 },
+
+  "invulnerableSave": "6+",
+  "_transport_note": "Printed as: This model has a transport capacity of 12 ORKS INFANTRY models. It cannot transport GHAZGHKULL THRAKA/JUMP PACK models. Each MEGA ARMOUR model takes up the space of 2 models.",
+  "transportCapacity": "12 ORKS INFANTRY models. Each MEGA ARMOUR model counts as 2. It cannot carry GHAZGHKULL THRAKA or JUMP PACK models.",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Dual Big Shoota; 1 Spiked Ram.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Dual Big Shoota", "range": "36\"", "a": "6", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 4"}],
+        "carriedBy": "Trukk" },
+      { "name": "Rokkit Launcha - Blasta", "range": "24\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 2"}],
+        "weaponGroup": "Rokkit Launcha",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Rokkit Launcha - Busta", "range": "24\"", "a": "2", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [],
+        "weaponGroup": "Rokkit Launcha" }
+    ],
+    "melee": [
+      { "name": "Buzzsaw", "a": "2", "ws": "3+", "s": "6", "ap": "-1", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}, "extra-attacks"] },
+      { "name": "Grabbin’ Klaw", "a": "2", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": ["extra-attacks"] },
+      { "name": "Spiked Ram", "a": "3", "ws": "3+", "s": "6", "ap": "0", "d": "1",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}],
+        "carriedBy": "Trukk" }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: This model’s Dual Big Shoota can be replaced with 1 Rokkit Launcha. | This model can be equipped with one of the following: ~ 1 Buzzsaw ~ 1 Grabbin’ Klaw",
+  "wargearOptions": [
+    { "id": "ranged", "label": "Dual Big Shoota", "choices": [
+        { "id": "dual-big-shoota", "name": "Dual Big Shoota", "weapons": ["Dual Big Shoota"] },
+        { "id": "rokkit-launcha", "name": "Rokkit Launcha", "weapons": ["Rokkit Launcha"] } ] },
+    { "id": "extra", "label": "Also takes", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "buzzsaw", "name": "Buzzsaw", "weapons": ["Buzzsaw"] },
+        { "id": "grabbin-klaw", "name": "Grabbin’ Klaw", "weapons": ["Grabbin’ Klaw"] } ] }
+  ],
+
+  "abilities": ["pilin-out"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "deadly-demise", "display": "Deadly Demise D3"}, {"id": "firing-deck", "display": "Firing Deck 12"}],
+  "wargear": []
+}

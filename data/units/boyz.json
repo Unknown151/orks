@@ -1,0 +1,118 @@
+{
+  "id": "boyz",
+  "name": "Boyz",
+  "type": ["Infantry", "Battleline"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "BATTLELINE", "EXPLOSIVES", "MOB"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": true,
+
+  "points": 85,
+  "models": 10,
+  "_costing_note": "Printed as: 1st to 3rd unit 85 pts for 10 models / 170 pts for 20 models; 4th+ unit 95 pts for 10 models / 180 pts for 20 models.",
+  "costing": {
+    "escalationAfter": 3,
+    "tiers": [
+      [{ "models": 10, "points": 85 }, { "models": 20, "points": 170 }],
+      [{ "models": 10, "points": 95 }, { "models": 20, "points": 180 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1-2 Nob models, 9-18 Boy models. Keyed by unit size, then by modelProfile name; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "10": { "Nob": 1, "Boy": 9 }, "20": { "Nob": 2, "Boy": 18 } },
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 1, "ld": "7+", "oc": 2 },
+  "modelProfiles": [
+    { "name": "Boy", "plural": "Boyz",
+      "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 1, "ld": "7+", "oc": 2 } },
+    { "name": "Nob", "plural": "Nobz",
+      "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 3, "ld": "7+", "oc": 2 } }
+  ],
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "Every Nob is equipped with: 1 Kustom Choppa; 1 Kombi-skorcha. Every Boy is equipped with: 1 Choppa; 1 Shoota; 1 Slugga.",
+  "_weapons_note": "carriedBy names the modelProfile(s) that start with a weapon, so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Big Shoota", "range": "36\"", "a": "3", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}] },
+      { "name": "Burna", "range": "12\"", "a": "3", "bs": "-", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "torrent"] },
+      { "name": "Kombi-rokkit - Busta Rokkit", "range": "24\"", "a": "1", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [],
+        "weaponGroup": "Kombi-rokkit",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kombi-rokkit - Shoota", "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 1"}],
+        "weaponGroup": "Kombi-rokkit" },
+      { "name": "Kombi-skorcha - Shoota", "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 1"}],
+        "carriedBy": "Nob",
+        "weaponGroup": "Kombi-skorcha",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kombi-skorcha - Skorcha", "range": "12\"", "a": "3", "bs": "-", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "torrent"],
+        "carriedBy": "Nob",
+        "weaponGroup": "Kombi-skorcha" },
+      { "name": "Kustom Shoota", "range": "18\"", "a": "4", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}] },
+      { "name": "Rokkit Launcha - Blasta", "range": "24\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 2"}],
+        "weaponGroup": "Rokkit Launcha",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Rokkit Launcha - Busta", "range": "24\"", "a": "2", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [],
+        "weaponGroup": "Rokkit Launcha" },
+      { "name": "Shoota", "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 1"}],
+        "carriedBy": "Boy" },
+      { "name": "Slugga", "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}],
+        "carriedBy": "Boy" }
+    ],
+    "melee": [
+      { "name": "Big Choppa", "a": "4", "ws": "3+", "s": "7", "ap": "-1", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 2"}] },
+      { "name": "Choppa", "a": "3", "ws": "3+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [],
+        "carriedBy": "Boy" },
+      { "name": "Kustom Choppa", "a": "4", "ws": "3+", "s": "5", "ap": "-2", "d": "2",
+        "abilities": [],
+        "carriedBy": "Nob" },
+      { "name": "Power Klaw", "a": "3", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": [] }
+    ]
+  },
+
+  "_wargearOptions_note": "`model` = one pick for every model of that profile; `per` = one pick per that many models in the unit. The Nob option is each Nob's whole loadout, because the Big Choppa replaces both his weapons at once: the seven choices are every legal combination of the three printed Nob options. The three per-10 options are independent, one model each.",
+  "wargearOptions": [
+    { "id": "nob", "label": "Nob", "model": "Nob", "choices": [
+        { "id": "kustom-choppa-kombi-skorcha", "name": "Kustom Choppa + Kombi-skorcha", "weapons": ["Kustom Choppa", "Kombi-skorcha"] },
+        { "id": "kustom-choppa-kombi-rokkit", "name": "Kustom Choppa + Kombi-rokkit", "weapons": ["Kustom Choppa", "Kombi-rokkit"] },
+        { "id": "kustom-choppa-kustom-shoota", "name": "Kustom Choppa + Kustom Shoota", "weapons": ["Kustom Choppa", "Kustom Shoota"] },
+        { "id": "power-klaw-kombi-skorcha", "name": "Power Klaw + Kombi-skorcha", "weapons": ["Power Klaw", "Kombi-skorcha"] },
+        { "id": "power-klaw-kombi-rokkit", "name": "Power Klaw + Kombi-rokkit", "weapons": ["Power Klaw", "Kombi-rokkit"] },
+        { "id": "power-klaw-kustom-shoota", "name": "Power Klaw + Kustom Shoota", "weapons": ["Power Klaw", "Kustom Shoota"] },
+        { "id": "big-choppa", "name": "Big Choppa", "weapons": ["Big Choppa"] } ] },
+    { "id": "big-shoota", "label": "Big Shoota", "per": 10, "hint": "replaces a Shoota", "choices": [
+        { "id": "shoota", "name": "Shoota", "weapons": ["Shoota"] },
+        { "id": "big-shoota", "name": "Big Shoota", "weapons": ["Big Shoota"] } ] },
+    { "id": "rokkit-launcha", "label": "Rokkit Launcha", "per": 10, "hint": "replaces a Shoota", "choices": [
+        { "id": "shoota", "name": "Shoota", "weapons": ["Shoota"] },
+        { "id": "rokkit-launcha", "name": "Rokkit Launcha", "weapons": ["Rokkit Launcha"] } ] },
+    { "id": "burna", "label": "Burna", "per": 10, "hint": "replaces a Shoota", "choices": [
+        { "id": "shoota", "name": "Shoota", "weapons": ["Shoota"] },
+        { "id": "burna", "name": "Burna", "weapons": ["Burna"] } ] }
+  ],
+
+  "abilities": ["ammo-runts", "tide-of-muscle", "never-too-busy-to-fight"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

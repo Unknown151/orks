@@ -1,0 +1,71 @@
+{
+  "id": "mek-gunz",
+  "name": "Mek Gunz",
+  "type": ["Vehicle"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["VEHICLE", "FRAME", "GROTS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 55,
+  "models": 1,
+  "_costing_note": "Printed as: 1st to 2nd unit 55 pts for 1 model / 110 pts for 2 models / 165 pts for 3 models; 3rd+ unit 65 pts for 1 model / 120 pts for 2 models / 175 pts for 3 models.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 1, "points": 55 }, { "models": 2, "points": 110 }, { "models": 3, "points": 165 }],
+      [{ "models": 1, "points": 65 }, { "models": 2, "points": 120 }, { "models": 3, "points": 175 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1-3 Mek Gunz models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "1": { "Mek Gunz": 1 }, "2": { "Mek Gunz": 2 }, "3": { "Mek Gunz": 3 } },
+
+  "stats": { "m": "5\"", "t": 6, "sv": "4+", "w": 6, "ld": "8+", "oc": 2 },
+  "modelProfiles": [
+    { "name": "Mek Gunz", "plural": "Mek Gunz",
+      "stats": { "m": "5\"", "t": 6, "sv": "4+", "w": 6, "ld": "8+", "oc": 2 } }
+  ],
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "Every model is equipped with: 1 Scavenged Shivs; 1 Smasha Gun.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Smasha Gun", "range": "48\"", "a": "4", "bs": "4+", "s": "7", "ap": "-3", "d": "3",
+        "abilities": [{"id": "blast", "display": "Blast 1"}],
+        "carriedBy": "Mek Gunz" },
+      { "name": "Bubblechukka", "range": "48\"", "a": "8", "bs": "4+", "s": "3", "ap": "-3", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 3"}, "lethal-hits"] },
+      { "name": "Kustom Mega-kannon", "range": "36\"", "a": "D3+1", "bs": "4+", "s": "12", "ap": "-2", "d": "4",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "hazardous"] },
+      { "name": "Traktor Kannon", "range": "48\"", "a": "2", "bs": "4+", "s": "6", "ap": "-2", "d": "D3+3",
+        "abilities": [{"id": "anti", "display": "Anti-Fly 2+"}] }
+    ],
+    "melee": [
+      { "name": "Scavenged Shivs", "a": "5", "ws": "5+", "s": "2", "ap": "0", "d": "1",
+        "abilities": [],
+        "carriedBy": "Mek Gunz" }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: Any number of models can each have their Smasha Gun replaced with one of the following: ~ 1 Bubblechukka ~ 1 Kustom Mega-kannon ~ 1 Traktor Kannon Three or more choices for 'any number of models' is one picker per model.",
+  "wargearOptions": [
+    { "id": "gun", "label": "Mek Gun", "per": 1, "choices": [
+        { "id": "smasha-gun", "name": "Smasha Gun", "weapons": ["Smasha Gun"] },
+        { "id": "bubblechukka", "name": "Bubblechukka", "weapons": ["Bubblechukka"] },
+        { "id": "kustom-mega-kannon", "name": "Kustom Mega-kannon", "weapons": ["Kustom Mega-kannon"] },
+        { "id": "traktor-kannon", "name": "Traktor Kannon", "weapons": ["Traktor Kannon"] } ] }
+  ],
+
+  "abilities": ["madcap-artillery"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

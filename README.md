@@ -20,8 +20,8 @@ Opening `index.html` straight off disk won't work — browsers block `fetch` on
 
 ## Status
 
-The **engine is complete and tested.** **Combat Patrol data is landing now**; matched-play
-datasheets have not started yet. Guide §8 build order:
+The **engine is complete and tested.** Combat Patrol is in, and the matched-play
+datasheets are landing role by role (see the table below). Guide §8 build order:
 
 | # | Step | State |
 |---|---|---|
@@ -36,9 +36,13 @@ datasheets have not started yet. Guide §8 build order:
 | 9 | Enhancements & Upgrades — cap logic, overview grid | done |
 | 10 | Persistence — saved lists, share URL, text export | done |
 | 11 | Advanced wargear — exclusive choices, fixed loadouts, wargear options | done — options are data-driven, see *Datasheet extras* |
-| 12 | Faction oddities — splitting, resource tracking | not needed yet — add if an Ork datasheet calls for it |
+| 12 | Faction oddities — splitting, resource tracking | not needed — the one split (Kommandos' Taktikal Know-wotz) is chosen at the table, not in the list, so it lives in the ability text |
 | + | **Combat Patrol tab** — separate game mode, read-only force view | done, data landing |
 | + | Collapsible unit cards | done |
+
+The Builder's **Add a unit** list is grouped the way a codex is: Epic Heroes, Characters,
+Battleline, Dedicated Transports, then Infantry, Mounted, Vehicles, Monsters, Aircraft and
+Fortifications, worked out from each datasheet's keywords.
 
 The nav is **Army · Builder · Stratagems · Combat Patrol**. The in-game tracker
 (CP / battle round / VP / WAAAGH!) moved into the ☰ menu — nothing was removed.
@@ -52,7 +56,7 @@ A **faction call button** is pinned to the bottom of the Army and Combat Patrol 
 
 | File | Holds |
 |---|---|
-| `data/units/` | 22 datasheets — every CHARACTER (Warhammer Legends datasheets are left out) |
+| `data/units/` | 55 datasheets — every one on Wahapedia's Orks page except the 12 Warhammer Legends ones (datasheets read 2026-10-13) |
 | `data/detachments.json` | all 15 Ork detachments, plus the battle-size table |
 | `data/enhancements.json` | their 38 Enhancements and Upgrades |
 | `data/stratagems.json` | the 10 core stratagems, 40 detachment stratagems, and the 3 Combat Patrol ones |
@@ -233,6 +237,69 @@ lists the units it can join either way:
 - Only a non-default pick is stored on the list entry (in `slots`), so it travels
   through saved lists, share links and the text export with no extra plumbing.
 
+### Squads
+
+A unit whose models differ says who is in it at each size, and who starts with what:
+
+```jsonc
+"composition": { "10": { "Nob": 1, "Boy": 9 }, "20": { "Nob": 2, "Boy": 18 } },
+"modelProfiles": [ { "name": "Boy", "plural": "Boyz", "stats": { … } },
+                   { "name": "Nob", "plural": "Nobz", "stats": { … } } ],
+"weapons": { "ranged": [ { "name": "Shoota", "carriedBy": "Boy", … },
+                         { "name": "Slugga", "carriedBy": ["Nob", "Boy"], … },
+                         { "name": "Big Shoota", … } ] }
+```
+
+- `composition` is keyed by unit size, then by `modelProfiles` name. The card's model
+  mix ("2 Nobz + 18 Boyz") and the ×N beside each statline come from it, so they follow
+  the size stepper. It replaces `modelBreakdown` and a profile's fixed `count`.
+- `carriedBy` names the profile(s) that start with a weapon; its count is how many of
+  those models the unit has. `{ "Nob": 2 }` is for a model that starts with several
+  (the Tankbusta Nob's two Rokkit Pistols, a Stompa's five Big Shootas). A weapon with
+  no `carriedBy` is only ever taken through a wargear option.
+- A unit of one kind of model still gets a `composition` — `{ "5": { "Nob": 5 } }`, or
+  `{ "1": { "Trukk": 1 } }` for a lone vehicle — so every datasheet counts its weapons
+  the same way. `modelProfiles` is only needed when the unit can hold more than one
+  model.
+
+A few more keys turn a wargear option into one that is decided **per model**:
+
+| Key | Printed as | Builder shows |
+|---|---|---|
+| `"model": "Nob"` | "Any number of Nob models can each…" | one picker per Nob in the unit |
+| `"per": 10` (and `"max"`, default 1) | "For every 10 models in this unit, 1 model can…" | a − / + count, "of 2" at 20 models |
+| `"per": 1` | "Any number of models can each…" | a − / + count up to the unit's size |
+| `"pool": 4` | "…can be equipped with up to 4 Big Shootas", "1 Kommando model can…" (`pool: 1`) | a − / + count, "of 4" |
+| `"points": 5` on a choice | the datasheet's "WARGEAR OPTIONS — per Killsaw: 5" | "+5 pts each"; added to the unit's cost per model that takes it |
+
+```jsonc
+{ "id": "nob", "label": "Nob", "model": "Nob", "choices": [
+    { "id": "kustom-choppa-kombi-skorcha", "name": "Kustom Choppa + Kombi-skorcha", "weapons": ["Kustom Choppa", "Kombi-skorcha"] },
+    { "id": "big-choppa", "name": "Big Choppa", "weapons": ["Big Choppa"] } ] },
+{ "id": "big-shoota", "label": "Big Shoota", "per": 10, "hint": "replaces a Shoota", "choices": [
+    { "id": "shoota", "name": "Shoota", "weapons": ["Shoota"] },
+    { "id": "big-shoota", "name": "Big Shoota", "weapons": ["Big Shoota"] } ] }
+```
+
+- Each pick moves **one** weapon: a Big Shoota takes one Shoota off the count and adds
+  itself. A choice with nothing in the default (`{ "id": "none", … }`) is an add-on.
+- When one printed option replaces two weapons at once (the Nob's Big Choppa), write
+  the choices as **whole loadouts** — every legal combination — so no pick can clash
+  with another.
+- A count is used when an option has exactly two choices; three or more get a picker
+  per model. `hint` is the small print after the count.
+- **Options that replace the same weapon share it.** Nobz have five options that each
+  give up a Kustom Shoota, so across all five no more models can swap than the unit
+  has Kustom Shootas; a pick that would go past that is refused with a message. Nothing
+  has to be declared for this — it falls out of the weapon counts.
+- An add-on stacks on what the model already carries: a Dakkajet starts with two Dual
+  Supa-shootas (`carriedBy: { "Dakkajet": 2 }`) and its option adds a third.
+- Shrinking the unit drops the picks that no longer fit (the second Nob's loadout, the
+  second Big Shoota, a swap with nothing left to replace), so a list can never hold
+  more than the datasheet allows.
+- Stored in `slots` like any other option: a number for a count, a list of choice ids
+  for per-model picks.
+
 ### Abilities that reach the weapon rows
 
 "This unit's ranged attacks have [IGNORES COVER]" applies to every model in the unit —
@@ -256,7 +323,8 @@ detachment's [SUSTAINED HITS 1] still shows next to a weapon's own
 | Key | Does |
 |---|---|
 | `coreAbilities` | An id, or `{ "id": "deadly-demise", "display": "Deadly Demise D3" }` when the datasheet prints a value. |
-| `costing` | Escalating cost — "1st to 2nd unit 100 pts, 3rd+ unit 115 pts" is `escalationAfter: 2` with one tier each. |
+| `costing` | Escalating cost — "1st to 2nd unit 100 pts, 3rd+ unit 115 pts" is `escalationAfter: 2` with one tier each. Leave `escalationAfter` out when the datasheet prints a single "your unit costs" table. |
+| `transportCapacity` | A short line shown with a 🚚 on the card: how many models, and which count double or cannot board. |
 | `whileCalled` | `[{ "text", "from" }]` — what the datasheet's own abilities add while it is riled up, listed in the card note. |
 | `alwaysCalled` | The unit is riled up permanently (Zodgrod's Super Runts). Works on an Enhancement too (Mekwaaagh! Mastermind), and covers the whole Attached unit. |
 
@@ -550,7 +618,9 @@ and its distinct-Upgrade folding, multi-profile weapon merging in summaries,
 `count: 0` options staying off, the call button on the Army tab and everything a call
 switches on (detachment, Enhancement and stratagem bonuses), DP budget + unique-group
 blocking, Support units (own slot, merged card, must be attached), wargear options,
-unit-wide weapon abilities, permanently riled-up units, battle sizes (DP
+squads (model mix by size, per-model and per-10-models options, pruning on resize),
+wargear that costs points, "up to N" pools, options sharing one weapon, the Add menu's
+groups, unit-wide weapon abilities, permanently riled-up units, battle sizes (DP
 budget, Enhancement limit and unit limit by points limit, the lone 3 DP detachment at
 Incursion), one Enhancement per Attached unit, datasheet names as keywords,
 orphaned-enhancement cleanup on detachment removal, leader attachment/merged

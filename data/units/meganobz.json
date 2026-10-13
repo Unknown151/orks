@@ -1,0 +1,90 @@
+{
+  "id": "meganobz",
+  "name": "Meganobz",
+  "type": ["Infantry"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "EXPLOSIVES", "MEGA ARMOUR"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 70,
+  "models": 2,
+  "_costing_note": "Printed as: 1st to 2nd unit 70 pts for 2 models / 105 pts for 3 models / 175 pts for 5 models / 210 pts for 6 models; 3rd+ unit 110 pts for 2 models / 145 pts for 3 models / 215 pts for 5 models / 250 pts for 6 models.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 2, "points": 70 }, { "models": 3, "points": 105 }, { "models": 5, "points": 175 }, { "models": 6, "points": 210 }],
+      [{ "models": 2, "points": 110 }, { "models": 3, "points": 145 }, { "models": 5, "points": 215 }, { "models": 6, "points": 250 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 2-6 Meganob models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "2": { "Meganob": 2 }, "3": { "Meganob": 3 }, "5": { "Meganob": 5 }, "6": { "Meganob": 6 } },
+
+  "stats": { "m": "5\"", "t": 6, "sv": "2+", "w": 3, "ld": "7+", "oc": 1 },
+  "modelProfiles": [
+    { "name": "Meganob", "plural": "Meganobz",
+      "stats": { "m": "5\"", "t": 6, "sv": "2+", "w": 3, "ld": "7+", "oc": 1 } }
+  ],
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "Every model is equipped with: 1 Kustom Shoota; 1 Power Klaw.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kombi-weapon - Shoota", "range": "18\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 1"}],
+        "weaponGroup": "Kombi-weapon",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kombi-weapon - Kill Shot", "range": "24\"", "a": "1", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [],
+        "weaponGroup": "Kombi-weapon" },
+      { "name": "Kombi-weapon - Point Blank", "range": "12\"", "a": "3", "bs": "-", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "torrent"],
+        "weaponGroup": "Kombi-weapon" },
+      { "name": "Kustom Shoota - Aimed", "range": "18\"", "a": "4", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}],
+        "carriedBy": "Meganob",
+        "weaponGroup": "Kustom Shoota",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kustom Shoota - Point Blank", "range": "6\"", "a": "D3+3", "bs": "-", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", "torrent"],
+        "carriedBy": "Meganob",
+        "weaponGroup": "Kustom Shoota" }
+    ],
+    "melee": [
+      { "name": "Killsaw", "a": "3", "ws": "4+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [] },
+      { "name": "Power Klaw", "a": "3", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": [],
+        "carriedBy": "Meganob" },
+      { "name": "Twin Killsaws", "a": "3", "ws": "4+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": ["twin-linked"] }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: Any number of models can each have their Power Klaw replaced with 1 Killsaw. | Any number of models can each have their Kustom Shoota replaced with 1 Kombi-weapon. | Any number of models can each have their Power Klaw and Kustom Shoota replaced with 1 Twin Killsaws. Costs: per Killsaw = 5, per Twin Killsaws = 5 pts. 'Any number of models can each' is per: 1. The three options share the unit's Power Klaws and Kustom Shootas, so together they can never swap out more than the unit has.",
+  "wargearOptions": [
+    { "id": "killsaw", "label": "Killsaw", "per": 1, "hint": "replaces a Power Klaw", "choices": [
+        { "id": "power-klaw", "name": "Power Klaw", "weapons": ["Power Klaw"] },
+        { "id": "killsaw", "name": "Killsaw", "weapons": ["Killsaw"], "points": 5 } ] },
+    { "id": "kombi-weapon", "label": "Kombi-weapon", "per": 1, "hint": "replaces a Kustom Shoota", "choices": [
+        { "id": "kustom-shoota", "name": "Kustom Shoota", "weapons": ["Kustom Shoota"] },
+        { "id": "kombi-weapon", "name": "Kombi-weapon", "weapons": ["Kombi-weapon"] } ] },
+    { "id": "twin-killsaws", "label": "Twin Killsaws", "per": 1, "hint": "replaces both weapons", "choices": [
+        { "id": "power-klaw-kustom-shoota", "name": "Power Klaw + Kustom Shoota", "weapons": ["Power Klaw", "Kustom Shoota"] },
+        { "id": "twin-killsaws", "name": "Twin Killsaws", "weapons": ["Twin Killsaws"], "points": 5 } ] }
+  ],
+
+  "whileCalled": [{ "text": "+1 to Hit rolls in the Fight phase", "from": "Krumpin’ Time" }],
+  "abilities": ["arrogant-invulnerability", "krumpin-time"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [],
+  "wargear": []
+}

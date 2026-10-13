@@ -1,0 +1,87 @@
+{
+  "id": "kommandos",
+  "name": "Kommandos",
+  "type": ["Infantry"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["INFANTRY", "EXPLOSIVES", "SMOKE"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 125,
+  "models": 10,
+
+  "_composition_note": "Printed as: 1 Nob model, 9 Kommando models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "10": { "Nob": 1, "Kommando": 9 } },
+
+  "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 1, "ld": "7+", "oc": 1 },
+  "modelProfiles": [
+    { "name": "Kommando", "plural": "Kommandos",
+      "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 1, "ld": "7+", "oc": 1 } },
+    { "name": "Nob", "plural": "Nobz",
+      "stats": { "m": "6\"", "t": 5, "sv": "5+", "w": 3, "ld": "7+", "oc": 1 } }
+  ],
+
+  "invulnerableSave": null,
+  "fixedWeapons": true,
+
+  "_loadout": "Every model is equipped with: 1 Choppa; 1 Slugga.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Burna", "range": "12\"", "a": "3", "bs": "-", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}, "torrent"] },
+      { "name": "Kustom Shoota", "range": "18\"", "a": "4", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}] },
+      { "name": "Rokkit Launcha - Blasta", "range": "24\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 2"}],
+        "weaponGroup": "Rokkit Launcha",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Rokkit Launcha - Busta", "range": "24\"", "a": "2", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": [],
+        "weaponGroup": "Rokkit Launcha" },
+      { "name": "Slugga", "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}],
+        "carriedBy": ["Nob", "Kommando"] }
+    ],
+    "melee": [
+      { "name": "Big Choppa", "a": "4", "ws": "3+", "s": "7", "ap": "-1", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 2"}] },
+      { "name": "Breacha Ram", "a": "2", "ws": "4+", "s": "8", "ap": "-2", "d": "2",
+        "abilities": [] },
+      { "name": "Choppa", "a": "3", "ws": "3+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [],
+        "carriedBy": ["Nob", "Kommando"] },
+      { "name": "Power Klaw", "a": "3", "ws": "3+", "s": "10", "ap": "-2", "d": "2",
+        "abilities": [] }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: The Nob can have their Choppa replaced with one of the following: ~ 1 Big Choppa ~ 1 Power Klaw | 1 Kommando model can be equipped with 1 Burna. | 1 Kommando model can be equipped with 1 Rokkit Launcha. | 1 Kommando model can have their Choppa replaced with 1 Breacha Ram. | Up to 2 Kommando models can each be equipped with 1 Kustom Shoota.",
+  "wargearOptions": [
+    { "id": "nob", "label": "Nob", "choices": [
+        { "id": "choppa", "name": "Choppa", "weapons": ["Choppa"] },
+        { "id": "big-choppa", "name": "Big Choppa", "weapons": ["Big Choppa"] },
+        { "id": "power-klaw", "name": "Power Klaw", "weapons": ["Power Klaw"] } ] },
+    { "id": "burna", "label": "Burna", "pool": 1, "hint": "an extra weapon", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "burna", "name": "Burna", "weapons": ["Burna"] } ] },
+    { "id": "rokkit-launcha", "label": "Rokkit Launcha", "pool": 1, "hint": "an extra weapon", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "rokkit-launcha", "name": "Rokkit Launcha", "weapons": ["Rokkit Launcha"] } ] },
+    { "id": "breacha-ram", "label": "Breacha Ram", "pool": 1, "hint": "replaces a Choppa", "choices": [
+        { "id": "choppa", "name": "Choppa", "weapons": ["Choppa"] },
+        { "id": "breacha-ram", "name": "Breacha Ram", "weapons": ["Breacha Ram"] } ] },
+    { "id": "kustom-shoota", "label": "Kustom Shoota", "pool": 2, "hint": "an extra weapon", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "kustom-shoota", "name": "Kustom Shoota", "weapons": ["Kustom Shoota"] } ] }
+  ],
+
+  "abilities": ["found-em", "taktikal-know-wotz", "nowhere-to-hide", "bomb-squig"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["infiltrators", "stealth"],
+  "wargear": []
+}

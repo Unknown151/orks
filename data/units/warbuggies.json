@@ -1,0 +1,77 @@
+{
+  "id": "warbuggies",
+  "name": "Warbuggies",
+  "type": ["Vehicle"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["VEHICLE", "EXPLOSIVES", "SPEED FREEKS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 70,
+  "models": 1,
+  "_costing_note": "Printed as: 70 pts for 1 model / 130 pts for 2 models. The cost does not go up with more copies.",
+  "costing": {
+    "tiers": [
+      [{ "models": 1, "points": 70 }, { "models": 2, "points": 130 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1-2 Warbuggy models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "1": { "Warbuggy": 1 }, "2": { "Warbuggy": 2 } },
+
+  "stats": { "m": "12\"", "t": 7, "sv": "4+", "w": 9, "ld": "7+", "oc": 3 },
+  "modelProfiles": [
+    { "name": "Warbuggy", "plural": "Warbuggies",
+      "stats": { "m": "12\"", "t": 7, "sv": "4+", "w": 9, "ld": "7+", "oc": 3 } }
+  ],
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "Every model is equipped with: 1 Extra Dakka; 1 Mek Speshul; 1 Spiked Ram.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Extra Dakka", "range": "12\"", "a": "4", "bs": "5+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": ["assault", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "sustained-hits", "display": "Sustained Hits 1"}],
+        "carriedBy": "Warbuggy" },
+      { "name": "Rivet Kannon - Aimed", "range": "24\"", "a": "6", "bs": "4+", "s": "7", "ap": "-2", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Infantry 4+"}, "assault", {"id": "devastating-wounds", "display": "Devastating Wounds: Infantry"}],
+        "weaponGroup": "Rivet Kannon",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Rivet Kannon - Point Blank", "range": "6\"", "a": "D3+1", "bs": "-", "s": "7", "ap": "-2", "d": "2",
+        "abilities": [{"id": "anti", "display": "Anti-Infantry 4+"}, "assault", {"id": "devastating-wounds", "display": "Devastating Wounds: Infantry"}, "torrent"],
+        "weaponGroup": "Rivet Kannon" },
+      { "name": "Mek Speshul - Aimed", "range": "24\"", "a": "14", "bs": "4+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": ["assault", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "sustained-hits", "display": "Sustained Hits 1"}],
+        "carriedBy": "Warbuggy",
+        "weaponGroup": "Mek Speshul",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Mek Speshul - Point Blank", "range": "6\"", "a": "2D6+2", "bs": "-", "s": "5", "ap": "-1", "d": "1",
+        "abilities": ["assault", "torrent"],
+        "carriedBy": "Warbuggy",
+        "weaponGroup": "Mek Speshul" }
+    ],
+    "melee": [
+      { "name": "Spiked Ram", "a": "4", "ws": "3+", "s": "7", "ap": "-1", "d": "2",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}],
+        "carriedBy": "Warbuggy" }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: Any number of models can each have their Mek Speshul replaced with 1 Rivet Kannon.",
+  "wargearOptions": [
+    { "id": "rivet-kannon", "label": "Rivet Kannon", "per": 1, "hint": "replaces a Mek Speshul", "choices": [
+        { "id": "mek-speshul", "name": "Mek Speshul", "weapons": ["Mek Speshul"] },
+        { "id": "rivet-kannon", "name": "Rivet Kannon", "weapons": ["Rivet Kannon"] } ] }
+  ],
+
+  "abilities": ["drive-by-skorchin"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "deadly-demise", "display": "Deadly Demise 1"}],
+  "wargear": []
+}

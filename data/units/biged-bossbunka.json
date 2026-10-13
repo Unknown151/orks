@@ -1,0 +1,59 @@
+{
+  "id": "biged-bossbunka",
+  "name": "Big’ed Bossbunka",
+  "type": ["Vehicle", "Fortification", "Transport"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["VEHICLE", "FORTIFICATION", "FRAME", "TRANSPORT"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 135,
+  "models": 1,
+
+  "_composition_note": "Printed as: 1 Big’ed Bossbunka model. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "1": { "Big’ed Bossbunka": 1 } },
+
+  "stats": { "m": "-", "t": 10, "sv": "3+", "w": 12, "ld": "7+", "oc": 0 },
+
+  "invulnerableSave": null,
+  "_transport_note": "Printed as: This model has a transport capacity of 11 ORKS INFANTRY models. It cannot transport GHAZGHKULL THRAKA models. Each MEGA ARMOUR/JUMP PACK model takes up the space of 2 models.",
+  "transportCapacity": "11 ORKS INFANTRY models. Each MEGA ARMOUR or JUMP PACK model counts as 2. It cannot carry GHAZGHKULL THRAKA.",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Big Shoota; 1 Gaze of Gork.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Big Shoota", "range": "36\"", "a": "3", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}, {"id": "rapid-fire", "display": "Rapid Fire 2"}],
+        "carriedBy": "Big’ed Bossbunka" },
+      { "name": "Gaze of Gork - Glare", "range": "24\"", "a": "3", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 1"}],
+        "carriedBy": "Big’ed Bossbunka",
+        "weaponGroup": "Gaze of Gork",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Gaze of Gork - Squint", "range": "18\"", "a": "1", "bs": "5+", "s": "12", "ap": "-3", "d": "3",
+        "abilities": [],
+        "carriedBy": "Big’ed Bossbunka",
+        "weaponGroup": "Gaze of Gork" }
+    ],
+    "melee": [
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: This model can be equipped with up to 3 Big Shootas.",
+  "wargearOptions": [
+    { "id": "big-shoota", "label": "Big Shoota", "pool": 3, "hint": "on top of the one it has", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "big-shoota", "name": "Big Shoota", "weapons": ["Big Shoota"] } ] }
+  ],
+
+  "abilities": ["raucous-occupants", "fortification", "ramshackle-cover"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "deadly-demise", "display": "Deadly Demise D3"}, {"id": "firing-deck", "display": "Firing Deck 11"}],
+  "wargear": []
+}

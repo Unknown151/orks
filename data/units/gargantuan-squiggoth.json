@@ -1,0 +1,75 @@
+{
+  "id": "gargantuan-squiggoth",
+  "name": "Gargantuan Squiggoth",
+  "type": ["Monster", "Transport", "Titanic"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary. A Forge World datasheet (not Warhammer Legends). Weapon names keep Wahapedia's lower-case spelling.",
+  "keywords": ["FRAME", "MONSTER", "TITANIC", "TOWERING", "TRANSPORT"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 500,
+  "models": 1,
+  "_costing_note": "Printed as: 1st unit 500 pts for 1 model; 2nd+ unit 600 pts for 1 model.",
+  "costing": {
+    "escalationAfter": 1,
+    "tiers": [
+      [{ "models": 1, "points": 500 }],
+      [{ "models": 1, "points": 600 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 1 Gargantuan Squiggoth. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "1": { "Gargantuan Squiggoth": 1 } },
+
+  "stats": { "m": "10\"", "t": 13, "sv": "3+", "w": 30, "ld": "7+", "oc": 12 },
+
+  "invulnerableSave": null,
+  "_transport_note": "Printed as: This model has a transport capacity of 22 ORKS INFANTRY models. Each MEGA ARMOUR, JUMP PACK model takes up the space of 2 models. Each GHAZGHKULL THRAKA model takes up the space of 4 models.",
+  "transportCapacity": "22 ORKS INFANTRY models. Each MEGA ARMOUR or JUMP PACK model counts as 2, and each GHAZGHKULL THRAKA model as 4.",
+  "fixedWeapons": true,
+
+  "_loadout": "This model is equipped with: 1 Huge Tusks; 1 Kannon - Shell.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Kannon - frag", "range": "36\"", "a": "6", "bs": "5+", "s": "5", "ap": "0", "d": "1",
+        "abilities": [{"id": "rapid-fire", "display": "Rapid Fire 6"}, {"id": "blast", "display": "Blast 1"}],
+        "carriedBy": "Gargantuan Squiggoth",
+        "weaponGroup": "Kannon",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Kannon - shell", "range": "36\"", "a": "2", "bs": "5+", "s": "10", "ap": "-2", "d": "D6+1",
+        "abilities": [{"id": "rapid-fire", "display": "Rapid Fire 2"}],
+        "carriedBy": "Gargantuan Squiggoth",
+        "weaponGroup": "Kannon" },
+      { "name": "Supa-kannon", "range": "60\"", "a": "8", "bs": "5+", "s": "12", "ap": "-2", "d": "3",
+        "abilities": [{"id": "blast", "display": "Blast 1"}] }
+    ],
+    "melee": [
+      { "name": "Huge tusks - strike", "a": "6", "ws": "3+", "s": "14", "ap": "-3", "d": "12",
+        "abilities": ["lance"],
+        "carriedBy": "Gargantuan Squiggoth",
+        "weaponGroup": "Huge tusks",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: This model’s Kannon can be replaced with 1 Supa-kannon. | This model can be equipped with one of the following: ~ 1 kannon ~ 1 supa-kannon",
+  "wargearOptions": [
+    { "id": "kannon", "label": "Kannon", "choices": [
+        { "id": "kannon", "name": "Kannon", "weapons": ["Kannon"] },
+        { "id": "supa-kannon", "name": "Supa-kannon", "weapons": ["Supa-kannon"] } ] },
+    { "id": "extra", "label": "Also takes", "choices": [
+        { "id": "none", "name": "— nothing —" },
+        { "id": "kannon", "name": "Extra Kannon", "weapons": ["Kannon"] },
+        { "id": "supa-kannon", "name": "Extra Supa-kannon", "weapons": ["Supa-kannon"] } ] }
+  ],
+
+  "abilities": ["walking-bastion"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": [{"id": "deadly-demise", "display": "Deadly Demise 2D6"}, {"id": "firing-deck", "display": "Firing Deck 11"}, {"id": "damaged", "display": "Damaged 10"}, "super-heavy-walker"],
+  "wargear": []
+}

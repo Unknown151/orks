@@ -1,0 +1,77 @@
+{
+  "id": "deffkoptas",
+  "name": "Deffkoptas",
+  "type": ["Mounted"],
+  "_source_note": "Stats, weapons, keywords, composition and points match this datasheet on Wahapedia's 11th edition Orks page, read 2026-10-13. Ability text in data/abilities.json is a summary.",
+  "keywords": ["MOUNTED", "EXPLOSIVES", "FLY", "SPEED FREEKS"],
+  "factionKeywords": ["ORKS"],
+
+  "isLeader": false,
+  "isEpicHero": false,
+  "isBattleline": false,
+
+  "points": 85,
+  "models": 3,
+  "_costing_note": "Printed as: 1st to 2nd unit 85 pts for 3 models / 170 pts for 6 models; 3rd+ unit 95 pts for 3 models / 180 pts for 6 models.",
+  "costing": {
+    "escalationAfter": 2,
+    "tiers": [
+      [{ "models": 3, "points": 85 }, { "models": 6, "points": 170 }],
+      [{ "models": 3, "points": 95 }, { "models": 6, "points": 180 }]
+    ]
+  },
+
+  "_composition_note": "Printed as: 3-6 Deffkopta models. Keyed by unit size, then by model; the model mix on the card, and how many of each weapon the unit starts with, follow from it.",
+  "composition": { "3": { "Deffkopta": 3 }, "6": { "Deffkopta": 6 } },
+
+  "stats": { "m": "12\"", "t": 6, "sv": "4+", "w": 4, "ld": "7+", "oc": 2 },
+  "modelProfiles": [
+    { "name": "Deffkopta", "plural": "Deffkoptas",
+      "stats": { "m": "12\"", "t": 6, "sv": "4+", "w": 4, "ld": "7+", "oc": 2 } }
+  ],
+
+  "invulnerableSave": "6+",
+  "fixedWeapons": true,
+
+  "_loadout": "Every model is equipped with: 1 Choppa; 1 Rokkit Launcha; 1 Slugga; 1 Spinnin’ Blades.",
+  "_weapons_note": "carriedBy names the model(s) that start with a weapon — { model: n } when one carries several — so its count follows the unit's size. A weapon with no carriedBy is only ever taken through a wargear option.",
+
+  "weapons": {
+    "ranged": [
+      { "name": "Rokkit Launcha - Blasta", "range": "24\"", "a": "2", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": [{"id": "blast", "display": "Blast 2"}],
+        "carriedBy": "Deffkopta",
+        "weaponGroup": "Rokkit Launcha",
+        "weaponGroupLabel": "Before selecting targets with this weapon, select one of its profiles to make attacks with." },
+      { "name": "Rokkit Launcha - Busta", "range": "24\"", "a": "2", "bs": "5+", "s": "10", "ap": "-2", "d": "3",
+        "abilities": ["lethal-hits"],
+        "carriedBy": "Deffkopta",
+        "weaponGroup": "Rokkit Launcha" },
+      { "name": "Kustom Mega-blasta", "range": "24\"", "a": "3", "bs": "5+", "s": "9", "ap": "-2", "d": "3",
+        "abilities": ["hazardous", "lethal-hits"] },
+      { "name": "Slugga", "range": "12\"", "a": "1", "bs": "5+", "s": "4", "ap": "0", "d": "1",
+        "abilities": ["close-quarters", {"id": "lethal-hits", "display": "Lethal Hits: non-Monster/Vehicle"}],
+        "carriedBy": "Deffkopta" }
+    ],
+    "melee": [
+      { "name": "Choppa", "a": "3", "ws": "4+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [],
+        "carriedBy": "Deffkopta" },
+      { "name": "Spinnin’ Blades", "a": "4", "ws": "3+", "s": "5", "ap": "-1", "d": "1",
+        "abilities": [{"id": "cleave", "display": "Cleave 1"}, "hazardous"],
+        "carriedBy": "Deffkopta" }
+    ]
+  },
+
+  "_wargearOptions_note": "Printed as: For every 3 models in this unit, 1 model can have their Rokkit Launcha replaced with 1 Kustom Mega-blasta.",
+  "wargearOptions": [
+    { "id": "kustom-mega-blasta", "label": "Kustom Mega-blasta", "per": 3, "hint": "replaces a Rokkit Launcha", "choices": [
+        { "id": "rokkit-launcha", "name": "Rokkit Launcha", "weapons": ["Rokkit Launcha"] },
+        { "id": "kustom-mega-blasta", "name": "Kustom Mega-blasta", "weapons": ["Kustom Mega-blasta"] } ] }
+  ],
+
+  "abilities": ["deff-from-above", "aerial-manoover"],
+  "factionAbilities": ["waaagh"],
+  "coreAbilities": ["deep-strike"],
+  "wargear": []
+}

@@ -655,28 +655,29 @@ t('weaponGroup header shown once', await p.evaluate(()=>document.querySelectorAl
 await p.click('nav button[data-tab="strats"]');
 t('phase bar offers All + the five phases', await p.evaluate(()=>
   [...document.querySelectorAll('#view-strats .phbar button')].map(b=>b.dataset.phase).join())==='all,command,movement,shooting,charge,fight');
-t('all eligible stratagems shown (2 core + 1 detachment)',
-  await p.evaluate(()=>document.querySelectorAll('#view-strats .scard').length)===3);
-t('CP force detachment counts as active without the DP picker',
-  await p.evaluate(()=>!isDetachmentActive('fixture-det') && isContentDetachmentActive(DATA.stratagems['cp-det-strat'])));
+t('core and the chosen detachment\'s stratagems shown (1 core + 1 detachment)',
+  await p.evaluate(()=>document.querySelectorAll('#view-strats .scard').length)===2);
+t('the Combat Patrol detachment\'s stratagem stays off the matched-play tab', await p.evaluate(()=>
+  !isContentDetachmentActive(DATA.stratagems['cp-det-strat']) && isCpContent(DATA.stratagems['cp-det-strat'])
+  && !document.querySelector('#view-strats').textContent.includes('CP Det Strat')));
 t('grouped by source, Core first', await p.evaluate(()=>
   [...document.querySelectorAll('#view-strats .egroup')].map(x=>x.firstChild.textContent.trim())[0])==='Core');
 t('detachment group is named, not shown as a raw id', await p.evaluate(()=>
-  [...document.querySelectorAll('#view-strats .egroup')].some(x=>x.textContent.includes('Fixture Detachment'))));
+  [...document.querySelectorAll('#view-strats .egroup')].some(x=>x.textContent.includes(DATA.detachments['big-one'].name) && !x.textContent.includes('big-one'))));
 await p.click('#view-strats .phbar button[data-phase="command"]');
 t('phase tab narrows the grid', await p.evaluate(()=>document.querySelectorAll('#view-strats .scard').length)===1);
 t('selected phase tab is marked', await p.evaluate(()=>
   document.querySelector('#view-strats .phbar button.on').dataset.phase)==='command');
-await p.click('#view-strats .phbar button[data-phase="shooting"]');
-t('shooting shows the detachment stratagem', await p.evaluate(()=>
-  document.querySelector('#view-strats').textContent.includes('CP Det Strat')));
+await p.click('#view-strats .phbar button[data-phase="fight"]');
+t('fight shows the detachment stratagem', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-strats .scard .sn')].map(x=>x.textContent).join()==='Det Strat'));
 t('cards carry cost and turn badges', await p.evaluate(()=>{
   const c=document.querySelector('#view-strats .scard');
   return !!c.querySelector('.sb.cost') && !!c.querySelector('[class*="sb t-"]');}));
 t('turn badge colours differ by turn', await p.evaluate(()=>{
   const g=t=>{const e=document.querySelector('.sb.t-'+t);return e?getComputedStyle(e).color:null;};
   ui.stratPhase='all'; renderStrats();
-  return g('either')!==g('opponent');}));
+  return g('either')!==g('your');}));
 await p.click('#view-strats .scard');
 t('tapping a card opens the full text', await p.evaluate(()=>
   document.querySelector('#modal').classList.contains('on') &&
@@ -692,8 +693,8 @@ t('det strat hidden after its detachment is removed', await p.evaluate(()=>{
   ui.stratPhase='all'; renderStrats();
   const names=[...document.querySelectorAll('#view-strats .scard .sn')].map(x=>x.textContent);
   return !names.includes('Det Strat') && names.includes('Core Strat');}));
-t('the CP detachment stratagem is unaffected by the DP picker', await p.evaluate(()=>
-  [...document.querySelectorAll('#view-strats .scard .sn')].map(x=>x.textContent).includes('CP Det Strat')));
+t('the CP detachment stratagem never joins the matched-play tab', await p.evaluate(()=>
+  ![...document.querySelectorAll('#view-strats .scard .sn')].map(x=>x.textContent).includes('CP Det Strat')));
 await p.evaluate(()=>toggleDetachment('big-one'));
 
 // --- share link round trip
@@ -745,6 +746,27 @@ t('nav has Combat Patrol, not Points',
   await p.evaluate(()=>[...document.querySelectorAll('nav button')].map(b=>b.dataset.tab).join(','))==='army,builder,strats,cp');
 await p.click('nav button[data-tab="cp"]');
 t('CP view is the visible one', await p.evaluate(()=>document.querySelector('#view-cp').classList.contains('on')));
+// --- Combat Patrol's Stratagems view: the core stratagems plus the patrol's own
+//     detachment, whatever matched-play detachments the Builder has picked
+t('CP tab has a Force / Stratagems switch, Force first', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-cp .subnav button')].map(b=>b.dataset.cpview+(b.classList.contains('on')?'*':'')).join())==='force*,strats');
+await p.click('#view-cp [data-cpview="strats"]');
+t('CP stratagems: core plus the patrol detachment, never a matched-play one', await p.evaluate(()=>{
+  const names=[...document.querySelectorAll('#view-cp .scard .sn')].map(x=>x.textContent);
+  return isDetachmentActive('big-one') && names.join()==='Core Strat,CP Det Strat' && !document.querySelector('#view-cp .unit');}));
+t('CP stratagems grouped Core first, then the patrol detachment by name', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-cp .egroup')].map(x=>x.firstChild.textContent.trim()).join('|'))==='Core|Fixture Detachment');
+await p.click('#view-cp .phbar button[data-cpphase="shooting"]');
+t('CP phase filter narrows its own grid, not the Stratagems tab\'s', await p.evaluate(()=>
+  [...document.querySelectorAll('#view-cp .scard .sn')].map(x=>x.textContent).join()==='CP Det Strat' && ui.stratPhase==='all'));
+await p.click('#view-cp .scard');
+t('a CP stratagem card opens its full text', await p.evaluate(()=>
+  document.querySelector('#modal').classList.contains('on') && document.querySelector('#mBody').textContent.includes('WHEN:')));
+await p.click('#mClose');
+await p.click('#view-cp .phbar button[data-cpphase="all"]');
+await p.click('#view-cp [data-cpview="force"]');
+t('Force brings the roster back', await p.evaluate(()=>
+  document.querySelectorAll('#view-cp .unit').length>0 && !document.querySelector('#view-cp .scard')));
 t('DP control hidden on CP tab', await p.evaluate(()=>getComputedStyle(document.querySelector('#btnDp')).display)==='none');
 // The rule scroll is the only way to read a detachment rule that grants nothing,
 // so it must survive on Army — but stay out of Combat Patrol, which has its own.

@@ -55,5 +55,5 @@
     }
   },
 
-  "_stratagems_note": "This force's stratagems are the core ones in data/stratagems.json, shown on the Stratagems tab. The Combat Patrol tab deliberately has no stratagem panel of its own."
+  "_stratagems_note": "This force's stratagems are the core ones plus its detachment's three, all in data/stratagems.json (tagged with this detachment's id). They show in the Stratagems view of the Combat Patrol tab; the matched-play Stratagems tab leaves the patrol's own out."
 }

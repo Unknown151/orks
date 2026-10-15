@@ -208,6 +208,12 @@ main{padding:10px;max-width:900px;margin:0 auto;padding-bottom:calc(var(--dock-h
   color:var(--dim);padding:8px 9px;font-size:11px;font-weight:700;letter-spacing:.5px;
   text-transform:uppercase;white-space:nowrap}
 .phbar button.on{color:var(--accent);border-bottom-color:var(--accent)}
+/* Combat Patrol's own two views, set apart from the nav and the phase bar */
+.subnav{display:flex;gap:3px;padding:3px;margin-bottom:10px;background:var(--card);
+  border:1px solid var(--line);border-radius:10px}
+.subnav button{flex:1;background:transparent;border:0;border-radius:7px;color:var(--dim);
+  padding:7px 6px;font-size:13px;font-weight:600}
+.subnav button.on{background:var(--accent2);color:#f4f8ee}
 .scards{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px}
 .scard{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:9px 10px;
   text-align:left;display:flex;flex-direction:column;gap:6px;color:inherit}
@@ -353,7 +359,7 @@ textarea.exp{width:100%;height:230px;background:var(--bg2);color:var(--txt);bord
    ========================================================================== */
 
 const EDITION = '11th Edition';
-const VERSION = '0.29.0';
+const VERSION = '0.30.0';
 
 // The army-wide Enhancement limit comes from the battle size (core rules 25.03),
 // which lives in data/detachments.json — see battleSize(). This is only the
@@ -386,6 +392,8 @@ let pointsLimit = 2000;
 let listName = 'Untitled list';
 let game = { cp:0, round:1, vpUs:0, vpThem:0, waaagh:false };
 let ui = { tab:'builder', detOpen:true, enhOpen:false, stratPhase:'all',
+  // Combat Patrol has two views of its own: the force, and the stratagems it can use.
+  cpView:'force', cpStratPhase:'all',
   // Force choices default open — it is the one panel you set before a game.
   panels:{ cpChoice:true } };
 // Unit cards are an accordion: at most one open per view, everything else
@@ -568,12 +576,19 @@ function toggleDetachment(id){
 }
 // Content is available if it has no detachment requirement, or one of its
 // detachment(s) is active. Accepts a string OR an array (spec §7.2).
+// Matched play: core content, or content from a detachment picked in the Builder.
+// The Combat Patrol detachment is never one of those — its stratagems belong to
+// the Combat Patrol tab (isCpContent), not to a matched-play list.
 function isContentDetachmentActive(item){
   if(!item) return false;
   if(!item.detachment) return true;
   const dets = Array.isArray(item.detachment) ? item.detachment : [item.detachment];
+  return dets.some(id => isDetachmentActive(id));
+}
+function isCpContent(item){
   const cpDet = DATA.combatPatrol?.detachment?.id;
-  return dets.some(id => isDetachmentActive(id) || (cpDet && id === cpDet));
+  if(!item || !cpDet || !item.detachment) return false;
+  return [].concat(item.detachment).includes(cpDet);
 }
 // Name for a detachment id, whichever namespace defines it.
 function detachmentName(id){
@@ -1895,13 +1910,11 @@ function showStratagem(id){
      ${stratCalledNote(s)?`<p class="scall"><b>${esc(matchedCallState().toUpperCase())} NOW:</b> ${esc(stratCalledNote(s))}</p>`:''}
      ${s.restrictions?`<p><b>RESTRICTIONS:</b> ${s.restrictions}</p>`:''}`);
 }
-function renderStrats(){
-  const all = Object.entries(DATA.stratagems).map(([id,s]) => ({id, ...s}))
-    .filter(s => isContentDetachmentActive(s));
-  const shown = ui.stratPhase === 'all'
-    ? all : all.filter(s => (s.phases || []).includes(ui.stratPhase));
-
-  // Group by source: core first, then each detachment contributing stratagems.
+// A phase filter over a grid of stratagem cards, grouped by source with Core
+// first. Shared by the Stratagems tab and Combat Patrol's Stratagems view;
+// `attr` names the filter buttons' data key so the two keep separate filters.
+function stratGrid(all, phase, attr){
+  const shown = phase === 'all' ? all : all.filter(s => (s.phases || []).includes(phase));
   const groups = {};
   shown.forEach(s => {
     const key = !s.detachment ? 'Core'
@@ -1909,11 +1922,10 @@ function renderStrats(){
     (groups[key] = groups[key] || []).push(s);
   });
   const order = Object.keys(groups).sort((a,b) => (a === 'Core' ? -1 : b === 'Core' ? 1 : a.localeCompare(b)));
-
-  $('#view-strats').innerHTML = `
+  return `
     <div class="phbar">
-      <button class="${ui.stratPhase==='all'?'on':''}" data-phase="all">All</button>
-      ${PHASES.map(p => `<button class="${ui.stratPhase===p?'on':''}" data-phase="${p}">${p}</button>`).join('')}
+      <button class="${phase==='all'?'on':''}" data-${attr}="all">All</button>
+      ${PHASES.map(p => `<button class="${phase===p?'on':''}" data-${attr}="${p}">${p}</button>`).join('')}
     </div>
     ${order.length ? order.map(g => `
       <div class="egroup">${esc(g)} <span class="muted">· ${groups[g].length}</span></div>
@@ -1921,6 +1933,10 @@ function renderStrats(){
     : `<div class="empty">${Object.keys(DATA.stratagems).length
         ? 'No stratagems in this phase.'
         : 'No stratagems loaded.<br>Add them to <code>data/stratagems.json</code>.'}</div>`}`;
+}
+const stratList = keep => Object.entries(DATA.stratagems).map(([id,s]) => ({id, ...s})).filter(keep);
+function renderStrats(){
+  $('#view-strats').innerHTML = stratGrid(stratList(isContentDetachmentActive), ui.stratPhase, 'phase');
 }
 
 /* ----------------------------- COMBAT PATROL ------------------------------ */
@@ -2109,7 +2125,17 @@ function renderCombatPatrol(){
     : '';
 
 
-  el.innerHTML = `
+  // Force · Stratagems. The stratagems a patrol can use are the core ones plus
+  // its own detachment's — never the matched-play detachments picked in the Builder.
+  const sub = [['force', 'Force'], ['strats', 'Stratagems']];
+  const subnav = `<div class="subnav" role="tablist">${sub.map(([id, label]) =>
+    `<button role="tab" class="${ui.cpView === id ? 'on' : ''}" aria-selected="${ui.cpView === id}" data-cpview="${id}">${label}</button>`).join('')}</div>`;
+  if(ui.cpView === 'strats'){
+    el.innerHTML = subnav + stratGrid(stratList(s => !s.detachment || isCpContent(s)), ui.cpStratPhase, 'cpphase');
+    return;
+  }
+
+  el.innerHTML = subnav + `
     <div class="panel open"><div class="panel-bd">
       <div class="totals">
         <span class="big">${entries.reduce((n,e) => n + e.count, 0)}</span>
@@ -2362,6 +2388,9 @@ document.addEventListener('click', e => {
 
   // stratagem filters
   const ch = el('[data-phase]'); if(ch){ ui.stratPhase = ch.dataset.phase; renderStrats(); return; }
+  // Combat Patrol: Force / Stratagems, and the phase filter on its stratagems
+  const cv = el('[data-cpview]'); if(cv){ ui.cpView = cv.dataset.cpview; renderCombatPatrol(); return; }
+  const cph = el('[data-cpphase]'); if(cph){ ui.cpStratPhase = cph.dataset.cpphase; renderCombatPatrol(); return; }
   const sc = el('[data-strat]'); if(sc){ showStratagem(sc.dataset.strat); return; }
 
   // game trackers

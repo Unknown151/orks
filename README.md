@@ -37,7 +37,7 @@ datasheets are landing role by role (see the table below). Guide §8 build order
 | 10 | Persistence — saved lists, share URL, text export | done |
 | 11 | Advanced wargear — exclusive choices, fixed loadouts, wargear options | done — options are data-driven, see *Datasheet extras* |
 | 12 | Faction oddities — splitting, resource tracking | not needed — the one split (Kommandos' Taktikal Know-wotz) is chosen at the table, not in the list, so it lives in the ability text |
-| + | **Combat Patrol tab** — separate game mode, read-only force view | done, data landing |
+| + | **Combat Patrol tab** — separate game mode, read-only force view, its own Stratagems view | done |
 | + | Collapsible unit cards | done |
 
 The Builder's **Add a unit** list is grouped the way a codex is: Epic Heroes, Characters,
@@ -362,8 +362,10 @@ the phase named in WHEN: Mow ’Em Down is used in the Fight phase but also carr
 Charge icon, because it only works for a unit that charged. It therefore shows under
 both filters. "Any phase" is stored as all five.
 
-Combat Patrol's detachment counts as active for content gating, so its stratagems
-appear without having to select anything in the Builder's DP picker.
+The Stratagems tab is matched play only: the core stratagems plus those of the
+detachments picked in the Builder. The Combat Patrol detachment's stratagems are not
+on it — they live on the Combat Patrol tab (see below), because a matched-play army
+cannot use them.
 
 ## Enhancements that carry a weapon
 
@@ -596,9 +598,15 @@ the keys are absent.
 
 ### Stratagems
 
-The Combat Patrol tab has **no stratagem panel** — stratagems live on their own tab.
-The Combat Patrol tab is for the force: its detachment, its choices and its
-datasheets.
+The Combat Patrol tab has two views, picked with the **Force · Stratagems** switch at
+its top. **Force** is the force: its detachment, its choices and its datasheets.
+**Stratagems** is every stratagem the patrol can use — the core ones plus its own
+detachment's (the three 'Ardmob ones), with the same phase filter and cards as the
+Stratagems tab but a filter of its own. A matched-play detachment picked in the
+Builder never shows here, and the patrol's stratagems never show on the Stratagems
+tab. They are stored with the rest in `data/stratagems.json`, tagged with the patrol
+detachment's id.
+
 - A unit with `canLead` renders the datasheet's **Leader** block listing what it can
   attach to. Names are de-duplicated, so a leader pointing at both 'Ardmob Boyz units
   shows that name once, as the datasheet does. The block is suppressed on a leader
@@ -627,7 +635,8 @@ orphaned-enhancement cleanup on detachment removal, leader attachment/merged
 cards/inherited abilities,
 localStorage + legacy single-detachment migration, share-link round trip, text export,
 and the Combat Patrol tab (roster rendering, merged `ledBy` cards, missing-datasheet
-placeholders, and matched-play detachment grants *not* leaking into Combat Patrol cards).
+placeholders, matched-play detachment grants *not* leaking into Combat Patrol cards, and
+its Stratagems view: core plus the patrol's own, kept apart from the Stratagems tab).
 
 It never reads `data/`, so it keeps passing as the real Ork data lands.
 

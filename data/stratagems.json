@@ -149,7 +149,7 @@
     "effect": "Until the end of the phase, your unit has <strong>Fights First</strong> and must be the next unit you select to fight.",
     "detachment": null
   },
-  "_combat_patrol_note": "The three ’Ardmob stratagems below belong to the Combat Patrol detachment in data/combat-patrol/index.json. Wahapedia does not carry Combat Patrol content, so they are unchanged from before the 11th edition sync and have NOT been re-verified.",
+  "_combat_patrol_note": "The three ’Ardmob stratagems below belong to the Combat Patrol detachment in data/combat-patrol/index.json. Wahapedia does not carry Combat Patrol content, so they are unchanged from before the 11th edition sync and have NOT been re-verified. They show on the Combat Patrol tab's Stratagems view, not on the matched-play Stratagems tab.",
   "krump-em": {
     "name": "Krump ’Em",
     "type": "’Ardmob Stratagem",
